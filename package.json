@@ -4,7 +4,10 @@
   "author": {
     "name": "Leref"
   },
-  "maintainers": ["USERSATOSHI","KINO"],
+  "maintainers": [
+    "USERSATOSHI",
+    "KINO"
+  ],
   "license": "apache 2.0",
   "dependencies": {
     "@discordjs/voice": "^0.7.2"
