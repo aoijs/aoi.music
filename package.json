@@ -1,0 +1,12 @@
+{
+  "name": "music",
+  "description": "Addition of the Music properties and foundation for aoi.js",
+  "author": {
+    "name": "Leref"
+  },
+  "maintainers": ["USERSATOSHI","KINO"],
+  "license": "apache 2.0",
+  "dependencies": {
+    "@discordjs/voice": "^0.7.2"
+  }
+}
