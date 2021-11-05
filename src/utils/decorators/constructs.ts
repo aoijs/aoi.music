@@ -1,7 +1,8 @@
 import Manager from '../../structures/Manager';
-import { CacheOptions, ManagerConfig } from '../typings';
+import { CacheOptions, ManagerConfig, SoundcloudOptions } from '../typings';
 import key from 'soundcloud-key-fetch';
 import { CacheType } from '../constants';
+import { TrackInfo } from 'soundcloud-downloader/src/info';
 
 export function decorateConstructor(func: (target, args: any[]) => any) {
     return function decorate(target) {
@@ -40,5 +41,21 @@ export function constructCache(): (target) => any {
             throw new TypeError("Cache Limit must be a number");
         
         return new manager(config);
+    });
+}
+
+export function constructSoundcloud(): (target) => any {
+    return decorateConstructor((manager, args) => {
+        const config = args[0] as SoundcloudOptions;
+        if (!config) return new manager(config);
+        if (config && "clientId" in config && (typeof config.clientId !== "string" || !config.clientId))
+            throw new Error("ClientId is specified, but is invalid");
+        return new manager(config);
+    })
+}
+
+export function constructTrack(): (target) => any {
+    return decorateConstructor((manager, args) => {
+        const config = args[0] as (TrackInfo)
     });
 }

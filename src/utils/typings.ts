@@ -4,7 +4,15 @@ import { CacheType } from './constants';
 import * as Source from './source/index';
 import internal from 'stream';
 import { ReadStream } from 'fs';
+import { TrackInfo } from 'soundcloud-downloader/src/info';
 export type PossibleStream = internal.Readable | internal.PassThrough | ReadStream;
+export type RawTrackTypes = TrackInfo | LocalResponse;
+
+export interface LocalResponse {
+    url: string;
+    is_m3u8: boolean;
+    content_length: number;
+}
 
 export interface ManagerProviders {
     twitch: Source.TwitchProvider;

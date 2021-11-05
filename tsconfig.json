@@ -9,6 +9,6 @@
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
         "rootDir": "src",
-        "outDir": ""
+        "outDir": "lib"
     }
 }
