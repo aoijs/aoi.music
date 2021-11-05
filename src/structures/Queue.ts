@@ -1,8 +1,10 @@
 import { Queue } from "../utils/decorators/validators";
 import Player from "./Player";
+import Track from "./Track";
 
 class PlayerQueue {
     public player: Player;
+    public list: Track[] = []
     public current: any;
     public previus: any;
     @Queue.validatePlayer()

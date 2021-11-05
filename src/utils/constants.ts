@@ -17,7 +17,8 @@ export enum LoopMode {
 }
 
 export enum SourceProviders {
-    None,
     Soundcloud,
-    Twitch
+    Twitch,
+    LocalFile,
+    Attachment
 }
