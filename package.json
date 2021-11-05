@@ -8,8 +8,14 @@
     "USERSATOSHI",
     "KINO"
   ],
-  "license": "apache 2.0",
+  "license": "Apache 2.0",
   "dependencies": {
-    "@discordjs/voice": "^0.7.2"
+    "@discordjs/voice": "^0.7.2",
+    "discord.js": "^13.3.1",
+    "ffmpeg-static": "^4.4.0",
+    "soundcloud-downloader": "^1.0.0",
+    "soundcloud-key-fetch": "^1.0.11",
+    "tiny-typed-emitter": "^2.1.0",
+    "tweetnacl": "^1.0.3"
   }
 }

@@ -1,2 +1,2 @@
-import Voice from "./Classes/voice";
+import Voice from "../Classes/voice";
 export default {Voice}
