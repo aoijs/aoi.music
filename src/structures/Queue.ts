@@ -11,6 +11,9 @@ class PlayerQueue {
     setPlayer(player: Player) {
         this.player = player;
     }
+    setCurrent(track : Track) {
+        this.current = track
+    }
 }
 
 export default PlayerQueue;

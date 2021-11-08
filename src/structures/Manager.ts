@@ -36,7 +36,7 @@ class Manager extends TypedEmitter<ManagerEvents> {
         connection.on('error', console.error)
         try {
             await voice.entersState(connection, voice.VoiceConnectionStatus.Ready, 30000)
-            this.players.set(voiceChannel.guild.id, new Player({ connection, voiceChannel, textChannel, manager: this }))
+            this.players.set(voiceChannel.guildId, new Player({ connection, voiceChannel, textChannel, manager: this }))
         }
         catch (error) {
             connection.destroy()

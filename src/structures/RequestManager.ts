@@ -1,0 +1,45 @@
+import { ReadStream } from "fs";
+import { Search } from "../utils/source/Search";
+import { TrackInfoType } from "../utils/typings";
+import Player from "./Player";
+import Track from "./Track";
+
+export default class requestManager {
+    public nextStream: ReadStream = null;
+    public currentStream: ReadStream = null;
+    public search: Search;
+    private player: Player
+    constructor(player: Player) {
+        this.player = player;
+        this.search = player.manager.searchManager;
+    }
+    /**
+     * addStream
+     */
+    public async setCurrentStream(track: Track) {
+        let stream: ReadStream;
+        if (track.source === 0) {
+            stream = await this.search.soundCloud.getStream(track.rawInfo.permalink_url);
+        }
+        else if (track.source === 1) {
+            stream = await this.search.localFile.getStream(track.rawInfo.path);
+        }
+        else if (track.source === 2) {
+            stream = await this.search.attachment.getStream(track.rawInfo.url);
+        }
+        this.currentStream = stream
+    }
+    public async setNextStream(track: Track) {
+        let stream: ReadStream;
+        if (track.source === 0) {
+            stream = await this.search.soundCloud.getStream(track.rawInfo.permalink_url);
+        }
+        else if (track.source === 1) {
+            stream = await this.search.localFile.getStream(track.rawInfo.path);
+        }
+        else if (track.source === 2) {
+            stream = await this.search.attachment.getStream(track.rawInfo.url);
+        }
+        this.nextStream = stream
+    }
+}

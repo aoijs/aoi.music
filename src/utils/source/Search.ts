@@ -139,7 +139,8 @@ export class LocalFile {
             title: path.basename(query),
             description: 'A Local File',
             path: query,
-            dir: path.dirname(query)
+            dir: path.dirname(query),
+            createdTimestamp: fs.statSync(query).birthtimeMs
         }
     }
     /**
@@ -166,11 +167,11 @@ export class Attachments {
      * @description searchs for the url , if it exists, returns the url;
      * @param {string} query url to be searched
      */
-    public async search(query: string) {
+    public async search(query: string): Promise<string[]> {
         const res = axios({
             url: query,
             method: 'get'
-        }).catch(err => null);
+        }).catch(_ => null);
 
         if (!res) throw new Error('AttachmentSearchError: Invalid Url Provided');
 
@@ -201,7 +202,7 @@ export class Attachments {
             responseType: 'stream',
             url: url,
         }).catch(_ => null)
-
+        
         return stream;
     }
 }
@@ -211,8 +212,8 @@ export class Search {
     public localFile: LocalFile = new LocalFile();
     public attachment: Attachments = new Attachments();
 
-    public async search(query: string, type: number) {
-        let result;
+    public async search({ query, type }: { query: string; type: number; }): Promise<any[]> {
+        let result: any[];
         if (type === 0) {
             result = await this.soundCloud.search({ query, scOptions: this.soundCloud.options });
         }
