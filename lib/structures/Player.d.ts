@@ -1,6 +1,6 @@
 import { GuildMember, TextChannel, VoiceChannel } from "discord.js";
 import { VoiceConnection } from "../../node_modules/@discordjs/voice/dist";
-import { LoopMode } from "../utils/constants";
+import { LoopMode, PlayerStates } from "../utils/constants";
 import { PlayerOptions, voiceState } from "../utils/typings";
 import Manager from "./Manager";
 import Queue from "./Queue";
@@ -17,8 +17,8 @@ declare class Player {
     private _state;
     private player;
     constructor(data: PlayerOptions);
-    get state(): string;
-    set state(n: string);
+    get state(): PlayerStates;
+    set state(n: PlayerStates);
     /**
      * search
      */
@@ -27,7 +27,7 @@ declare class Player {
      * addTrack
      */
     addTrack({ urls, type, member }: {
-        urls: any[];
+        urls: string[];
         type: number;
         member: GuildMember;
     }): Promise<void>;

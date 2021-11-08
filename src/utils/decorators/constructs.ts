@@ -4,8 +4,8 @@ import key from 'soundcloud-key-fetch';
 import { CacheType } from '../constants';
 import { TrackInfo } from 'soundcloud-downloader/src/info';
 
-export function decorateConstructor(func: (target, args: any[]) => any) {
-    return function decorate(target) {
+export function decorateConstructor(func: (target: any, args: any[]) => any) {
+    return function decorate(target: any) {
       return new Proxy(target, {
         construct(constructor, args) {
           return func(constructor, args)
@@ -14,26 +14,26 @@ export function decorateConstructor(func: (target, args: any[]) => any) {
     }
   }
 
-export function constructManager(): (target) => any {
+export function constructManager(): (target: any) => any {
     return decorateConstructor((manager, args) => {
         const config = args[0] as ManagerConfig;
         if (config.soundcloud) {
             const opt = config.soundcloud;
             if (typeof opt.clientId !== "string" || !opt.clientId) {
-                key.fetchKey().then(string => opt.clientId = string);
+                key.fetchKey().then((string: string) => opt.clientId = string);
             }
         }
         return new manager(config);
     });
 }
 
-export function constructCache(): (target) => any {
+export function constructCache(): (target: any) => any {
     return decorateConstructor((manager, args) => {
         const config = args[0] as CacheOptions;
 
         if (!config.enabled) 
             throw new Error(`Cache is not enabled, but "new" is declared`);
-        if (! ("cacheType" in config) || !CacheType[config.cacheType] || isNaN(CacheType[config.cacheType]))
+        if (! ("cacheType" in config) || !CacheType[config.cacheType])
             throw new Error(`Cache Type is invalid`);
         if (config.cacheType === CacheType.Disk && (typeof config.directory !== "string" || !config.directory))
             throw new Error("Cache Type is Disk, but directory is not a string");
@@ -44,7 +44,7 @@ export function constructCache(): (target) => any {
     });
 }
 
-export function constructSoundcloud(): (target) => any {
+export function constructSoundcloud(): (target: any) => any {
     return decorateConstructor((manager, args) => {
         const config = args[0] as SoundcloudOptions;
         if (!config) return new manager(config);
@@ -54,7 +54,7 @@ export function constructSoundcloud(): (target) => any {
     })
 }
 
-export function constructTrack(): (target) => any {
+export function constructTrack(): (target: any) => any {
     return decorateConstructor((manager, args) => {
         const config = args[0] as (TrackInfo)
     });

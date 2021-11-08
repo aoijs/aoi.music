@@ -1,8 +1,8 @@
 import PlayerQueue from "../../structures/Queue";
 import Player from "../../structures/Player";
 
-export function decorateMethod(func: (method, ...args: any[]) => any) {
-    return function decorate(_0, _1, descriptor: PropertyDescriptor) {
+export function decorateMethod(func: (method: any, ...args: any[]) => any) {
+    return function decorate(_0: any, _1: any, descriptor: PropertyDescriptor): PropertyDescriptor {
       const method = descriptor.value
       descriptor.value = function (...args: any[]) {
         return func.apply(this, [method.bind(this), ...args])

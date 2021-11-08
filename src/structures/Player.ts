@@ -45,7 +45,7 @@ class Player {
     /**
      * addTrack
      */
-    public async addTrack({ urls, type, member }: { urls: any[]; type: number; member: GuildMember; }): Promise<void> {
+    public async addTrack({ urls, type, member }: { urls: string[]; type: number; member: GuildMember; }): Promise<void> {
         if (type === 0) {
             for (const url of urls) {
                 const info = await this.manager.searchManager.soundCloud.getInfo(url);
@@ -57,7 +57,7 @@ class Player {
                 this.queue.list.push(track);
                 if (this.queue.list.length === 1) {
                     this.queue.setCurrent(track);
-                    this.requestManager.setCurrentStream(track)
+                    await this.requestManager.setCurrentStream(track)
                     this.play()
                 }
                 if (this.queue.list.length === 2) {
@@ -77,7 +77,7 @@ class Player {
                 this.queue.list.push(track);
                 if (this.queue.list.length === 1) {
                     this.queue.setCurrent(track);
-                    this.requestManager.setCurrentStream(track)
+                    await this.requestManager.setCurrentStream(track)
                     this.play()
                 }
                 if (this.queue.list.length === 2) {
@@ -97,7 +97,7 @@ class Player {
                 this.queue.list.push(track);
                 if (this.queue.list.length === 1) {
                     this.queue.setCurrent(track);
-                    this.requestManager.setCurrentStream(track)
+                    await this.requestManager.setCurrentStream(track)
                     this.play()
                 }
                 if (this.queue.list.length === 2) {

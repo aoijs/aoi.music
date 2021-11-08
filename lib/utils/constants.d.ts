@@ -1,12 +1,12 @@
 export declare enum CacheType {
-    Disk = "disk",
-    Memory = "memory"
+    Disk = "Disk",
+    Memory = "Memory"
 }
 export declare enum PlayerStates {
-    Idling = 0,
-    Playing = 1,
-    Paused = 2,
-    Destroyed = 3
+    Idling = "Idling",
+    Playing = "Playing",
+    Paused = "Paused",
+    Destroyed = "Destroyed"
 }
 export declare enum LoopMode {
     None = 0,

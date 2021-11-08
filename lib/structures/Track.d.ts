@@ -6,6 +6,7 @@ export default class Track {
     info: TrackInfoType;
     rawInfo: TrackRawInfo;
     source: SourceProviders;
+    type: number;
     constructor(data: {
         requestUser: GuildMember;
         rawinfo: TrackRawInfo;
@@ -18,5 +19,5 @@ export default class Track {
     /**
      * transformInfo
      */
-    transformInfo(rawInfo: TrackRawInfo): TrackInfoType;
+    transformInfo(rawInfo: TrackRawInfo): void;
 }

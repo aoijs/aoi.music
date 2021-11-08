@@ -4,7 +4,7 @@ import { TypedEmitter } from 'tiny-typed-emitter';
 import { constructManager } from "../utils/decorators/constructs";
 import { SoundcloudProvider, TwitchProvider } from "../utils/source";
 
-import voice from '@discordjs/voice';
+import {joinVoiceChannel,VoiceConnectionStatus,entersState} from '@discordjs/voice';
 import { TextChannel, VoiceChannel } from "discord.js";
 import { Search } from "../utils/source/Search";
 
@@ -29,13 +29,13 @@ class Manager extends TypedEmitter<ManagerEvents> {
             group: voiceChannel.client.user.id
         }
 
-        const connection = voice.joinVoiceChannel(data)
+        const connection = joinVoiceChannel(data)
         if (debug) {
             connection.on("debug", console.log)
         }
         connection.on('error', console.error)
         try {
-            await voice.entersState(connection, voice.VoiceConnectionStatus.Ready, 30000)
+            await entersState(connection,VoiceConnectionStatus.Ready, 30000)
             this.players.set(voiceChannel.guildId, new Player({ connection, voiceChannel, textChannel, manager: this }))
         }
         catch (error) {

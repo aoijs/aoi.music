@@ -7,11 +7,13 @@ export default class Track {
     public info: TrackInfoType;
     public rawInfo: TrackRawInfo;
     public source: SourceProviders;
+    public type : number;
     constructor(data: { requestUser: GuildMember, rawinfo: TrackRawInfo, type: number }) {
         this.requestUser = data.requestUser;
-        this.info = this.transformInfo(data.rawinfo);
+        this.type = data.type
         this.rawInfo = data.rawinfo;
         this.source = this.getType(data.type);
+        this.transformInfo(data.rawinfo);
     }
     /**
      * getType
@@ -29,9 +31,9 @@ export default class Track {
     /**
      * transformInfo
      */
-    public transformInfo(rawInfo: TrackRawInfo): TrackInfoType {
-        if (this.source === 0) {
-            return {
+    public transformInfo(rawInfo: TrackRawInfo): void {
+        if (this.type === 0) {
+            this.info = {
                 title: rawInfo.title,
                 description: rawInfo.description,
                 url: rawInfo.permalink_url,
@@ -46,8 +48,8 @@ export default class Track {
                 createdTimestamp: rawInfo.created_at ? new Date(rawInfo.created_at).getTime() : null
             }
         }
-        else if (this.source === 1) {
-            return {
+        else if (this.type === 1) {
+            this.info = {
                 title: rawInfo.title,
                 description: 'A Local File',
                 path: rawInfo.path,
@@ -57,13 +59,21 @@ export default class Track {
                 views: 0,
             }
         }
-        else if (this.source === 2) {
-            return {
+        else if (this.type === 2) {
+            this.info = {
                 title: rawInfo.title,
                 description: rawInfo.description,
                 url: rawInfo.url,
                 likes: 0,
                 views: 0
+            }
+        }
+        else {
+            this.info = {
+                title : rawInfo.title,
+                description:rawInfo.description,
+                url : rawInfo.permalink_url || rawInfo.url || rawInfo.path,
+                createdTimestamp : rawInfo.createdTimestamp
             }
         }
     }

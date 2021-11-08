@@ -1,13 +1,13 @@
 export enum CacheType {
-    Disk = "disk",
-    Memory = "memory"
+    Disk = "Disk",
+    Memory = "Memory"
 }
 
 export enum PlayerStates {
-    Idling,
-    Playing,
-    Paused,
-    Destroyed
+    Idling = 'Idling',
+    Playing = 'Playing',
+    Paused = 'Paused',
+    Destroyed = 'Destroyed'
 }
 
 export enum LoopMode {
