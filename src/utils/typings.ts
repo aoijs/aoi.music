@@ -98,6 +98,7 @@ export type TrackInfoType = {
     thumbnail?: string;
     author?: string;
     authorURL?: string;
+    authorAvatar?: string;
     likes? : number;
     views? : number;
     path? : string;

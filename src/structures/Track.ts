@@ -42,7 +42,8 @@ export default class Track {
                 duration: rawInfo.full_duration,
                 identifier: 'SoundCloud',
                 author: rawInfo.user?.username,
-                authorURL: rawInfo.user?.artwork_url,
+                authorURL: rawInfo.user?.permalink_url,
+                authorAvatar : rawInfo.user.avatar_url,
                 likes: rawInfo.likes_count,
                 views: rawInfo.playback_count,
                 createdTimestamp: rawInfo.created_at ? new Date(rawInfo.created_at).getTime() : null
