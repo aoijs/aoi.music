@@ -1,3 +1,4 @@
+import { AudioResource, createAudioResource, StreamType } from "@discordjs/voice";
 import { ReadStream } from "fs";
 import { Search } from "../utils/source/Search";
 import { TrackInfoType } from "../utils/typings";
@@ -5,8 +6,8 @@ import Player from "./Player";
 import Track from "./Track";
 
 export default class requestManager {
-    public nextStream: ReadStream = null;
-    public currentStream: ReadStream = null;
+    public nextStream: AudioResource = null;
+    public currentStream: AudioResource = null;
     public search: Search;
     private player: Player
     constructor(player: Player) {
@@ -27,7 +28,11 @@ export default class requestManager {
         else if (track.source === 2) {
             stream = await this.search.attachment.getStream(track.rawInfo.url);
         }
-        this.currentStream = stream
+        const resource = createAudioResource(stream,{
+            inlineVolume : true,
+            inputType : StreamType.Arbitrary
+        });
+        this.currentStream = resource
     }
     public async setNextStream(track: Track) {
         let stream: ReadStream;
@@ -40,6 +45,22 @@ export default class requestManager {
         else if (track.source === 2) {
             stream = await this.search.attachment.getStream(track.rawInfo.url);
         }
-        this.nextStream = stream
+        const resource = createAudioResource(stream,{
+            inlineVolume : true,
+            inputType : StreamType.Arbitrary
+        });
+        this.currentStream = resource
+    }
+    /**
+     * currentDuration
+     */
+    public get _currentDuration() {
+        return this.currentStream.playbackDuration;
+    }
+    /**
+     * e
+     */
+    public get _volume() {
+        return this.currentStream.volume
     }
 }

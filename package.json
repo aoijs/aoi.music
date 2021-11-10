@@ -18,7 +18,8 @@
     "soundcloud-downloader": "^1.0.0",
     "soundcloud-key-fetch": "^1.0.11",
     "tiny-typed-emitter": "^2.1.0",
-    "tweetnacl": "^1.0.3"
+    "tweetnacl": "^1.0.3",
+    "@discordjs/opus": "0.6.0"
   },
   "devDependencies": {
     "typescript": "^4.4.4"

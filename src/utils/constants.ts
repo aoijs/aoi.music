@@ -11,9 +11,9 @@ export enum PlayerStates {
 }
 
 export enum LoopMode {
-    None,
-    Track,
-    Queue
+    None = 'none',
+    Track = 'song',
+    Queue = 'queue'
 }
 
 export enum SourceProviders {

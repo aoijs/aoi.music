@@ -4,7 +4,7 @@ import { TypedEmitter } from 'tiny-typed-emitter';
 import { constructManager } from "../utils/decorators/constructs";
 import { SoundcloudProvider, TwitchProvider } from "../utils/source";
 
-import {joinVoiceChannel,VoiceConnectionStatus,entersState} from '@discordjs/voice';
+import { joinVoiceChannel, VoiceConnectionStatus, entersState } from '@discordjs/voice';
 import { TextChannel, VoiceChannel } from "discord.js";
 import { Search } from "../utils/source/Search";
 
@@ -13,10 +13,13 @@ class Manager extends TypedEmitter<ManagerEvents> {
     public players: Map<string, Player> = new Map();
     public config: ManagerConfig;
     public providers: ManagerProviders = { twitch: new TwitchProvider(), soundcloud: new SoundcloudProvider({ clientId: undefined }) }
-    public searchManager : Search = new Search()
+    public searchManager: Search
     constructor(config: ManagerConfig) {
         super();
         this.config = config;
+        this.searchManager = new Search({ clientId: this.config.soundcloud.clientId })
+        this.searchManager.soundCloud.setClientId(config.soundcloud?.clientId)
+
     }
     /**
      * joinVc
@@ -35,8 +38,8 @@ class Manager extends TypedEmitter<ManagerEvents> {
         }
         connection.on('error', console.error)
         try {
-            await entersState(connection,VoiceConnectionStatus.Ready, 30000)
-            this.players.set(voiceChannel.guildId, new Player({ connection, voiceChannel, textChannel, manager: this }))
+            await entersState(connection, VoiceConnectionStatus.Ready, 30000)
+            this.players.set(voiceChannel.guildId, new Player({ connection, voiceChannel, textChannel, manager: this, debug: true }))
         }
         catch (error) {
             connection.destroy()

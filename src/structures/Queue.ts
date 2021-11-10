@@ -6,7 +6,7 @@ class PlayerQueue {
     public player: Player;
     public list: Track[] = []
     public current: any;
-    public previus: any;
+    public previous: any;
     @Queue.validatePlayer()
     setPlayer(player: Player) {
         this.player = player;

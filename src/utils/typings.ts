@@ -1,6 +1,6 @@
 import  { VoiceConnection } from '@discordjs/voice';
 import { TextChannel, VoiceChannel } from 'discord.js';
-import { CacheType } from './constants';
+import { CacheType, LoopMode } from './constants';
 import * as Source from './source/index';
 import internal from 'stream';
 import { ReadStream } from 'fs';
@@ -86,6 +86,7 @@ export type PlayerOptions = {
     textChannel : TextChannel;
     connection : VoiceConnection;
     manager : Manager;
+    debug : boolean;
 }
 
 export type TrackInfoType = {
@@ -111,3 +112,10 @@ interface SCTrackInfo extends TrackInfo {
 }
 export type TrackRawInfo = SCTrackInfo | LocalInfoType | AttachmentInfoType
 
+export type PlayerOptionsData = {
+            paused:boolean,
+            mode : LoopMode,
+            volume:number,
+            leaveAfter:{enabled:boolean,time:number},
+            leaveWhenVcEmpty:boolean 
+}

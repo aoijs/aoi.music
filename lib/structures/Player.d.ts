@@ -1,19 +1,20 @@
 import { GuildMember, TextChannel, VoiceChannel } from "discord.js";
 import { VoiceConnection } from "../../node_modules/@discordjs/voice/dist";
-import { LoopMode, PlayerStates } from "../utils/constants";
-import { PlayerOptions, voiceState } from "../utils/typings";
+import { PlayerStates } from "../utils/constants";
+import { PlayerOptions, PlayerOptionsData, voiceState } from "../utils/typings";
 import Manager from "./Manager";
 import Queue from "./Queue";
 import requestManager from "./requestManager";
 declare class Player {
     voiceState: voiceState;
+    debug: boolean;
     requestManager: requestManager;
     manager: Manager;
     connection: VoiceConnection;
     voiceChannel: VoiceChannel;
     textChannel: TextChannel;
-    mode: LoopMode;
     queue: Queue;
+    options: PlayerOptionsData;
     private _state;
     private player;
     constructor(data: PlayerOptions);
@@ -33,5 +34,8 @@ declare class Player {
     }): Promise<void>;
     play(): void;
     join(channel: VoiceChannel): void;
+    _configPlayer(): void;
+    _defaultOptions(): void;
+    _playNextTrack(): void;
 }
 export default Player;

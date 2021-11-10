@@ -4,7 +4,7 @@ declare class PlayerQueue {
     player: Player;
     list: Track[];
     current: any;
-    previus: any;
+    previous: any;
     setPlayer(player: Player): void;
     setCurrent(track: Track): void;
 }

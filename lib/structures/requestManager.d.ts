@@ -1,11 +1,10 @@
-/// <reference types="node" />
-import { ReadStream } from "fs";
+import { AudioResource } from "@discordjs/voice";
 import { Search } from "../utils/source/Search";
 import Player from "./Player";
 import Track from "./Track";
 export default class requestManager {
-    nextStream: ReadStream;
-    currentStream: ReadStream;
+    nextStream: AudioResource;
+    currentStream: AudioResource;
     search: Search;
     private player;
     constructor(player: Player);
@@ -14,4 +13,12 @@ export default class requestManager {
      */
     setCurrentStream(track: Track): Promise<void>;
     setNextStream(track: Track): Promise<void>;
+    /**
+     * currentDuration
+     */
+    get _currentDuration(): number;
+    /**
+     * e
+     */
+    get _volume(): import("prism-media").VolumeTransformer;
 }

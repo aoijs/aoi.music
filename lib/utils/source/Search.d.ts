@@ -1,7 +1,13 @@
 import { AttachmentInfoType, AttachmentStreamType, LocalInfoType, LocalStreamType, SoundcloudOptions } from '../typings';
 export declare class SoundCloud {
-    options: SoundcloudOptions;
+    options?: SoundcloudOptions;
     constructor(config?: SoundcloudOptions);
+    /**
+     * @method setClientId
+     * @description sets the clientId
+     * @param {string} clientId clientId to be set
+     */
+    setClientId(clientId: string): void;
     /**
      * @method baseURLRegex
      * @description returns the regex for baseUrl
@@ -87,6 +93,7 @@ export declare class Search {
     soundCloud: SoundCloud;
     localFile: LocalFile;
     attachment: Attachments;
+    constructor(data: SoundcloudOptions);
     search({ query, type }: {
         query: string;
         type: number;

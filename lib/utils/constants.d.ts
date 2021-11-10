@@ -9,9 +9,9 @@ export declare enum PlayerStates {
     Destroyed = "Destroyed"
 }
 export declare enum LoopMode {
-    None = 0,
-    Track = 1,
-    Queue = 2
+    None = "none",
+    Track = "song",
+    Queue = "queue"
 }
 export declare enum SourceProviders {
     Soundcloud = 0,

@@ -8,10 +8,21 @@ import { constructSoundcloud } from '../decorators/constructs';
 
 @constructSoundcloud()
 export class SoundCloud {
-    public options: SoundcloudOptions = { clientId: "" };
+    public options?: SoundcloudOptions = {clientId : undefined} ;
     constructor(config?: SoundcloudOptions) {
         this.options = config;
     }
+    /**
+     * @method setClientId
+     * @description sets the clientId
+     * @param {string} clientId clientId to be set
+     */
+     public setClientId(clientId : string): void  {
+        this.options.clientId =  clientId
+        scdl.saveClientID = true;
+        scdl.setClientID(clientId);
+    }
+
     /**
      * @method baseURLRegex
      * @description returns the regex for baseUrl
@@ -208,9 +219,12 @@ export class Attachments {
 }
 
 export class Search {
-    public soundCloud: SoundCloud = new SoundCloud();
+    public soundCloud: SoundCloud ;
     public localFile: LocalFile = new LocalFile();
     public attachment: Attachments = new Attachments();
+    constructor(data : SoundcloudOptions) {
+        this.soundCloud = new SoundCloud({clientId : data.clientId})
+    }
 
     public async search({ query, type }: { query: string; type: number; }): Promise<any[]> {
         let result: any[];
