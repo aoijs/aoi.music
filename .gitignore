@@ -1,6 +1,6 @@
 #Packages
 node_modules/
 Classes
-index.js
+/index.js
 .cache
 .npm
