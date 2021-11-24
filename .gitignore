@@ -2,3 +2,5 @@
 node_modules/
 Classes
 index.js
+.cache
+.npm

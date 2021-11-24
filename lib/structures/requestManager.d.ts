@@ -20,5 +20,5 @@ export default class requestManager {
     /**
      * e
      */
-    get _volume(): import("prism-media").VolumeTransformer;
+    _setVolume(number: number): void;
 }

@@ -1,5 +1,5 @@
 import { GuildMember, TextChannel, VoiceChannel } from "discord.js";
-import { VoiceConnection } from "../../node_modules/@discordjs/voice/dist";
+import { VoiceConnection } from "@discordjs/voice";
 import { PlayerStates } from "../utils/constants";
 import { PlayerOptions, PlayerOptionsData, voiceState } from "../utils/typings";
 import Manager from "./Manager";
@@ -37,5 +37,6 @@ declare class Player {
     _configPlayer(): void;
     _defaultOptions(): void;
     _playNextTrack(): void;
+    _destroyPlayer(): void;
 }
 export default Player;
