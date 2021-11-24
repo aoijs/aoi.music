@@ -3,6 +3,7 @@
        "declaration": true,
        "sourceMap": true,
        "target": "ES2021",
+       "lib": ["ES2021","ES2021.String","ES2021.WeakRef"],
        "module": "CommonJS",
        "moduleResolution": "Node",
        "esModuleInterop": true,
@@ -14,5 +15,6 @@
    "include":[ 
       "src/**/*"
    ],
+   "exclude": ["/node_modules/"],
    "compileOnSave":false
 }

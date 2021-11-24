@@ -9,16 +9,25 @@ export default class requestManager {
     private player;
     constructor(player: Player);
     /**
-     * addStream
+     * @param  {Track} track
+     * @returns {Promise<void>}
      */
     setCurrentStream(track: Track): Promise<void>;
+    /**
+     * @param  {Track} track
+     * @returns {Promise<void>}
+     */
     setNextStream(track: Track): Promise<void>;
     /**
-     * currentDuration
+     * @returns {number}
      */
     get _currentDuration(): number;
     /**
      * e
+     */
+    /**
+     * @param  {number} number
+     * @returns void
      */
     _setVolume(number: number): void;
 }

@@ -5,7 +5,6 @@ import {
 } from "@discordjs/voice";
 import { ReadStream } from "fs";
 import { Search } from "../utils/source/Search";
-import { TrackInfoType } from "../utils/typings";
 import Player from "./Player";
 import Track from "./Track";
 

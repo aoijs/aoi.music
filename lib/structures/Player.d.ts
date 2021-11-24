@@ -27,7 +27,7 @@ declare class Player {
     /**
      * addTrack
      */
-    addTrack({ urls, type, member }: {
+    addTrack({ urls, type, member, }: {
         urls: string[];
         type: number;
         member: GuildMember;
@@ -36,7 +36,7 @@ declare class Player {
     join(channel: VoiceChannel): void;
     _configPlayer(): void;
     _defaultOptions(): void;
-    _playNextTrack(): void;
+    _playNextTrack(): Promise<void>;
     _destroyPlayer(): void;
 }
 export default Player;

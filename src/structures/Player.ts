@@ -84,10 +84,6 @@ class Player {
 					this.play();
 					console.log("started playing");
 				}
-				if (this.queue.list.length === 2) {
-					this.requestManager.setNextStream(this.queue.list[1]);
-					console.log("added next track");
-				}
 				await setTimeout(5000);
 			}
 		} else if (type === 1) {
@@ -108,9 +104,6 @@ class Player {
 					await this.requestManager.setCurrentStream(track);
 					this.play();
 				}
-				if (this.queue.list.length === 2) {
-					this.requestManager.setNextStream(this.queue.list[1]);
-				}
 				await setTimeout(5000);
 			}
 		} else if (type === 2) {
@@ -130,9 +123,6 @@ class Player {
 					this.queue.setCurrent(track);
 					await this.requestManager.setCurrentStream(track);
 					this.play();
-				}
-				if (this.queue.list.length === 2) {
-					this.requestManager.setNextStream(this.queue.list[1]);
 				}
 				await setTimeout(5000);
 			}
@@ -192,15 +182,14 @@ class Player {
 			leaveWhenVcEmpty: false,
 		};
 	}
-	_playNextTrack() {
+	async _playNextTrack(): Promise<void> {
 		const track = this.queue.list.shift();
 		this.queue.previous = track;
-		this.queue.current = this.queue.list[0];
-		this.requestManager.currentStream = this.requestManager.nextStream;
-		this.requestManager.setNextStream(this.queue.list[1]);
+		this.queue.setCurrent( this.queue.list[ 0 ] );
+		await this.requestManager.setCurrentStream(this.queue.list[0])
 		this.play();
 	}
-	_destroyPlayer() {
+	_destroyPlayer(): void {
 		this._defaultOptions();
 		this.queue = new Queue();
 		this.requestManager = new requestManager(this);
