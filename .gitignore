@@ -1,6 +1,7 @@
 #Packages
-node_modules
 Classes
 /index.js
 .cache
 .npm
+node_modules
+test

@@ -9,12 +9,17 @@
        "esModuleInterop": true,
        "allowSyntheticDefaultImports": true,
        "experimentalDecorators": true,
+       "skipLibCheck": true,
+       "skipDefaultLibCheck": true,
+       "pretty": true,
        "rootDir": "src",
        "outDir": "lib"
    },
    "include":[ 
       "src/**/*"
    ],
-   "exclude": ["/node_modules/"],
+   "exclude": [
+      "node_modules"
+   ],
    "compileOnSave":false
 }

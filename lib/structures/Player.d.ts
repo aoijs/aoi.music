@@ -34,6 +34,7 @@ declare class Player {
     }): Promise<void>;
     play(): void;
     join(channel: VoiceChannel): void;
+    playPrevious(): Promise<void>;
     _configPlayer(): void;
     _defaultOptions(): void;
     _playNextTrack(): Promise<void>;

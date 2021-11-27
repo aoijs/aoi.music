@@ -144,6 +144,14 @@ class Player {
 		this.voiceState.channel = channel;
 	}
 
+	async playPrevious(): Promise<void> {
+		const track = this.queue.list.shift();
+		this.queue.setCurrent(this.queue.previous);
+		this.queue.previous = track;
+		await this.requestManager.setCurrentStream(this.queue.current);
+		this.play();
+	}
+
 	public _configPlayer(): void {
 		this.player.on("stateChange", async (os, ns) => {
 			console.log([os.status, ns.status]?.join("|"));
@@ -158,9 +166,9 @@ class Player {
 					this.options.mode === LoopMode.Queue &&
 					this.queue.list.length
 				) {
-					//this._loopQueue()
+					await this._loopQueue()
 				} else if (this.queue.list.length > 1) {
-					this._playNextTrack();
+					await this._playNextTrack();
 				} else {
 					this._destroyPlayer();
 				}
@@ -185,14 +193,26 @@ class Player {
 	async _playNextTrack(): Promise<void> {
 		const track = this.queue.list.shift();
 		this.queue.previous = track;
-		this.queue.setCurrent( this.queue.list[ 0 ] );
-		await this.requestManager.setCurrentStream(this.queue.list[0])
+		this.queue.setCurrent(this.queue.list[0]);
+		await this.requestManager.setCurrentStream(this.queue.list[0]);
 		this.play();
 	}
 	_destroyPlayer(): void {
 		this._defaultOptions();
 		this.queue = new Queue();
 		this.requestManager = new requestManager(this);
+	}
+	async _loopQueue() {
+		const track = this.queue.list.shift();
+		this.queue.previous = track;
+		this.queue.list.push(track);
+		this.queue.setCurrent(this.queue.list[0]);
+		await this.requestManager.setCurrentStream(this.queue.list[0]);
+		this.play();
+	}
+	async _playSingleTrack() {
+		await this.requestManager.setCurrentStream(this.queue.current);
+		this.play();
 	}
 }
 

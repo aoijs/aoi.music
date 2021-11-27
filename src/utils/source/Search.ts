@@ -70,7 +70,7 @@ export class SoundCloud {
                 }) => x.permalink_url);
 
             }
-            else if (query.endsWith('likes') && query.split('/').length === 4) {
+            else if (query.endsWith('likes') && query.split('/').length === 5) {
                 const arr = query.split("/");
                 arr.pop();
 
@@ -81,7 +81,7 @@ export class SoundCloud {
                         collection: []
                     }
                 });
-
+                
                 return collection.map((x: {
                     track?: {
                         permalink_url?: string;
