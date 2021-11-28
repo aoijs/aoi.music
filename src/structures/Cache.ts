@@ -7,7 +7,7 @@ import { CacheType } from "../utils/constants";
 @constructCache()
 class CacheManager {
 	public config?: CacheOptions;
-	public map: Map<string, unknown> = new Map();
+	public map: Map<string, any[]> = new Map();
 	constructor(config: CacheOptions) {
 		this.config = config;
 	}
@@ -17,12 +17,13 @@ class CacheManager {
 
 	private async _convertStreamToBuffer(
 		stream: PossibleStream,
-	): Promise<unknown> {
+	): Promise<any[]> {
 		let buffer = [];
 		return new Promise((res, rej) => {
 			stream.on("data", (chunk) => buffer.push(chunk));
 			stream.on("end", (_) => {
 				buffer.concat(buffer);
+				res(buffer)
 			});
 			stream.on("error", (err) =>
 				console.error(`failed to convert with reason: ${err}`),
@@ -34,6 +35,7 @@ class CacheManager {
 		if (!this._enabled()) return;
 		if (this.config.cacheType === CacheType.Memory) {
 			const data = await this._convertStreamToBuffer(stream);
+
 			this.map.set(id, data);
 			return;
 		}

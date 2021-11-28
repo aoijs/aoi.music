@@ -4,7 +4,10 @@ import {
 	StreamType,
 } from "@discordjs/voice";
 import { ReadStream } from "fs";
+import { Stream } from "m3u8stream";
+import { Readable, PassThrough } from "stream";
 import { YoutubeVideo } from "youtube-scrapper";
+import { CacheType } from "../utils/constants";
 import { Search } from "../utils/source/Search";
 import { PossibleStream } from "../utils/typings";
 import Player from "./Player";
@@ -24,8 +27,10 @@ export default class requestManager {
 	 * @returns {Promise<void>}
 	 */
 	public async setCurrentStream(track: Track): Promise<void> {
-		let stream: PossibleStream;
-		if (track.source === 0) {
+		let stream: any;
+		if (this.player.cacheManager.map.has(track.link)) {
+			stream = this.player.cacheManager.map.get(track.link);
+		} else if (track.source === 0) {
 			stream = await this.search.soundCloud.getStream(
 				track.rawInfo.permalink_url,
 			);
@@ -36,6 +41,14 @@ export default class requestManager {
 		} else if (track.source === 3 && track.rawInfo instanceof YoutubeVideo) {
 			stream = await this.search.youtube.getStream(track.rawInfo);
 		}
+
+		if (
+			this.player.manager.config.cache.enabled &&
+			!this.player.cacheManager.map.has(track.link)
+		) {
+			this.player.cacheManager.write(track.link, stream);
+		}
+
 		const resource = createAudioResource(stream, {
 			inlineVolume: true,
 			inputType: StreamType.Arbitrary,

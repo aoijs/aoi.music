@@ -16,6 +16,7 @@ import {
 import { TextChannel, VoiceChannel } from "discord.js";
 import { Search } from "../utils/source/Search";
 import CacheManager from "./Cache";
+import { CacheType } from "../utils/constants";
 
 @constructManager()
 class Manager extends TypedEmitter<ManagerEvents> {
@@ -26,14 +27,12 @@ class Manager extends TypedEmitter<ManagerEvents> {
 		soundcloud: new SoundcloudProvider({ clientId: undefined }),
 	};
 	public searchManager: Search;
-	public cacheManager : CacheManager;
 	constructor(config: ManagerConfig) {
 		super();
 		this.config = config;
 		this.searchManager = new Search({
 			clientId: this.config.soundcloud.clientId,
 		});
-	//	this.cacheManager  = new CacheManager(this.config.cache);
 
 		this.searchManager.soundCloud.setClientId(config.soundcloud?.clientId);
 	}

@@ -5,6 +5,7 @@ import {
 	VoiceConnection,
 } from "@discordjs/voice";
 import {
+	CacheType,
 	LoopMode,
 	PlayerEvents,
 	PlayerStates,
@@ -22,6 +23,7 @@ import Queue from "./Queue";
 import { setTimeout } from "timers/promises";
 import Track from "./Track";
 import requestManager from "./requestManager";
+import CacheManager from "./Cache";
 
 class Player {
 	public voiceState: voiceState = {} as any;
@@ -36,6 +38,7 @@ class Player {
 	public options: PlayerOptionsData;
 	private _state: PlayerStates = PlayerStates.Idling;
 	private player: AudioPlayer = new AudioPlayer();
+	public cacheManager : CacheManager;
 	constructor(data: PlayerOptions) {
 		this.connection = data.connection;
 		this.voiceChannel = data.voiceChannel;
@@ -45,6 +48,7 @@ class Player {
 		this._defaultOptions();
 		this.debug = data.debug;
 		this._configPlayer();
+		this.cacheManager = new CacheManager(this.manager.config.cache || {enabled : true,cacheType:CacheType.Memory} )
 	}
 
 	get state() {
@@ -162,7 +166,11 @@ class Player {
 	play() {
 		const resource = this.requestManager.currentStream;
 		this.player.play(resource);
-		this.manager.emit(PlayerEvents.TRACK_START,this.queue.current,this.textChannel);
+		this.manager.emit(
+			PlayerEvents.TRACK_START,
+			this.queue.current,
+			this.textChannel,
+		);
 	}
 
 	join(channel: VoiceChannel) {
@@ -198,7 +206,7 @@ class Player {
 					this.queue.list.length
 				) {
 					await this._loopQueue();
-				} else if (this.options.autoPlay) {
+				} else if (this.options.autoPlay && this.queue.list.length === 1 ) {
 					this._autoPlay();
 				} else if (this.queue.list.length > 1) {
 					await this._playNextTrack();
@@ -258,20 +266,22 @@ class Player {
 		if (this.options.autoPlay === "soundcloud") {
 			const data = await this.manager.searchManager.soundCloud.related(
 				this.queue.current.rawInfo.id,
-				1,
+				10,
 			);
 			if (!data[0]) {
 				this._destroyPlayer();
 				console.error("failed to get next track");
 				console.log(data);
 			} else {
-				this.queue.list.push(
-					new Track({
-						requestUser: this.textChannel.guild.me,
-						rawinfo: data[0],
-						type: 0,
-					}),
-				);
+				for (const d of data) {
+					this.queue.list.push(
+						new Track({
+							requestUser: this.textChannel.guild.me,
+							rawinfo: d,
+							type: 0,
+						}),
+					);
+				}
 			}
 		} else if (this.options.autoPlay === "youtube") {
 			const data = await this.manager.searchManager.soundCloud.related(
