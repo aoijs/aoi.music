@@ -17,7 +17,11 @@ export default class Track {
      */
     getType(type: number): number;
     /**
+     * link
+     */
+    get link(): string;
+    /**
      * transformInfo
      */
-    transformInfo(rawInfo: TrackRawInfo): void;
+    transformInfo(rawInfo: TrackRawInfo): Promise<void>;
 }

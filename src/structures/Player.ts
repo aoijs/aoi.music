@@ -4,8 +4,18 @@ import {
 	joinVoiceChannel,
 	VoiceConnection,
 } from "@discordjs/voice";
-import { LoopMode, PlayerStates } from "../utils/constants";
-import { PlayerOptions, PlayerOptionsData, voiceState } from "../utils/typings";
+import {
+	LoopMode,
+	PlayerEvents,
+	PlayerStates,
+	SourceProviders,
+} from "../utils/constants";
+import {
+	AutoPlayType,
+	PlayerOptions,
+	PlayerOptionsData,
+	voiceState,
+} from "../utils/typings";
 import { AudioPlayer } from "@discordjs/voice";
 import Manager from "./Manager";
 import Queue from "./Queue";
@@ -126,12 +136,33 @@ class Player {
 				}
 				await setTimeout(5000);
 			}
+		} else if (type === 3) {
+			for (const url of urls) {
+				const info = await this.manager.searchManager.youtube.getInfo(url);
+				if (!info) {
+					console.error(`Cannot Get Data Of ${url}`);
+					continue;
+				}
+				const track: Track = new Track({
+					requestUser: member,
+					rawinfo: info,
+					type,
+				});
+				this.queue.list.push(track);
+				if (this.queue.list.length === 1) {
+					this.queue.setCurrent(track);
+					await this.requestManager.setCurrentStream(track);
+					this.play();
+				}
+				await setTimeout(5000);
+			}
 		} else throw new Error(`Invalid Type: '${type}' Provided`);
 	}
 
 	play() {
 		const resource = this.requestManager.currentStream;
 		this.player.play(resource);
+		this.manager.emit(PlayerEvents.TRACK_START,this.queue.current,this.textChannel);
 	}
 
 	join(channel: VoiceChannel) {
@@ -161,12 +192,14 @@ class Player {
 			) {
 				if (this.options.paused) return;
 				else if (this.options.mode === LoopMode.Track && this.queue.current) {
-					//this._playSingleTrack()
+					this._playSingleTrack();
 				} else if (
 					this.options.mode === LoopMode.Queue &&
 					this.queue.list.length
 				) {
-					await this._loopQueue()
+					await this._loopQueue();
+				} else if (this.options.autoPlay) {
+					this._autoPlay();
 				} else if (this.queue.list.length > 1) {
 					await this._playNextTrack();
 				} else {
@@ -188,6 +221,7 @@ class Player {
 			volume: 100,
 			leaveAfter: { enabled: false, time: 60000 },
 			leaveWhenVcEmpty: false,
+			autoPlay: null,
 		};
 	}
 	async _playNextTrack(): Promise<void> {
@@ -213,6 +247,59 @@ class Player {
 	async _playSingleTrack() {
 		await this.requestManager.setCurrentStream(this.queue.current);
 		this.play();
+	}
+	public loop(mode: LoopMode.None | LoopMode.Queue | LoopMode.Track): void {
+		this.options.mode = mode;
+	}
+	public skip() {
+		this.player.stop();
+	}
+	public async _autoPlay() {
+		if (this.options.autoPlay === "soundcloud") {
+			const data = await this.manager.searchManager.soundCloud.related(
+				this.queue.current.rawInfo.id,
+				1,
+			);
+			if (!data[0]) {
+				this._destroyPlayer();
+				console.error("failed to get next track");
+				console.log(data);
+			} else {
+				this.queue.list.push(
+					new Track({
+						requestUser: this.textChannel.guild.me,
+						rawinfo: data[0],
+						type: 0,
+					}),
+				);
+			}
+		} else if (this.options.autoPlay === "youtube") {
+			const data = await this.manager.searchManager.soundCloud.related(
+				this.queue.current.rawInfo.id,
+				1,
+			);
+			this.queue.list.push(
+				new Track({
+					requestUser: this.textChannel.guild.me,
+					rawinfo: data[0],
+					type: 0,
+				}),
+			);
+		} else if (this.options.autoPlay === "relative") {
+			const data = await this.manager.searchManager.soundCloud.related(
+				this.queue.current.rawInfo.id,
+				1,
+			);
+			this.queue.list.push(
+				new Track({
+					requestUser: this.textChannel.guild.me,
+					rawinfo: data[0],
+					type: 0,
+				}),
+			);
+		}
+
+		await this._playNextTrack();
 	}
 }
 

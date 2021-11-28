@@ -19,3 +19,10 @@ export declare enum SourceProviders {
     LocalFile = 2,
     Attachment = 3
 }
+export declare enum PlayerEvents {
+    TRACK_START = "trackStart",
+    TRACK_END = "trackEnd",
+    QUEUE_END = "queueEnd",
+    QUEUE_START = "queueStart",
+    PLAYER_ERROR = "error"
+}

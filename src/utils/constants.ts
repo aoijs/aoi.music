@@ -22,3 +22,11 @@ export enum SourceProviders {
     LocalFile,
     Attachment
 }
+
+export enum PlayerEvents {
+    TRACK_START = 'trackStart',
+    TRACK_END = 'trackEnd',
+    QUEUE_END  = 'queueEnd',
+    QUEUE_START = 'queueStart',
+    PLAYER_ERROR = 'error'
+}

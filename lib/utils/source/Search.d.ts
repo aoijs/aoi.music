@@ -1,4 +1,6 @@
-import { AttachmentInfoType, AttachmentStreamType, LocalInfoType, LocalStreamType, SoundcloudOptions } from '../typings';
+/// <reference types="node" />
+import { AttachmentInfoType, AttachmentStreamType, LocalInfoType, LocalStreamType, SoundcloudOptions } from "../typings";
+import * as yts from "youtube-scrapper";
 export declare class SoundCloud {
     options?: SoundcloudOptions;
     constructor(config?: SoundcloudOptions);
@@ -32,7 +34,7 @@ export declare class SoundCloud {
      * @param {string} query query required for search
      * @param {SoundcloudOptions} scOptions options for soundcloud-downloader
      */
-    search({ query }: {
+    search({ query, }: {
         query: string;
         scOptions?: SoundcloudOptions;
     }): Promise<any[]>;
@@ -48,6 +50,7 @@ export declare class SoundCloud {
      * @param {string} url url of the track
      */
     getStream(url: string): Promise<any>;
+    related(id: number, limit?: number): Promise<import("soundcloud-downloader/src/info").TrackInfo[]>;
 }
 export declare class LocalFile {
     /**
@@ -89,12 +92,20 @@ export declare class Attachments {
      */
     getStream(url: string): AttachmentStreamType;
 }
+export declare class Youtube {
+    get baseURL(): string[];
+    search(track: string): Promise<string[]>;
+    getInfo(url: string): Promise<yts.YoutubeVideo>;
+    getStream(info: yts.YoutubeVideo): Promise<import("stream").PassThrough | import("m3u8stream").Stream>;
+    related(): void;
+}
 export declare class Search {
     soundCloud: SoundCloud;
     localFile: LocalFile;
     attachment: Attachments;
+    youtube: Youtube;
     constructor(data: SoundcloudOptions);
-    search({ query, type }: {
+    search({ query, type, }: {
         query: string;
         type: number;
     }): Promise<any[]>;

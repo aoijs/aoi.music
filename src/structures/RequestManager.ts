@@ -4,7 +4,9 @@ import {
 	StreamType,
 } from "@discordjs/voice";
 import { ReadStream } from "fs";
+import { YoutubeVideo } from "youtube-scrapper";
 import { Search } from "../utils/source/Search";
+import { PossibleStream } from "../utils/typings";
 import Player from "./Player";
 import Track from "./Track";
 
@@ -22,7 +24,7 @@ export default class requestManager {
 	 * @returns {Promise<void>}
 	 */
 	public async setCurrentStream(track: Track): Promise<void> {
-		let stream: ReadStream;
+		let stream: PossibleStream;
 		if (track.source === 0) {
 			stream = await this.search.soundCloud.getStream(
 				track.rawInfo.permalink_url,
@@ -31,6 +33,8 @@ export default class requestManager {
 			stream = await this.search.localFile.getStream(track.rawInfo.path);
 		} else if (track.source === 2) {
 			stream = await this.search.attachment.getStream(track.rawInfo.url);
+		} else if (track.source === 3 && track.rawInfo instanceof YoutubeVideo) {
+			stream = await this.search.youtube.getStream(track.rawInfo);
 		}
 		const resource = createAudioResource(stream, {
 			inlineVolume: true,

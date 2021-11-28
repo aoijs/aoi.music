@@ -1,6 +1,6 @@
 import { GuildMember, TextChannel, VoiceChannel } from "discord.js";
 import { VoiceConnection } from "@discordjs/voice";
-import { PlayerStates } from "../utils/constants";
+import { LoopMode, PlayerStates } from "../utils/constants";
 import { PlayerOptions, PlayerOptionsData, voiceState } from "../utils/typings";
 import Manager from "./Manager";
 import Queue from "./Queue";
@@ -39,5 +39,10 @@ declare class Player {
     _defaultOptions(): void;
     _playNextTrack(): Promise<void>;
     _destroyPlayer(): void;
+    _loopQueue(): Promise<void>;
+    _playSingleTrack(): Promise<void>;
+    loop(mode: LoopMode.None | LoopMode.Queue | LoopMode.Track): void;
+    skip(): void;
+    _autoPlay(): Promise<void>;
 }
 export default Player;

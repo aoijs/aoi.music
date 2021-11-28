@@ -1,11 +1,13 @@
 import  { VoiceConnection } from '@discordjs/voice';
-import { TextChannel, VoiceChannel } from 'discord.js';
+import { NewsChannel, TextChannel, ThreadChannel, VoiceChannel } from 'discord.js';
 import { CacheType, LoopMode } from './constants';
 import * as Source from './source/index';
 import internal from 'stream';
 import { ReadStream } from 'fs';
 import { TrackInfo } from 'soundcloud-downloader/src/info';
 import Manager from '../structures/Manager';
+import { YoutubeVideo, YoutubeVideoDetails } from 'youtube-scrapper';
+import Track from '../structures/Track';
 export type PossibleStream = internal.Readable | internal.PassThrough | ReadStream;
 export type RawTrackTypes = TrackInfo | LocalResponse;
 
@@ -55,7 +57,7 @@ export interface ManagerEvents extends PlayerEvents {
 }
 
 export interface PlayerEvents {
-    trackStart(): any,
+    trackStart(Track: Track,textChannel : TextChannel | NewsChannel | ThreadChannel ): any,
     trackEnd(): any,
     queueEnd(): any,
     error(): any
@@ -110,12 +112,17 @@ export type TrackInfoType = {
 interface SCTrackInfo extends TrackInfo {
     [key : string] : any;
 }
-export type TrackRawInfo = SCTrackInfo | LocalInfoType | AttachmentInfoType
+interface YTRawInfo extends YoutubeVideo {
+    [key : string] : any;
+}
+export type TrackRawInfo = SCTrackInfo | LocalInfoType | AttachmentInfoType | YTRawInfo
 
 export type PlayerOptionsData = {
             paused:boolean,
             mode : LoopMode,
             volume:number,
             leaveAfter:{enabled:boolean,time:number},
-            leaveWhenVcEmpty:boolean 
+            leaveWhenVcEmpty:boolean;
+            autoPlay?: AutoPlayType
 }
+export type AutoPlayType = 'relative' | 'youtube' | 'soundcloud'

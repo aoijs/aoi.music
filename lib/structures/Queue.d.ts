@@ -3,8 +3,8 @@ import Track from "./Track";
 declare class PlayerQueue {
     player: Player;
     list: Track[];
-    current: any;
-    previous: any;
+    current: Track;
+    previous: Track;
     setPlayer(player: Player): void;
     setCurrent(track: Track): void;
 }
