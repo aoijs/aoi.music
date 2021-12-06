@@ -15,15 +15,13 @@ class CacheManager {
 		return Boolean(this.config || this.config?.enabled);
 	}
 
-	private async _convertStreamToBuffer(
-		stream: PossibleStream,
-	): Promise<any[]> {
+	private async _convertStreamToBuffer(stream: PossibleStream): Promise<any[]> {
 		let buffer = [];
 		return new Promise((res, rej) => {
 			stream.on("data", (chunk) => buffer.push(chunk));
 			stream.on("end", (_) => {
 				buffer.concat(buffer);
-				res(buffer)
+				res(buffer);
 			});
 			stream.on("error", (err) =>
 				console.error(`failed to convert with reason: ${err}`),

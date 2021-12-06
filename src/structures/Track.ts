@@ -81,17 +81,18 @@ export default class Track {
 			};
 		} else if (this.type === 3) {
 			rawInfo = rawInfo.details;
-			//const channelData  = await getChannel(rawInfo.channelId);
+			const channelData  = await getChannel(rawInfo.channelId);
 			this.info = {
 				title : rawInfo.title,
 				description : rawInfo.shortDescription ?? rawInfo.description,
 				url : rawInfo.url,
 				thumbnail : rawInfo.thumbnails?.[0]?.url,
 				raw_duration : rawInfo.duration,
+				duration : rawInfo.duration,
 				identifier : 'Youtube',
 				author : rawInfo.author,
-			//	authorAvatar : channelData.details.avatars?.[0]?.url,
-			//	authorURL : channelData.url,
+				authorAvatar : channelData.details.avatars?.[0]?.url,
+				authorURL : channelData.url,
 				likes : null,
 				views : rawInfo.viewCount
 			}

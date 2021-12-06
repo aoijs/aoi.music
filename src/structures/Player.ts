@@ -38,7 +38,7 @@ class Player {
 	public options: PlayerOptionsData;
 	private _state: PlayerStates = PlayerStates.Idling;
 	private player: AudioPlayer = new AudioPlayer();
-	public cacheManager : CacheManager;
+	public cacheManager: CacheManager;
 	constructor(data: PlayerOptions) {
 		this.connection = data.connection;
 		this.voiceChannel = data.voiceChannel;
@@ -48,7 +48,12 @@ class Player {
 		this._defaultOptions();
 		this.debug = data.debug;
 		this._configPlayer();
-		this.cacheManager = new CacheManager(this.manager.config.cache || {enabled : true,cacheType:CacheType.Memory} )
+		this.cacheManager = new CacheManager(
+			this.manager.config.cache || {
+				enabled: true,
+				cacheType: CacheType.Memory,
+			},
+		);
 	}
 
 	get state() {
@@ -206,7 +211,7 @@ class Player {
 					this.queue.list.length
 				) {
 					await this._loopQueue();
-				} else if (this.options.autoPlay && this.queue.list.length === 1 ) {
+				} else if (this.options.autoPlay && this.queue.list.length === 1) {
 					this._autoPlay();
 				} else if (this.queue.list.length > 1) {
 					await this._playNextTrack();
@@ -243,6 +248,12 @@ class Player {
 		this._defaultOptions();
 		this.queue = new Queue();
 		this.requestManager = new requestManager(this);
+		this.cacheManager = new CacheManager(
+			this.manager.config.cache || {
+				enabled: true,
+				cacheType: CacheType.Memory,
+			},
+		);
 	}
 	async _loopQueue() {
 		const track = this.queue.list.shift();

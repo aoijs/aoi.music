@@ -7,7 +7,7 @@ import { ReadStream } from "fs";
 import { Stream } from "m3u8stream";
 import { Readable, PassThrough } from "stream";
 import { YoutubeVideo } from "youtube-scrapper";
-import { CacheType } from "../utils/constants";
+import { CacheType, LoopMode } from "../utils/constants";
 import { Search } from "../utils/source/Search";
 import { PossibleStream } from "../utils/typings";
 import Player from "./Player";
@@ -30,6 +30,7 @@ export default class requestManager {
 		let stream: any;
 		if (this.player.cacheManager.map.has(track.link)) {
 			stream = this.player.cacheManager.map.get(track.link);
+			console.log('using cache')
 		} else if (track.source === 0) {
 			stream = await this.search.soundCloud.getStream(
 				track.rawInfo.permalink_url,
@@ -40,12 +41,15 @@ export default class requestManager {
 			stream = await this.search.attachment.getStream(track.rawInfo.url);
 		} else if (track.source === 3 && track.rawInfo instanceof YoutubeVideo) {
 			stream = await this.search.youtube.getStream(track.rawInfo);
-		}
+			console.log('using api')
+		} else {}
 
 		if (
 			this.player.manager.config.cache.enabled &&
-			!this.player.cacheManager.map.has(track.link)
+			!this.player.cacheManager.map.has(track.link) &&
+			this.player.options.mode !== LoopMode.None
 		) {
+			console.log('caching track')
 			this.player.cacheManager.write(track.link, stream);
 		}
 

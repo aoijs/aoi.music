@@ -5,6 +5,7 @@ import { PlayerOptions, PlayerOptionsData, voiceState } from "../utils/typings";
 import Manager from "./Manager";
 import Queue from "./Queue";
 import requestManager from "./requestManager";
+import CacheManager from "./Cache";
 declare class Player {
     voiceState: voiceState;
     debug: boolean;
@@ -17,6 +18,7 @@ declare class Player {
     options: PlayerOptionsData;
     private _state;
     private player;
+    cacheManager: CacheManager;
     constructor(data: PlayerOptions);
     get state(): PlayerStates;
     set state(n: PlayerStates);
