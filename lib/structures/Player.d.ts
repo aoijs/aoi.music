@@ -2,10 +2,12 @@ import { GuildMember, TextChannel, VoiceChannel } from "discord.js";
 import { VoiceConnection } from "@discordjs/voice";
 import { LoopMode, PlayerStates } from "../utils/constants";
 import { PlayerOptions, PlayerOptionsData, voiceState } from "../utils/typings";
+import { AudioPlayer } from "@discordjs/voice";
 import Manager from "./Manager";
 import Queue from "./Queue";
 import requestManager from "./requestManager";
 import CacheManager from "./Cache";
+import FilterManager from "./FilterManager";
 declare class Player {
     voiceState: voiceState;
     debug: boolean;
@@ -17,8 +19,9 @@ declare class Player {
     queue: Queue;
     options: PlayerOptionsData;
     private _state;
-    private player;
+    player: AudioPlayer;
     cacheManager: CacheManager;
+    filterManager: FilterManager;
     constructor(data: PlayerOptions);
     get state(): PlayerStates;
     set state(n: PlayerStates);

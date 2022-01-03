@@ -108,7 +108,8 @@ export class SoundCloud {
 		} else {
 			const { collection } = await scdl
 				.search({ limit: 1, query, resourceType: "tracks" })
-				.catch((_) => {
+				.catch((e) => {
+					console.error(e);
 					return {
 						collection: [],
 					};
@@ -125,7 +126,7 @@ export class SoundCloud {
 	 * @param {string} url url of the track
 	 */
 	public async getInfo(url: string): Promise<any> {
-		const info = await scdl.getInfo(url).catch((_) => null);
+		const info = await scdl.getInfo(url).catch((e) => console.log(e));
 		if (!info) return;
 
 		return info;

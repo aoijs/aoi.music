@@ -1,7 +1,9 @@
 import { GuildMember, TextChannel, VoiceChannel } from "discord.js";
 import {
 	AudioPlayerStatus,
+	createAudioResource,
 	joinVoiceChannel,
+	StreamType,
 	VoiceConnection,
 } from "@discordjs/voice";
 import {
@@ -24,6 +26,7 @@ import { setTimeout } from "timers/promises";
 import Track from "./Track";
 import requestManager from "./requestManager";
 import CacheManager from "./Cache";
+import FilterManager from "./FilterManager";
 
 class Player {
 	public voiceState: voiceState = {} as any;
@@ -37,14 +40,16 @@ class Player {
 	public queue: Queue = new Queue();
 	public options: PlayerOptionsData;
 	private _state: PlayerStates = PlayerStates.Idling;
-	private player: AudioPlayer = new AudioPlayer();
+	public player: AudioPlayer = new AudioPlayer();
 	public cacheManager: CacheManager;
+	public filterManager: FilterManager;
 	constructor(data: PlayerOptions) {
 		this.connection = data.connection;
 		this.voiceChannel = data.voiceChannel;
 		this.textChannel = data.textChannel;
 		this.manager = data.manager;
 		this.requestManager = new requestManager(this);
+		this.filterManager = new FilterManager(this);
 		this._defaultOptions();
 		this.debug = data.debug;
 		this._configPlayer();

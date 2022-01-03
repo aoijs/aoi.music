@@ -30,4 +30,8 @@ export default class requestManager {
      * @returns void
      */
     _setVolume(number: number): void;
+    /**
+     * getStream
+     */
+    getStream(): Promise<any>;
 }

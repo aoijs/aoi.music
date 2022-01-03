@@ -13,15 +13,15 @@ export default class Track {
         type: number;
     });
     /**
-     * getType
-     */
-    getType(type: number): number;
-    /**
-     * link
+     * @method link
+     * @readonly
+     * @returns {string}
      */
     get link(): string;
     /**
-     * transformInfo
+     * @method transformInfo
+     * @param {TrackRawInfo} rawInfo rawinfo of the track
+     * @returns {void}
      */
     transformInfo(rawInfo: TrackRawInfo): Promise<void>;
 }
