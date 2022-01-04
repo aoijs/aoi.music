@@ -1,24 +1,19 @@
 /// <reference types="node" />
-import { VoiceConnection } from '@discordjs/voice';
-import { NewsChannel, TextChannel, ThreadChannel, VoiceChannel } from 'discord.js';
-import { CacheType, LoopMode } from './constants';
-import * as Source from './source/index';
-import internal from 'stream';
-import { ReadStream } from 'fs';
-import { TrackInfo } from 'soundcloud-downloader/src/info';
-import Manager from '../structures/Manager';
-import { YoutubeVideo } from 'youtube-scrapper';
-import Track from '../structures/Track';
+import { VoiceConnection } from "@discordjs/voice";
+import { NewsChannel, TextChannel, ThreadChannel, VoiceChannel } from "discord.js";
+import { CacheType, LoopMode, PlayerEvents } from "./constants";
+import internal from "stream";
+import { ReadStream } from "fs";
+import { TrackInfo } from "soundcloud-downloader/src/info";
+import Manager from "../structures/Manager";
+import { YoutubeVideo } from "youtube-scrapper";
+import Track from "../structures/Track";
 export declare type PossibleStream = internal.Readable | internal.PassThrough | ReadStream;
 export declare type RawTrackTypes = TrackInfo | LocalResponse;
 export interface LocalResponse {
     url: string;
     is_m3u8: boolean;
     content_length: number;
-}
-export interface ManagerProviders {
-    twitch: Source.TwitchProvider;
-    soundcloud: Source.SoundcloudProvider;
 }
 export interface TwitchOptions {
     clientId: string;
@@ -44,18 +39,19 @@ export interface voiceState {
     channel: VoiceChannel;
     connection: VoiceConnection;
 }
-export interface ManagerEvents extends PlayerEvents {
-}
-export interface PlayerEvents {
-    trackStart(Track: Track, textChannel: TextChannel | NewsChannel | ThreadChannel): any;
-    trackEnd(): any;
-    queueEnd(): any;
-    error(): any;
+export interface ManagerEvents {
+    [PlayerEvents.TRACK_START](Track: Track, textChannel: TextChannel | NewsChannel | ThreadChannel): this;
+    [PlayerEvents.TRACK_END](track: Track, textChannel: TextChannel | NewsChannel | ThreadChannel): this;
+    [PlayerEvents.QUEUE_START](Track: Track, textChannel: TextChannel | NewsChannel | ThreadChannel): this;
+    [PlayerEvents.QUEUE_END](Track: Track, textChannel: TextChannel | NewsChannel | ThreadChannel): this;
+    [PlayerEvents.AUDIO_ERROR](error: any): this;
+    [PlayerEvents.TRACK_RESUME](): this;
+    [PlayerEvents.TRACK_PAUSE](): this;
 }
 export declare type LocalStreamType = Promise<ReadStream>;
 export declare type LocalInfoType = {
     title?: string;
-    description?: 'A Local File';
+    description?: "A Local File";
     path?: string;
     dir: string;
     createdTimestamp: number;
@@ -110,5 +106,5 @@ export declare type PlayerOptionsData = {
     leaveWhenVcEmpty: boolean;
     autoPlay?: AutoPlayType;
 };
-export declare type AutoPlayType = 'relative' | 'youtube' | 'soundcloud';
+export declare type AutoPlayType = "relative" | "youtube" | "soundcloud";
 export {};

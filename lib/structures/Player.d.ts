@@ -5,6 +5,7 @@ import { PlayerOptions, PlayerOptionsData, voiceState } from "../utils/typings";
 import { AudioPlayer } from "@discordjs/voice";
 import Manager from "./Manager";
 import Queue from "./Queue";
+import Track from "./Track";
 import requestManager from "./requestManager";
 import CacheManager from "./Cache";
 import FilterManager from "./FilterManager";
@@ -36,7 +37,7 @@ declare class Player {
         urls: string[];
         type: number;
         member: GuildMember;
-    }): Promise<void>;
+    }): Promise<string | number>;
     play(): void;
     join(channel: VoiceChannel): void;
     playPrevious(): Promise<void>;
@@ -49,5 +50,12 @@ declare class Player {
     loop(mode: LoopMode.None | LoopMode.Queue | LoopMode.Track): void;
     skip(): void;
     _autoPlay(): Promise<void>;
+    pause(): void;
+    resume(): void;
+    getQueue(page?: number, limit?: number, customResponse?: string): {
+        current: Track;
+        previous: Track;
+        queue: string[];
+    };
 }
 export default Player;

@@ -2,11 +2,9 @@ import Player from "./Player";
 import {
   ManagerConfig,
   ManagerEvents,
-  ManagerProviders,
 } from "../utils/typings";
 import { TypedEmitter } from "tiny-typed-emitter";
 import { constructManager } from "../utils/decorators/constructs";
-import { SoundcloudProvider, TwitchProvider } from "../utils/source";
 
 import {
   joinVoiceChannel,
@@ -22,10 +20,6 @@ import { CacheType } from "../utils/constants";
 class Manager extends TypedEmitter<ManagerEvents> {
   public players: Map<string, Player> = new Map();
   public config: ManagerConfig;
-  public providers: ManagerProviders = {
-    twitch: new TwitchProvider(),
-    soundcloud: new SoundcloudProvider({ clientId: undefined }),
-  };
   public searchManager: Search;
   constructor(config: ManagerConfig) {
     super();
@@ -54,7 +48,7 @@ class Manager extends TypedEmitter<ManagerEvents> {
       adapterCreator: voiceChannel.guild.voiceAdapterCreator,
       group: voiceChannel.client.user.id,
     };
-
+//@ts-ignore
     const connection = joinVoiceChannel(data);
     if (debug) {
       connection.on("debug", console.log);

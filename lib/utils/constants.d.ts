@@ -21,8 +21,10 @@ export declare enum SourceProviders {
 }
 export declare enum PlayerEvents {
     TRACK_START = "trackStart",
+    AUDIO_ERROR = "audioError",
     TRACK_END = "trackEnd",
-    QUEUE_END = "queueEnd",
     QUEUE_START = "queueStart",
-    PLAYER_ERROR = "error"
+    QUEUE_END = "queueEnd",
+    TRACK_PAUSE = "trackPause",
+    TRACK_RESUME = "trackResume"
 }

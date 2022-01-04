@@ -1,12 +1,11 @@
 import Player from "./Player";
-import { ManagerConfig, ManagerEvents, ManagerProviders } from "../utils/typings";
+import { ManagerConfig, ManagerEvents } from "../utils/typings";
 import { TypedEmitter } from "tiny-typed-emitter";
 import { TextChannel, VoiceChannel } from "discord.js";
 import { Search } from "../utils/source/Search";
 declare class Manager extends TypedEmitter<ManagerEvents> {
     players: Map<string, Player>;
     config: ManagerConfig;
-    providers: ManagerProviders;
     searchManager: Search;
     constructor(config: ManagerConfig);
     /**
