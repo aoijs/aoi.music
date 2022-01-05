@@ -32,9 +32,11 @@ const manager = new Manager({
 client.manager = manager;
 
 client.on("messageCreate", async (msg) => {
-const cmdName = msg.content.split(" ")[0];
+
+    const args = msg.content.trim().split(" ");
+    const cmdName = args.shift();
   if ( cmdName === "?play") {
-    const args = msg.content.trim().split(" ").slice(1);
+
     const type = Number(args.shift());
     const track = args.join(" ");
 
