@@ -14,7 +14,7 @@ import Player from "./Player";
 import Track from "./Track";
 import * as prism from "prism-media";
 
-export default class requestManager {
+export class RequestManager {
   public nextStream: AudioResource = null;
   public currentStream: AudioResource = null;
   public search: Search;

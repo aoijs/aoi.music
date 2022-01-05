@@ -1,4 +1,2 @@
-import Manager from "./structures/Manager";
-
-export { Manager ,
-};
+export * from "./structures"
+export * from "./utils"

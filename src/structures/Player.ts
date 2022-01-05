@@ -24,14 +24,14 @@ import Manager from "./Manager";
 import Queue from "./Queue";
 import { setTimeout } from "timers/promises";
 import Track from "./Track";
-import requestManager from "./requestManager";
+import {RequestManager} from "./requestManager";
 import CacheManager from "./Cache";
 import FilterManager from "./FilterManager";
 
 class Player {
   public voiceState: voiceState = {} as any;
   public debug: boolean;
-  public requestManager: requestManager;
+  public requestManager: RequestManager;
   public manager: Manager;
   public connection: VoiceConnection;
   public voiceChannel: VoiceChannel;
@@ -48,7 +48,7 @@ class Player {
     this.voiceChannel = data.voiceChannel;
     this.textChannel = data.textChannel;
     this.manager = data.manager;
-    this.requestManager = new requestManager(this);
+    this.requestManager = new RequestManager(this);
     this.filterManager = new FilterManager(this);
     this._defaultOptions();
     this.debug = data.debug;
@@ -257,7 +257,7 @@ class Player {
   _destroyPlayer(): void {
     this._defaultOptions();
     this.queue = new Queue();
-    this.requestManager = new requestManager(this);
+    this.requestManager = new RequestManager(this);
     this.cacheManager = new CacheManager(
       this.manager.config.cache || {
         enabled: true,

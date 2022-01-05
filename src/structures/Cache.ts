@@ -1,7 +1,6 @@
-import fs from "fs";
+import * as fs from "fs";
 import { constructCache } from "../utils/decorators/constructs";
 import { CacheOptions, PossibleStream } from "../utils/typings";
-import internal from "stream";
 import { CacheType } from "../utils/constants";
 
 @constructCache()
