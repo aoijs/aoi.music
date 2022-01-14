@@ -228,7 +228,7 @@ class Player {
       }
     });
     this.player.on("error", async (error: any) => {
-      this.manager.on(PlayerEvents.AUDIO_ERROR, error);
+      this.manager.emit(PlayerEvents.AUDIO_ERROR, error,this.textChannel);
     });
 
     if (this.debug) {

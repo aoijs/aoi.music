@@ -44,7 +44,7 @@ export interface ManagerEvents {
     [PlayerEvents.TRACK_END](track: Track, textChannel: TextChannel | NewsChannel | ThreadChannel): this;
     [PlayerEvents.QUEUE_START](Track: Track, textChannel: TextChannel | NewsChannel | ThreadChannel): this;
     [PlayerEvents.QUEUE_END](Track: Track, textChannel: TextChannel | NewsChannel | ThreadChannel): this;
-    [PlayerEvents.AUDIO_ERROR](error: any): this;
+    [PlayerEvents.AUDIO_ERROR](error: any, textChannel: TextChannel | NewsChannel | ThreadChannel): this;
     [PlayerEvents.TRACK_RESUME](): this;
     [PlayerEvents.TRACK_PAUSE](): this;
 }
