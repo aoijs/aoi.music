@@ -8,6 +8,14 @@
     "USERSATOSHI",
     "KINO"
   ],
+  "files": [
+    "lib",
+    "package.json",
+    "package-lock.json",
+    "LICENSE",
+    "README.md",
+    "tsconfig.json"
+  ],
   "license": "Apache 2.0",
   "dependencies": {
     "@discordjs/opus": "^0.6.0",

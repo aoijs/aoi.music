@@ -122,10 +122,10 @@ export type TrackInfoType = {
   createdTimestamp?: number;
 };
 
-interface SCTrackInfo extends TrackInfo {
+export interface SCTrackInfo extends TrackInfo {
   [key: string]: any;
 }
-interface YTRawInfo extends YoutubeVideo {
+export interface YTRawInfo extends YoutubeVideo {
   [key: string]: any;
 }
 export type TrackRawInfo =

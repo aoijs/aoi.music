@@ -88,10 +88,10 @@ export declare type TrackInfoType = {
     dir?: string;
     createdTimestamp?: number;
 };
-interface SCTrackInfo extends TrackInfo {
+export interface SCTrackInfo extends TrackInfo {
     [key: string]: any;
 }
-interface YTRawInfo extends YoutubeVideo {
+export interface YTRawInfo extends YoutubeVideo {
     [key: string]: any;
 }
 export declare type TrackRawInfo = SCTrackInfo | LocalInfoType | AttachmentInfoType | YTRawInfo;
@@ -107,4 +107,3 @@ export declare type PlayerOptionsData = {
     autoPlay?: AutoPlayType;
 };
 export declare type AutoPlayType = "relative" | "youtube" | "soundcloud";
-export {};
