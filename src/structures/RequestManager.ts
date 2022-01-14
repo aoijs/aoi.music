@@ -119,15 +119,15 @@ export class RequestManager {
       stream = Readable.from(
         this.player.cacheManager.map.get(this.player.queue.current.link),
       );
-    else if (track.source === 0) {
+    else if (track.type === 0) {
       return await this.search.soundCloud.getStream(
         track.rawInfo.permalink_url,
       );
-    } else if (track.source === 1) {
+    } else if (track.type === 1) {
       return await this.search.localFile.getStream(track.rawInfo.path);
-    } else if (track.source === 2) {
+    } else if (track.type === 2) {
       return await this.search.attachment.getStream(track.rawInfo.url);
-    } else if (track.source === 3 && track.rawInfo instanceof YoutubeVideo) {
+    } else if (track.type === 3 && track.rawInfo instanceof YoutubeVideo) {
       return await this.search.youtube.getStream(track.rawInfo);
       //console.log("using api");
     } else {

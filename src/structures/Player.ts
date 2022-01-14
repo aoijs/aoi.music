@@ -335,12 +335,12 @@ class Player {
   pause() {
     this.options.paused = true;
     this.player.pause(true);
-    this.manager.on(PlayerEvents.TRACK_PAUSE, undefined);
+    this.manager.emit(PlayerEvents.TRACK_PAUSE);
   }
   resume() {
     this.options.paused = false;
     this.player.unpause();
-    this.manager.on(PlayerEvents.TRACK_RESUME, undefined);
+    this.manager.emit(PlayerEvents.TRACK_RESUME);
   }
   getQueue(
     page = 1,

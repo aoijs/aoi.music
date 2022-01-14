@@ -77,7 +77,7 @@ export declare type TrackInfoType = {
     url?: string;
     identifier?: string;
     raw_duration?: number;
-    duration?: string;
+    duration?: number;
     thumbnail?: string;
     author?: string;
     authorURL?: string;

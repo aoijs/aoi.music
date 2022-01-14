@@ -35,15 +35,14 @@ class CacheManager {
 
       this.map.set(id, data);
       return;
-    }
-    if (this.config.cacheType === CacheType.Disk) {
+    } else if (this.config.cacheType === CacheType.Disk) {
       const st = fs.createWriteStream(id);
       stream.pipe(st);
       return;
+    } else {
+      throw new Error(`Cache Type is invalid`);
     }
-    throw new Error(`Cache Type is invalid`);
   }
-
   get(id: string): unknown {
     if (!this._enabled()) return null;
     if (this.config.cacheType === CacheType.Memory) {

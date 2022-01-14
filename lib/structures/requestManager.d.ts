@@ -2,7 +2,7 @@ import { AudioResource } from "@discordjs/voice";
 import { Search } from "../utils/source/Search";
 import Player from "./Player";
 import Track from "./Track";
-export default class requestManager {
+export declare class RequestManager {
     nextStream: AudioResource;
     currentStream: AudioResource;
     search: Search;
