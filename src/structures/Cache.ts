@@ -2,7 +2,7 @@ import * as fs from "fs";
 import { constructCache } from "../utils/decorators/constructs";
 import { CacheOptions, PossibleStream } from "../utils/typings";
 import { CacheType } from "../utils/constants";
-
+import { Readable } from "stream"
 @constructCache()
 class CacheManager {
   public config?: CacheOptions;
@@ -36,7 +36,10 @@ class CacheManager {
       this.map.set(id, data);
       return;
     } else if (this.config.cacheType === CacheType.Disk) {
-      const st = fs.createWriteStream(id);
+      if(fs.existsSync("music")){
+        fs.mkdirSync("music")
+      }
+      const st = fs.createWriteStream("music/"+id.replaceAll("/", "#SLASH#"));
       stream.pipe(st);
       return;
     } else {
@@ -46,7 +49,7 @@ class CacheManager {
   get(id: string): unknown {
     if (!this._enabled()) return null;
     if (this.config.cacheType === CacheType.Memory) {
-      return this.map.get(id);
+      return Readable.from(this.map.get(id));
     }
     if (this.config.cacheType === CacheType.Disk) {
       const st = fs.createReadStream(id);

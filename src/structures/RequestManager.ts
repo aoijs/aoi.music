@@ -115,11 +115,9 @@ export class RequestManager {
   public async getStream() {
     let stream: Readable | PassThrough | ReadStream | Stream;
     const track = this.player.queue.current;
-    if (this.player.cacheManager.map.has(track.link))
-      stream = Readable.from(
-        this.player.cacheManager.map.get(this.player.queue.current.link),
-      );
-    else if (track.type === 0) {
+    if (this.player.cacheManager.map.has(track.link)) {
+      return this.player.cacheManager.get(track.link);
+    } else if (track.type === 0) {
       return await this.search.soundCloud.getStream(
         track.rawInfo.permalink_url,
       );
