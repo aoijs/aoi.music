@@ -6,9 +6,9 @@ import { AudioPlayer } from "@discordjs/voice";
 import Manager from "./Manager";
 import Queue from "./Queue";
 import Track from "./Track";
-import { RequestManager } from "./RequestManager";
 import CacheManager from "./Cache";
 import FilterManager from "./FilterManager";
+import { RequestManager } from "./RequestManager";
 declare class Player {
     voiceState: voiceState;
     debug: boolean;

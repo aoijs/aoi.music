@@ -24,9 +24,10 @@ import Manager from "./Manager";
 import Queue from "./Queue";
 import { setTimeout } from "timers/promises";
 import Track from "./Track";
-import {RequestManager} from "./requestManager";
+
 import CacheManager from "./Cache";
 import FilterManager from "./FilterManager";
+import { RequestManager } from "./RequestManager";
 
 class Player {
   public voiceState: voiceState = {} as any;
