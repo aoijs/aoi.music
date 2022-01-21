@@ -6,7 +6,7 @@ import { AudioPlayer } from "@discordjs/voice";
 import Manager from "./Manager";
 import Queue from "./Queue";
 import Track from "./Track";
-import { RequestManager } from "./requestManager";
+import { RequestManager } from "./RequestManager";
 import CacheManager from "./Cache";
 import FilterManager from "./FilterManager";
 declare class Player {
