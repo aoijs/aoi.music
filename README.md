@@ -12,7 +12,7 @@ const {
   NewsChannel,
   ThreadChannel,
 } = require("discord.js");
-const { Manager } = require("ayaya");
+const { Manager } = require("music");
 
 const client = new Client({
   intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES"],
