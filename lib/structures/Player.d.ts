@@ -57,5 +57,6 @@ declare class Player {
         previous: Track;
         queue: string[];
     };
+    leaveVc(): void;
 }
 export default Player;

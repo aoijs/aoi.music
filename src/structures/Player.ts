@@ -88,7 +88,7 @@ class Player {
     urls: string[];
     type: number;
     member: GuildMember;
-  }): Promise<string |number > {
+  }): Promise<string | number> {
     if (type === 0) {
       for (const url of urls) {
         const info = await this.manager.searchManager.soundCloud.getInfo(url);
@@ -173,7 +173,9 @@ class Player {
       }
     } else throw new Error(`Invalid Type: '${type}' Provided`);
 
-    return urls.length === 1 ? this.queue.list[this.queue.list.length - 1].info.title : urls.length
+    return urls.length === 1
+      ? this.queue.list[this.queue.list.length - 1].info.title
+      : urls.length;
   }
 
   play() {
@@ -229,7 +231,7 @@ class Player {
       }
     });
     this.player.on("error", async (error: any) => {
-      this.manager.emit(PlayerEvents.AUDIO_ERROR, error,this.textChannel);
+      this.manager.emit(PlayerEvents.AUDIO_ERROR, error, this.textChannel);
     });
 
     if (this.debug) {
@@ -371,6 +373,10 @@ class Player {
     });
 
     return { current, previous, queue };
+  }
+  leaveVc() {
+    this.connection.disconnect();
+    this.manager.players.delete(this.voiceChannel.guildId);
   }
 }
 
