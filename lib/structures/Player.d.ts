@@ -58,5 +58,8 @@ declare class Player {
         queue: string[];
     };
     leaveVc(): void;
+    removeTrack(trackPosition: number): void;
+    shuffleQueue(): void;
+    skipTo(number: number): Track[];
 }
 export default Player;

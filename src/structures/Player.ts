@@ -28,6 +28,7 @@ import Track from "./Track";
 import CacheManager from "./Cache";
 import FilterManager from "./FilterManager";
 import { RequestManager } from "./RequestManager";
+import { shuffle } from "../utils/helpers";
 
 class Player {
   public voiceState: voiceState = {} as any;
@@ -378,6 +379,17 @@ class Player {
     this.connection.disconnect();
     this.manager.players.delete(this.voiceChannel.guildId);
   }
+  removeTrack(trackPosition: number) {
+    this.queue.list.splice(trackPosition, 1);
+  }
+  shuffleQueue() {
+    this.queue.list = shuffle(this.queue.list);
+  }
+
+  skipTo(number: number) {
+    return this.queue.list.splice(0, number);
+  }
+  
 }
 
 export default Player;

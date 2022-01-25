@@ -44,8 +44,18 @@ export default class FilterManager {
    */
   public removeFilters(...filters: any[]): void {
     for (const filter of filters) {
-      this.filters[filter] = undefined;
+      delete this.filters[filter];
     }
+  }
+
+  public async setFilters(filters: object) {
+    this.filters = filters;
+    return await this._applyFilters();
+  }
+
+  public async resetFilters() {
+    this.filters = {};
+    return await this._applyFilters();
   }
   public async _applyFilters() {
     const args = [...this.args];

@@ -17,5 +17,7 @@ export default class FilterManager {
      * @returns void
      */
     removeFilters(...filters: any[]): void;
+    setFilters(filters: object): Promise<any[]>;
+    resetFilters(): Promise<any[]>;
     _applyFilters(): Promise<any[]>;
 }
