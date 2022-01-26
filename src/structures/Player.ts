@@ -387,9 +387,15 @@ class Player {
   }
 
   skipTo(number: number) {
-    return this.queue.list.splice(0, number);
+    if (this.options.mode != LoopMode.Queue)
+      return this.queue.list.splice(0, number);
+    else {
+      const spliced = this.queue.list.splice(0, number);
+      this.queue.list.push(...spliced);
+
+      return spliced;
+    }
   }
-  
 }
 
 export default Player;

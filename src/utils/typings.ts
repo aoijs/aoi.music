@@ -139,7 +139,7 @@ export type TrackRawInfo =
 
 export type PlayerOptionsData = {
   paused: boolean;
-  mode: LoopMode;
+  mode: LoopMode.None | LoopMode.Queue | LoopMode.Track;
   volume: number;
   leaveAfter: { enabled: boolean; time: number };
   leaveWhenVcEmpty: boolean;

@@ -97,7 +97,7 @@ export interface YTRawInfo extends YoutubeVideo {
 export declare type TrackRawInfo = SCTrackInfo | LocalInfoType | AttachmentInfoType | YTRawInfo;
 export declare type PlayerOptionsData = {
     paused: boolean;
-    mode: LoopMode;
+    mode: LoopMode.None | LoopMode.Queue | LoopMode.Track;
     volume: number;
     leaveAfter: {
         enabled: boolean;
