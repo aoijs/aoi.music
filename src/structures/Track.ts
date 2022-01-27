@@ -59,6 +59,7 @@ export default class Track {
         path: rawInfo.path,
         dir: rawInfo.dir,
         duration: rawInfo.duration * 1000,
+        identifier: "LocalFile",
         createdTimestamp: rawInfo.createdTimestamp,
         likes: 0,
         views: 0,
@@ -66,9 +67,10 @@ export default class Track {
     } else if (this.type === 2) {
       this.info = {
         title: rawInfo.title,
-        description: rawInfo.description,
+        description: "An Attachment or URL",
         url: rawInfo.url,
         duration: rawInfo.duration * 1000,
+        identifier: "Url",
         likes: 0,
         views: 0,
       };

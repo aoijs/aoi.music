@@ -2,7 +2,7 @@ import * as fs from "fs";
 import { constructCache } from "../utils/decorators/constructs";
 import { CacheOptions, PossibleStream } from "../utils/typings";
 import { CacheType } from "../utils/constants";
-import { Readable } from "stream"
+import { Readable } from "stream";
 @constructCache()
 class CacheManager {
   public config?: CacheOptions;
@@ -36,10 +36,11 @@ class CacheManager {
       this.map.set(id, data);
       return;
     } else if (this.config.cacheType === CacheType.Disk) {
-      if(fs.existsSync("music")){
-        fs.mkdirSync("music")
+      if (!fs.existsSync("music")) {
+        fs.mkdirSync("music");
       }
-      const st = fs.createWriteStream("music/"+id.replaceAll("/", "#SLASH#"));
+      fs.writeFileSync("music/" + id.replaceAll("/", "#SLASH#"), "");
+      const st = fs.createWriteStream("music/" + id.replaceAll("/", "#SLASH#"));
       stream.pipe(st);
       return;
     } else {
@@ -52,7 +53,10 @@ class CacheManager {
       return Readable.from(this.map.get(id));
     }
     if (this.config.cacheType === CacheType.Disk) {
-      const st = fs.createReadStream(id);
+      let st: unknown;
+      try {
+        st = fs.createReadStream(id);
+      } catch (_) {}
       return st;
     }
     throw new Error(`Cache Type is invalid`);

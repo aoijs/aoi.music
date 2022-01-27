@@ -91,10 +91,12 @@ class Player {
     member: GuildMember;
   }): Promise<string | number> {
     if (type === 0) {
-      for (const url of urls) {
-        const info = await this.manager.searchManager.soundCloud.getInfo(url);
+      for (let i = 0; i < urls.length; i++) {
+        const info = await this.manager.searchManager.soundCloud.getInfo(
+          urls[i],
+        );
         if (!info) {
-          console.error(`Cannot Get Data Of ${url}`);
+          console.error(`Cannot Get Data Of ${urls[i]}`);
           continue;
         }
         const track: Track = new Track({
@@ -110,13 +112,17 @@ class Player {
           this.play();
           console.log("started playing");
         }
-        await setTimeout(5000);
+        if (i !== urls.length - 1) {
+          await setTimeout(5000);
+        }
       }
     } else if (type === 1) {
-      for (const url of urls) {
-        const info = await this.manager.searchManager.localFile.getInfo(url);
+      for (let i = 0; i < urls.length; i++) {
+        const info = await this.manager.searchManager.localFile.getInfo(
+          urls[i],
+        );
         if (!info) {
-          console.error(`Cannot Get Data Of ${url}`);
+          console.error(`Cannot Get Data Of ${urls[i]}`);
           continue;
         }
         const track: Track = new Track({
@@ -130,13 +136,17 @@ class Player {
           await this.requestManager.setCurrentStream(track);
           this.play();
         }
-        await setTimeout(5000);
+        if (i !== urls.length - 1) {
+          await setTimeout(5000);
+        }
       }
     } else if (type === 2) {
-      for (const url of urls) {
-        const info = await this.manager.searchManager.attachment.getInfo(url);
+      for (let i = 0; i < urls.length; i++) {
+        const info = await this.manager.searchManager.attachment.getInfo(
+          urls[i],
+        );
         if (!info) {
-          console.error(`Cannot Get Data Of ${url}`);
+          console.error(`Cannot Get Data Of ${urls[i]}`);
           continue;
         }
         const track: Track = new Track({
@@ -150,13 +160,15 @@ class Player {
           await this.requestManager.setCurrentStream(track);
           this.play();
         }
-        await setTimeout(5000);
+        if (i !== urls.length - 1) {
+          await setTimeout(5000);
+        }
       }
     } else if (type === 3) {
-      for (const url of urls) {
-        const info = await this.manager.searchManager.youtube.getInfo(url);
+      for (let i = 0; i < urls.length; i++) {
+        const info = await this.manager.searchManager.youtube.getInfo(urls[i]);
         if (!info) {
-          console.error(`Cannot Get Data Of ${url}`);
+          console.error(`Cannot Get Data Of ${urls[i]}`);
           continue;
         }
         const track: Track = new Track({
@@ -170,7 +182,9 @@ class Player {
           await this.requestManager.setCurrentStream(track);
           this.play();
         }
-        await setTimeout(5000);
+        if (i !== urls.length - 1) {
+          await setTimeout(5000);
+        }
       }
     } else throw new Error(`Invalid Type: '${type}' Provided`);
 
