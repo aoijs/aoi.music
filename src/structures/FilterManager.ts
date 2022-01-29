@@ -62,9 +62,10 @@ export default class FilterManager {
     const filters = Object.entries(this.filters)
       .map((x) => `${x[0]}=${x[1]}`)
       .join(",");
-
-    args.push("-af");
-    args.push(filters);
+    if (filters.length > 0) {
+      args.push("-af");
+      args.push(filters);
+    }
     const ffmpeg = new prism.FFmpeg({
       args,
     });
