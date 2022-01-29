@@ -10,14 +10,14 @@ export default class FilterManager {
      * @param  {any[]} ...filters
      * @returns void
      */
-    addFilters(filters: object): Promise<any[]>;
+    addFilters(filters: object): Promise<string>;
     /**
      * @method removeFilters
      * @param  {any[]} ...filters
      * @returns void
      */
     removeFilters(...filters: any[]): void;
-    setFilters(filters: object): Promise<any[]>;
-    resetFilters(): Promise<any[]>;
-    _applyFilters(): Promise<any[]>;
+    setFilters(filters: object): Promise<string>;
+    resetFilters(): Promise<string>;
+    _applyFilters(): Promise<string>;
 }

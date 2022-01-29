@@ -85,6 +85,6 @@ export default class FilterManager {
 
     this.player.requestManager.currentStream = resource;
     this.player.play();
-    return args;
+    return filters;
   }
 }
