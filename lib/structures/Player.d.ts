@@ -23,6 +23,7 @@ declare class Player {
     player: AudioPlayer;
     cacheManager: CacheManager;
     filterManager: FilterManager;
+    reseted: boolean;
     constructor(data: PlayerOptions);
     get state(): PlayerStates;
     set state(n: PlayerStates);
@@ -61,5 +62,6 @@ declare class Player {
     removeTrack(trackPosition: number): void;
     shuffleQueue(): void;
     skipTo(number: number): Track[];
+    stop(): void;
 }
 export default Player;

@@ -45,6 +45,7 @@ class Player {
   public player: AudioPlayer = new AudioPlayer();
   public cacheManager: CacheManager;
   public filterManager: FilterManager;
+  public reseted: boolean = false;
   constructor(data: PlayerOptions) {
     this.connection = data.connection;
     this.voiceChannel = data.voiceChannel;
@@ -92,6 +93,10 @@ class Player {
   }): Promise<string | number> {
     if (type === 0) {
       for (let i = 0; i < urls.length; i++) {
+        if (this.reseted) {
+          this.reseted = false;
+          break;
+        }
         const info = await this.manager.searchManager.soundCloud.getInfo(
           urls[i],
         );
@@ -118,6 +123,10 @@ class Player {
       }
     } else if (type === 1) {
       for (let i = 0; i < urls.length; i++) {
+        if (this.reseted) {
+          this.reseted = false;
+          break;
+        }
         const info = await this.manager.searchManager.localFile.getInfo(
           urls[i],
         );
@@ -142,6 +151,10 @@ class Player {
       }
     } else if (type === 2) {
       for (let i = 0; i < urls.length; i++) {
+        if (this.reseted) {
+          this.reseted = false;
+          break;
+        }
         const info = await this.manager.searchManager.attachment.getInfo(
           urls[i],
         );
@@ -166,6 +179,10 @@ class Player {
       }
     } else if (type === 3) {
       for (let i = 0; i < urls.length; i++) {
+        if (this.reseted) {
+          this.reseted = false;
+          break;
+        }
         const info = await this.manager.searchManager.youtube.getInfo(urls[i]);
         if (!info) {
           console.error(`Cannot Get Data Of ${urls[i]}`);
@@ -273,14 +290,15 @@ class Player {
     this.play();
   }
   _destroyPlayer(): void {
-    this._defaultOptions();
-    this.queue = new Queue();
-    this.requestManager = new RequestManager(this);
-    this.cacheManager = new CacheManager(
-      this.manager.config.cache || {
-        enabled: true,
-        cacheType: CacheType.Memory,
-      },
+    this.manager.players.set(
+      this.textChannel.guildId,
+      new Player({
+        textChannel: this.textChannel,
+        voiceChannel: this.voiceChannel,
+        manager: this.manager,
+        connection: this.connection,
+        debug: this.debug,
+      }),
     );
   }
   async _loopQueue() {
@@ -409,6 +427,11 @@ class Player {
 
       return spliced;
     }
+  }
+  stop() {
+    this.queue.list = [];
+    this.player.stop();
+    this.reseted = true;
   }
 }
 

@@ -6,7 +6,7 @@ import {
   VoiceChannel,
 } from "discord.js";
 import { CacheType, LoopMode, PlayerEvents } from "./constants";
-import internal from "stream";
+import * as internal from "stream";
 import { ReadStream } from "fs";
 import { TrackInfo } from "soundcloud-downloader/src/info";
 import Manager from "../structures/Manager";

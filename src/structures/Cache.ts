@@ -15,8 +15,8 @@ class CacheManager {
   }
 
   private async _convertStreamToBuffer(stream: PossibleStream): Promise<any[]> {
-    let buffer = [];
-    return new Promise((res, rej) => {
+    let buffer:any[] = [];
+    return new Promise((res) => {
       stream.on("data", (chunk) => buffer.push(chunk));
       stream.on("end", (_) => {
         buffer.concat(buffer);
@@ -30,12 +30,12 @@ class CacheManager {
 
   async write(id: string, stream: PossibleStream): Promise<void> {
     if (!this._enabled()) return;
-    if (this.config.cacheType === CacheType.Memory) {
+    if (this.config?.cacheType === CacheType.Memory) {
       const data = await this._convertStreamToBuffer(stream);
 
       this.map.set(id, data);
       return;
-    } else if (this.config.cacheType === CacheType.Disk) {
+    } else if (this.config?.cacheType === CacheType.Disk) {
       if (!fs.existsSync("music")) {
         fs.mkdirSync("music");
       }
@@ -49,10 +49,10 @@ class CacheManager {
   }
   get(id: string): unknown {
     if (!this._enabled()) return null;
-    if (this.config.cacheType === CacheType.Memory) {
-      return Readable.from(this.map.get(id));
+    if (this.config?.cacheType === CacheType.Memory) {
+      return Readable.from(this.map.get(id)||[]);
     }
-    if (this.config.cacheType === CacheType.Disk) {
+    if (this.config?.cacheType === CacheType.Disk) {
       let st: unknown;
       try {
         st = fs.createReadStream(id);
