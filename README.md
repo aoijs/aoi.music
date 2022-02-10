@@ -2,7 +2,7 @@
 
 Addition of the Music properties and foundation for aoi.js
 
-# basic usage
+# Setup
 
 ```js
 const {
