@@ -1,6 +1,6 @@
-# aoi.music
-Addition of the Music properties and foundation for aoi.js
+# @akarui/aoi.music
 
+Addition of the Music properties and foundation for aoi.js
 
 # basic usage
 
