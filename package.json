@@ -1,5 +1,5 @@
 {
-  "name": "aoi.music",
+  "name": "@akarui/aoi.music",
   "description": "Addition of the Music properties and foundation for aoi.js",
   "author": {
     "name": "Leref"
