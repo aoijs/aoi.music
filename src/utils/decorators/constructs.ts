@@ -17,7 +17,7 @@ export function decorateConstructor(func: (target: any, args: any[]) => any) {
 export function constructManager(): (target: any) => any {
     return decorateConstructor((manager, args) => {
         const config = args[0] as ManagerConfig;
-        if (config.soundcloud) {
+        if (config?.soundcloud) {
             const opt = config.soundcloud;
             if (typeof opt.clientId !== "string" || !opt.clientId) {
                 key.fetchKey().then((string: string) => opt.clientId = string);
@@ -30,9 +30,6 @@ export function constructManager(): (target: any) => any {
 export function constructCache(): (target: any) => any {
     return decorateConstructor((manager, args) => {
         const config = args[0] as CacheOptions;
-
-        if (!config.enabled) 
-            throw new Error(`Cache is not enabled, but "new" is declared`);
         if (! ("cacheType" in config) || !CacheType[config.cacheType])
             throw new Error(`Cache Type is invalid`);
         if (config.cacheType === CacheType.Disk && (typeof config.directory !== "string" || !config.directory))
@@ -44,15 +41,6 @@ export function constructCache(): (target: any) => any {
     });
 }
 
-export function constructSoundcloud(): (target: any) => any {
-    return decorateConstructor((manager, args) => {
-        const config = args[0] as SoundcloudOptions;
-        if (!config) return new manager(config);
-        if (config && "clientId" in config && (typeof config.clientId !== "string" || !config.clientId))
-            throw new Error("ClientId is specified, but is invalid");
-        return new manager(config);
-    })
-}
 
 export function constructTrack(): (target: any) => any {
     return decorateConstructor((manager, args) => {

@@ -13,8 +13,7 @@ import {
 } from "@discordjs/voice";
 import { TextChannel, VoiceChannel } from "discord.js";
 import { Search } from "../utils/source/Search";
-import CacheManager from "./Cache";
-import { CacheType } from "../utils/constants";
+import { CacheType } from "../utils";
 
 @constructManager()
 class Manager extends TypedEmitter<ManagerEvents> {
@@ -23,12 +22,17 @@ class Manager extends TypedEmitter<ManagerEvents> {
   public searchManager: Search;
   constructor(config: ManagerConfig) {
     super();
-    this.config = config;
+    this.config = config || {
+      cache: {
+        cacheType: CacheType.Memory,
+        enabled: true,
+      },
+    };
     this.searchManager = new Search({
-      clientId: this.config.soundcloud.clientId,
+      clientId: this.config?.soundcloud?.clientId,
     });
 
-    this.searchManager.soundCloud.setClientId(config.soundcloud?.clientId);
+    this.searchManager.soundCloud.setClientId(config?.soundcloud?.clientId);
   }
   /**
    * joinVc

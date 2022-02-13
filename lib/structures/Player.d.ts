@@ -56,12 +56,15 @@ declare class Player {
     getQueue(page?: number, limit?: number, customResponse?: string): {
         current: Track;
         previous: Track;
-        queue: string[];
+        queue: any[];
     };
     leaveVc(): void;
     removeTrack(trackPosition: number): void;
     shuffleQueue(): void;
     skipTo(number: number): Track[];
     stop(): void;
+    set volume(volume: number);
+    get volume(): number;
+    _configConnection(): void;
 }
 export default Player;

@@ -46,6 +46,7 @@ export interface SoundcloudOptions {
 export interface ManagerConfig {
   cache?: CacheOptions;
   soundcloud?: SoundcloudOptions;
+  youtube?: YoutubeOptions;
 }
 
 export interface voiceState {
@@ -146,3 +147,7 @@ export type PlayerOptionsData = {
   autoPlay?: AutoPlayType;
 };
 export type AutoPlayType = "relative" | "youtube" | "soundcloud";
+
+export interface YoutubeOptions {
+  fetchAuthor?: boolean;
+}

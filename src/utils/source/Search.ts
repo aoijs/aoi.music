@@ -11,15 +11,15 @@ import {
   LocalStreamType,
   SoundcloudOptions,
 } from "../typings";
-import { constructSoundcloud } from "../decorators/constructs";
 
 import * as yts from "youtube-scrapper";
-
-@constructSoundcloud()
 export class SoundCloud {
   public options?: SoundcloudOptions = { clientId: undefined };
   constructor(config?: SoundcloudOptions) {
     this.options = config;
+    if (config?.clientId) {
+      this.setClientId(config.clientId);
+    }
   }
   /**
    * @method setClientId

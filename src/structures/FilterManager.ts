@@ -4,12 +4,10 @@ import Player from "./Player";
 export default class FilterManager {
   filters: object;
   player: Player;
-  args: any[];
-  seekTo: number;
+  args: string[];
   constructor(player: Player) {
     this.filters = {};
     this.player = player;
-    this.seekTo = 0;
     this.args = [
       "-analyzeduration",
       "0",
@@ -75,9 +73,7 @@ export default class FilterManager {
       channels: 2,
       frameSize: 960,
     });
-    const fdata = (await await this.player.requestManager.getStream()).pipe(
-      ffmpeg,
-    );
+    const fdata = (await this.player.requestManager.getStream()).pipe(ffmpeg);
 
     const resource = createAudioResource(fdata.pipe(opus), {
       inlineVolume: true,
@@ -86,6 +82,35 @@ export default class FilterManager {
 
     this.player.requestManager.currentStream = resource;
     this.player.play();
-    return filters;
+    return this.filters;
+  }
+
+  async seekTo(time: number) {
+    const args = [...this.args];
+    args.push("-ss", `${time}`);
+    const filters = Object.entries(this.filters)
+      .map((x) => `${x[0]}=${x[1]}`)
+      .join(",");
+    if (filters.length) {
+      args.push("-af", filters);
+    }
+    const ffmpeg = new prism.FFmpeg({
+      args,
+    });
+
+    const opus = new prism.opus.Encoder({
+      rate: 48000,
+      channels: 2,
+      frameSize: 960,
+    });
+    const fdata = (await this.player.requestManager.getStream()).pipe(ffmpeg);
+
+    const resource = createAudioResource(fdata.pipe(opus), {
+      inlineVolume: true,
+      inputType: StreamType.Opus,
+    });
+
+    this.player.requestManager.currentStream = resource;
+    this.player.play();
   }
 }

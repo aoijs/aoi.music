@@ -1,7 +1,8 @@
 import { GuildMember } from "discord.js";
-import { getChannel } from "youtube-scrapper";
+import { getChannel, YoutubeChannel } from "youtube-scrapper";
 import { SourceProviders } from "../utils/constants";
 import { TrackInfoType, TrackRawInfo } from "../utils/typings";
+import Player from "./Player";
 
 export default class Track {
   public requestUser: GuildMember;
@@ -9,16 +10,22 @@ export default class Track {
   public rawInfo: TrackRawInfo;
   public source: SourceProviders;
   public type: number;
-  constructor(data: {
-    requestUser: GuildMember;
-    rawinfo: TrackRawInfo;
-    type: number;
-  }) {
+
+  public player: Player;
+  constructor(
+    data: {
+      requestUser: GuildMember;
+      rawinfo: TrackRawInfo;
+      type: number;
+    },
+    player: Player,
+  ) {
     this.requestUser = data.requestUser;
     this.type = data.type;
     this.rawInfo = data.rawinfo;
     this.source = data.type;
     this.transformInfo(data.rawinfo);
+    this.player = player;
   }
   /**
    * @method link
@@ -39,7 +46,7 @@ export default class Track {
         title: rawInfo.title,
         description: rawInfo.description,
         url: rawInfo.permalink_url,
-        thumbnail: rawInfo.artwork_url,
+        thumbnail: rawInfo.artwork_url?.replace("-large.jpg", "-t500x500.jpg"),
         raw_duration: rawInfo.duration,
         duration: rawInfo.full_duration,
         identifier: "SoundCloud",
@@ -76,18 +83,25 @@ export default class Track {
       };
     } else if (this.type === 3) {
       rawInfo = rawInfo.details;
-      //			const channelData = await getChannel(rawInfo.channelId);
+
+      let channelData: YoutubeChannel;
+
+      if (this.player?.manager?.config?.youtube?.fetchAuthor) {
+        channelData = await getChannel(rawInfo.channelId);
+      }
+
       this.info = {
         title: rawInfo.title,
         description: rawInfo.shortDescription ?? rawInfo.description,
         url: rawInfo.url,
-        thumbnail: rawInfo.thumbnails?.[0]?.url,
+        thumbnail:
+          rawInfo.thumbnails?.[(rawInfo?.thumbnails?.length || 1) - 1]?.url,
         raw_duration: rawInfo.duration,
         duration: rawInfo.duration,
         identifier: "Youtube",
         author: rawInfo.author,
-        //			authorAvatar: channelData.details.avatars?.[0]?.url,
-        //			authorURL: channelData.url,
+        authorAvatar: channelData?.details.avatars?.[0]?.url,
+        authorURL: channelData?.url,
         likes: null,
         views: rawInfo.viewCount,
       };

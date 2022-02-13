@@ -1,10 +1,14 @@
 import { GuildMember, TextChannel, VoiceChannel } from "discord.js";
+import { rm } from "fs/promises";
 import {
   AudioPlayerStatus,
   createAudioResource,
+  entersState,
   joinVoiceChannel,
   StreamType,
   VoiceConnection,
+  VoiceConnectionDisconnectReason,
+  VoiceConnectionStatus,
 } from "@discordjs/voice";
 import {
   CacheType,
@@ -29,6 +33,7 @@ import CacheManager from "./Cache";
 import FilterManager from "./FilterManager";
 import { RequestManager } from "./RequestManager";
 import { shuffle } from "../utils/helpers";
+import { existsSync } from "fs";
 
 class Player {
   public voiceState: voiceState = {} as any;
@@ -56,12 +61,7 @@ class Player {
     this._defaultOptions();
     this.debug = data.debug;
     this._configPlayer();
-    this.cacheManager = new CacheManager(
-      this.manager.config.cache || {
-        enabled: true,
-        cacheType: CacheType.Memory,
-      },
-    );
+    this.cacheManager = new CacheManager(this.manager.config.cache);
   }
 
   get state() {
@@ -104,11 +104,14 @@ class Player {
           console.error(`Cannot Get Data Of ${urls[i]}`);
           continue;
         }
-        const track: Track = new Track({
-          requestUser: member,
-          rawinfo: info,
-          type,
-        });
+        const track: Track = new Track(
+          {
+            requestUser: member,
+            rawinfo: info,
+            type,
+          },
+          this,
+        );
         this.queue.list.push(track);
         if (this.queue.list.length === 1 && !this.queue.current) {
           this.queue.setCurrent(track);
@@ -134,11 +137,14 @@ class Player {
           console.error(`Cannot Get Data Of ${urls[i]}`);
           continue;
         }
-        const track: Track = new Track({
-          requestUser: member,
-          rawinfo: info,
-          type,
-        });
+        const track: Track = new Track(
+          {
+            requestUser: member,
+            rawinfo: info,
+            type,
+          },
+          this,
+        );
         this.queue.list.push(track);
         if (this.queue.list.length === 1 && !this.queue.current) {
           this.queue.setCurrent(track);
@@ -162,11 +168,14 @@ class Player {
           console.error(`Cannot Get Data Of ${urls[i]}`);
           continue;
         }
-        const track: Track = new Track({
-          requestUser: member,
-          rawinfo: info,
-          type,
-        });
+        const track: Track = new Track(
+          {
+            requestUser: member,
+            rawinfo: info,
+            type,
+          },
+          this,
+        );
         this.queue.list.push(track);
         if (this.queue.list.length === 1 && !this.queue.current) {
           this.queue.setCurrent(track);
@@ -188,11 +197,14 @@ class Player {
           console.error(`Cannot Get Data Of ${urls[i]}`);
           continue;
         }
-        const track: Track = new Track({
-          requestUser: member,
-          rawinfo: info,
-          type,
-        });
+        const track: Track = new Track(
+          {
+            requestUser: member,
+            rawinfo: info,
+            type,
+          },
+          this,
+        );
         this.queue.list.push(track);
         if (this.queue.list.length === 1 && !this.queue.current) {
           this.queue.setCurrent(track);
@@ -212,6 +224,7 @@ class Player {
 
   play() {
     const resource = this.requestManager.currentStream;
+    resource.volume.setVolume(this.options.volume / 100);
     this.player.play(resource);
     this.manager.emit(
       PlayerEvents.TRACK_START,
@@ -263,6 +276,7 @@ class Player {
       }
     });
     this.player.on("error", async (error: any) => {
+      throw new Error(error);
       this.manager.emit(PlayerEvents.AUDIO_ERROR, error, this.textChannel);
     });
 
@@ -290,6 +304,9 @@ class Player {
     this.play();
   }
   _destroyPlayer(): void {
+    if (existsSync(`music/${this.textChannel.guildId}`)) {
+      rm(`music/${this.textChannel.guildId}`, { recursive: true, force: true });
+    }
     this.manager.players.set(
       this.textChannel.guildId,
       new Player({
@@ -332,11 +349,14 @@ class Player {
       } else {
         for (const d of data) {
           this.queue.list.push(
-            new Track({
-              requestUser: this.textChannel.guild.me,
-              rawinfo: d,
-              type: 0,
-            }),
+            new Track(
+              {
+                requestUser: this.textChannel.guild.me,
+                rawinfo: d,
+                type: 0,
+              },
+              this,
+            ),
           );
         }
       }
@@ -346,11 +366,14 @@ class Player {
         1,
       );
       this.queue.list.push(
-        new Track({
-          requestUser: this.textChannel.guild.me,
-          rawinfo: data[0],
-          type: 0,
-        }),
+        new Track(
+          {
+            requestUser: this.textChannel.guild.me,
+            rawinfo: data[0],
+            type: 0,
+          },
+          this,
+        ),
       );
     } else if (this.options.autoPlay === "relative") {
       const data = await this.manager.searchManager.soundCloud.related(
@@ -358,11 +381,14 @@ class Player {
         1,
       );
       this.queue.list.push(
-        new Track({
-          requestUser: this.textChannel.guild.me,
-          rawinfo: data[0],
-          type: 0,
-        }),
+        new Track(
+          {
+            requestUser: this.textChannel.guild.me,
+            rawinfo: data[0],
+            type: 0,
+          },
+          this,
+        ),
       );
     }
 
@@ -383,28 +409,33 @@ class Player {
     limit = 10,
     customResponse = `[{title}]({url}) | {user.id}`,
   ) {
-    const [current, previous, list] = [
+    let [current, previous, list] = [
       this.queue.current,
       this.queue.previous,
       this.queue.list,
     ];
     const props = customResponse.match(/{([^}]+)}/g);
-    const options = props.map((x) => x.replace("{", "").replace("}", ""));
-    const queue = list.slice((page - 1) * limit, page * limit).map((x) => {
+    const queue = [];
+    let i = 0;
+    list = list.slice((page - 1) * limit, page * limit);
+    while (i < list.length) {
       let res = customResponse;
+      let x = list[i];
       props.forEach((y, a) => {
         res = res.replace(
           y,
-          y.startsWith("{user.")
+          y === "{position}"
+            ? i + 1
+            : y.startsWith("{user.")
             ? x.requestUser.user[options[a].split(".")[1]]
             : y.startsWith("{member.")
             ? x.requestUser[options[a].split(".")[1]]
             : x.info[options[a]],
         );
+        return res;
       });
-      return res;
-    });
-
+    }
+    const options = props.map((x) => x.replace("{", "").replace("}", ""));
     return { current, previous, queue };
   }
   leaveVc() {
@@ -432,6 +463,50 @@ class Player {
     this.queue.list = [];
     this.player.stop();
     this.reseted = true;
+  }
+
+  set volume(volume: number) {
+    this.options.volume = volume;
+    this.requestManager._setVolume(volume / 100);
+  }
+  get volume() {
+    return this.options.volume;
+  }
+  _configConnection() {
+    this.connection.on(
+      "stateChange",
+      async (
+        _: any,
+        newState: { status: any; reason: any; closeCode: number },
+      ) => {
+        if (newState.status === VoiceConnectionStatus.Disconnected) {
+          if (
+            newState.reason ===
+              VoiceConnectionDisconnectReason.WebSocketClose &&
+            newState.closeCode === 4014
+          ) {
+            try {
+              await entersState(
+                this.connection,
+                VoiceConnectionStatus.Connecting,
+                5_000,
+              );
+            } catch {
+              this.connection.destroy();
+              this.manager.players.delete(this.textChannel.guildId);
+            }
+          } else if (this.connection.rejoinAttempts < 5) {
+            await setTimeout((this.connection.rejoinAttempts + 1) * 5_000);
+            this.connection.rejoin();
+          } else {
+            this.connection.destroy();
+            this.manager.players.delete(this.textChannel.guildId);
+          }
+        } else if (newState.status === VoiceConnectionStatus.Destroyed) {
+          this.stop();
+        }
+      },
+    );
   }
 }
 

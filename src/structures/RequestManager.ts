@@ -68,7 +68,12 @@ export class RequestManager {
       this.player.options.mode !== LoopMode.None
     ) {
       console.log("caching track");
-      this.player.cacheManager.write(track.link, stream);
+      this.player.cacheManager.write(
+        track.link,
+        stream,
+        track.type,
+        this.player.textChannel.guildId,
+      );
     }
   }
   /**
@@ -115,8 +120,12 @@ export class RequestManager {
   public async getStream() {
     let stream: Readable | PassThrough | ReadStream | Stream;
     const track = this.player.queue.current;
+
     if (this.player.cacheManager.map.has(track.link)) {
-      return this.player.cacheManager.get(track.link);
+      return this.player.cacheManager.get(
+        track.link,
+        this.player.textChannel.guildId,
+      );
     } else if (track.type === 0) {
       return await this.search.soundCloud.getStream(
         track.rawInfo.permalink_url,
