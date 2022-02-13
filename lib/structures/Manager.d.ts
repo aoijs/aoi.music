@@ -11,9 +11,11 @@ declare class Manager extends TypedEmitter<ManagerEvents> {
     /**
      * joinVc
      */
-    joinVc({ voiceChannel, textChannel, debug, }: {
+    joinVc({ voiceChannel, textChannel, selfDeaf, selfMute, debug, }: {
         voiceChannel: VoiceChannel;
         textChannel: TextChannel;
+        selfDeaf?: boolean;
+        selfMute?: boolean;
         debug?: boolean;
     }): Promise<void>;
 }

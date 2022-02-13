@@ -115,10 +115,11 @@ class Player {
         this.queue.list.push(track);
         if (this.queue.list.length === 1 && !this.queue.current) {
           this.queue.setCurrent(track);
-          console.log("added first track");
+          this.manager.emit(PlayerEvents.QUEUE_START, urls, this.textChannel);
+          //console.log("added first track");
           await this.requestManager.setCurrentStream(track);
           this.play();
-          console.log("started playing");
+          //console.log("started playing");
         }
         if (i !== urls.length - 1) {
           await setTimeout(5000);
@@ -148,6 +149,7 @@ class Player {
         this.queue.list.push(track);
         if (this.queue.list.length === 1 && !this.queue.current) {
           this.queue.setCurrent(track);
+          this.manager.emit(PlayerEvents.QUEUE_START, urls, this.textChannel);
           await this.requestManager.setCurrentStream(track);
           this.play();
         }
@@ -179,6 +181,7 @@ class Player {
         this.queue.list.push(track);
         if (this.queue.list.length === 1 && !this.queue.current) {
           this.queue.setCurrent(track);
+          this.manager.emit(PlayerEvents.QUEUE_START, urls, this.textChannel);
           await this.requestManager.setCurrentStream(track);
           this.play();
         }
@@ -208,6 +211,7 @@ class Player {
         this.queue.list.push(track);
         if (this.queue.list.length === 1 && !this.queue.current) {
           this.queue.setCurrent(track);
+          this.manager.emit(PlayerEvents.QUEUE_START, urls, this.textChannel);
           await this.requestManager.setCurrentStream(track);
           this.play();
         }
@@ -276,7 +280,6 @@ class Player {
       }
     });
     this.player.on("error", async (error: any) => {
-      throw new Error(error);
       this.manager.emit(PlayerEvents.AUDIO_ERROR, error, this.textChannel);
     });
 
@@ -307,6 +310,7 @@ class Player {
     if (existsSync(`music/${this.textChannel.guildId}`)) {
       rm(`music/${this.textChannel.guildId}`, { recursive: true, force: true });
     }
+    this.manager.emit(PlayerEvents.QUEUE_END, this.textChannel);
     this.manager.players.set(
       this.textChannel.guildId,
       new Player({

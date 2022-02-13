@@ -65,11 +65,10 @@ export interface ManagerEvents {
     textChannel: TextChannel | NewsChannel | ThreadChannel,
   ): this;
   [PlayerEvents.QUEUE_START](
-    Track: Track,
+    urls: string[],
     textChannel: TextChannel | NewsChannel | ThreadChannel,
   ): this;
   [PlayerEvents.QUEUE_END](
-    Track: Track,
     textChannel: TextChannel | NewsChannel | ThreadChannel,
   ): this;
   [PlayerEvents.AUDIO_ERROR](

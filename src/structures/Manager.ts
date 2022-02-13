@@ -1,8 +1,5 @@
 import Player from "./Player";
-import {
-  ManagerConfig,
-  ManagerEvents,
-} from "../utils/typings";
+import { ManagerConfig, ManagerEvents } from "../utils/typings";
 import { TypedEmitter } from "tiny-typed-emitter";
 import { constructManager } from "../utils/decorators/constructs";
 
@@ -40,19 +37,25 @@ class Manager extends TypedEmitter<ManagerEvents> {
   public async joinVc({
     voiceChannel,
     textChannel,
+    selfDeaf = true,
+    selfMute = true,
     debug = false,
   }: {
     voiceChannel: VoiceChannel;
     textChannel: TextChannel;
+    selfDeaf?: boolean,
+    selfMute?:boolean,
     debug?: boolean;
   }): Promise<void> {
     const data = {
       channelId: voiceChannel.id,
       guildId: voiceChannel.guildId,
+      selfDeaf,
+      selfMute,
       adapterCreator: voiceChannel.guild.voiceAdapterCreator,
       group: voiceChannel.client.user.id,
     };
-//@ts-ignore
+    //@ts-ignore
     const connection = joinVoiceChannel(data);
     if (debug) {
       connection.on("debug", console.log);
