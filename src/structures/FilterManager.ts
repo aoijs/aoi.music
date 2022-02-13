@@ -111,6 +111,7 @@ export default class FilterManager {
     });
 
     this.player.requestManager.currentStream = resource;
+    resource.playbackDuration = time * 1000;
     this.player.play();
   }
 }
