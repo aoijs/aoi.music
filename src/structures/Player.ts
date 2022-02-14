@@ -264,17 +264,43 @@ class Player {
       ) {
         if (this.options.paused) {
         } else if (this.options.mode === LoopMode.Track && this.queue.current) {
+          this.manager.emit(
+            PlayerEvents.TRACK_END,
+            this.queue.current,
+            this.textChannel,
+          );
           this._playSingleTrack();
         } else if (
           this.options.mode === LoopMode.Queue &&
           this.queue.list.length
         ) {
+          this.manager.emit(
+            PlayerEvents.TRACK_END,
+            this.queue.current,
+            this.textChannel,
+          );
           await this._loopQueue();
         } else if (this.options.autoPlay && this.queue.list.length === 1) {
+          this.manager.emit(
+            PlayerEvents.TRACK_END,
+            this.queue.current,
+            this.textChannel,
+          );
           this._autoPlay();
         } else if (this.queue.list.length > 1) {
+          this.manager.emit(
+            PlayerEvents.TRACK_END,
+            this.queue.current,
+            this.textChannel,
+          );
           await this._playNextTrack();
         } else {
+          this.manager.emit(
+            PlayerEvents.TRACK_END,
+            this.queue.current,
+            this.textChannel,
+          );
+          this.manager.emit(PlayerEvents.QUEUE_END, this.textChannel);
           this._destroyPlayer();
         }
       }

@@ -1,4 +1,5 @@
 import { Track } from "../structures";
+import { PossibleStream } from "./typings";
 
 export function shuffle(array: Array<Track>) {
   let currentIndex = array.length,
@@ -18,4 +19,8 @@ export function shuffle(array: Array<Track>) {
   }
 
   return array;
+}
+
+export function getDurationOfRawStream(stream:PossibleStream,filters:object) {
+  
 }
