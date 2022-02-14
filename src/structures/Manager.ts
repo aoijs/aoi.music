@@ -12,7 +12,7 @@ import { TextChannel, VoiceChannel } from "discord.js";
 import { Search } from "../utils/source/Search";
 import { CacheType } from "../utils";
 
-//@constructManager()
+@constructManager()
 class Manager extends TypedEmitter<ManagerEvents> {
   public players: Map<string, Player> = new Map();
   public config: ManagerConfig;
