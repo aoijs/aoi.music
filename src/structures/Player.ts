@@ -448,6 +448,7 @@ class Player {
     const queue = [];
     let i = 0;
     list = list.slice((page - 1) * limit, page * limit);
+  const options = props.map((x) => x.replace("{", "").replace("}", ""));
     while (i < list.length) {
       let res = customResponse;
       let x = list[i];
@@ -465,7 +466,7 @@ class Player {
         return res;
       });
     }
-    const options = props.map((x) => x.replace("{", "").replace("}", ""));
+  
     return { current, previous, queue };
   }
   leaveVc() {
