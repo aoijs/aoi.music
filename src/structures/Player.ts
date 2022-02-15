@@ -444,30 +444,34 @@ class Player {
       this.queue.previous,
       this.queue.list,
     ];
-    const props = customResponse.match(/{([^}]+)}/g);
-    const queue = [];
-    let i = 0;
-    list = list.slice((page - 1) * limit, page * limit);
-  const options = props.map((x) => x.replace("{", "").replace("}", ""));
-    while (i < list.length) {
-      let res = customResponse;
-      let x = list[i];
-      props.forEach((y, a) => {
-        res = res.replace(
-          y,
-          y === "{position}"
-            ? i + 1
-            : y.startsWith("{user.")
-            ? x.requestUser.user[options[a].split(".")[1]]
-            : y.startsWith("{member.")
-            ? x.requestUser[options[a].split(".")[1]]
-            : x.info[options[a]],
-        );
-        return res;
-      });
+    try {
+      const props = customResponse.match(/{([^}]+)}/g);
+      const queue = [];
+      let i = 0;
+      list = list.slice((page - 1) * limit, page * limit);
+      const options = props.map((x) => x.replace("{", "").replace("}", ""));
+      while (i < list.length) {
+        let res = customResponse;
+        let x = list[i];
+        props.forEach((y, a) => {
+          res = res.replace(
+            y,
+            y === "{position}"
+              ? i + 1
+              : y.startsWith("{user.")
+              ? x.requestUser.user[options[a].split(".")[1]]
+              : y.startsWith("{member.")
+              ? x.requestUser[options[a].split(".")[1]]
+              : x.info[options[a]],
+          );
+        });
+        queue.push(res);
+        i++;
+      }
+      return { current, previous, queue };
+    } catch (e) {
+      console.error(e);
     }
-  
-    return { current, previous, queue };
   }
   leaveVc() {
     this.connection.disconnect();
