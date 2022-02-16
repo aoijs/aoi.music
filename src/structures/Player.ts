@@ -309,6 +309,16 @@ class Player {
           this._destroyPlayer();
         }
       }
+      if (
+        os.status === AudioPlayerStatus.Playing &&
+        ns.status !== AudioPlayerStatus.Playing
+      ) {
+        this.manager.emit(
+          PlayerEvents.TRACK_END,
+          this.queue.current,
+          this.textChannel,
+        );
+      }
     });
     this.player.on("error", async (error: any) => {
       this.manager.emit(PlayerEvents.AUDIO_ERROR, error, this.textChannel);
