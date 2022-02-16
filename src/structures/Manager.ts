@@ -38,7 +38,7 @@ class Manager extends TypedEmitter<ManagerEvents> {
     voiceChannel,
     textChannel,
     selfDeaf = true,
-    selfMute = true,
+    selfMute = false,
     debug = false,
   }: {
     voiceChannel: VoiceChannel;
@@ -70,7 +70,7 @@ class Manager extends TypedEmitter<ManagerEvents> {
           voiceChannel,
           textChannel,
           manager: this,
-          debug: true,
+          debug: debug,
         }),
       );
     } catch (error) {
