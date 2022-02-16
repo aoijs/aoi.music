@@ -490,7 +490,7 @@ class Player {
     else {
       const spliced = this.queue.list.splice(0, number);
       this.queue.list.push(...spliced);
-
+      this.play();
       return spliced;
     }
   }
