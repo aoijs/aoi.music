@@ -144,6 +144,7 @@ export type PlayerOptionsData = {
   leaveAfter: { enabled: boolean; time: number };
   leaveWhenVcEmpty: boolean;
   autoPlay?: AutoPlayType;
+  seekWhenFilter?:boolean;
 };
 export type AutoPlayType = "relative" | "youtube" | "soundcloud";
 

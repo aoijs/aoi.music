@@ -64,6 +64,11 @@ export default class FilterManager {
       args.push("-af");
       args.push(filters);
     }
+    if (this.player.options.seekWhenFilter) {
+      const duration =
+        this.player.requestManager.currentStream.playbackDuration;
+      args.push("-ss", Math.trunc(duration / 1000).toString());
+    }
     const ffmpeg = new prism.FFmpeg({
       args,
     });

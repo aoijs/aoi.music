@@ -106,6 +106,7 @@ export declare type PlayerOptionsData = {
     };
     leaveWhenVcEmpty: boolean;
     autoPlay?: AutoPlayType;
+    seekWhenFilter?: boolean;
 };
 export declare type AutoPlayType = "relative" | "youtube" | "soundcloud";
 export interface YoutubeOptions {
