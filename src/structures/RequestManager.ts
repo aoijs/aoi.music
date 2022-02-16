@@ -67,7 +67,7 @@ export class RequestManager {
       !this.player.cacheManager.map.has(track.link) &&
       this.player.options.mode !== LoopMode.None
     ) {
-      console.log("caching track");
+      //console.log("caching track");
       this.player.cacheManager.write(
         track.link,
         stream,

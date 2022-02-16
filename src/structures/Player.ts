@@ -310,7 +310,9 @@ class Player {
     });
 
     if (this.debug) {
-      this.player.on("debug", console.log);
+      this.player.on("debug", (msg) =>
+        this.debug ? console.log(msg) : undefined,
+      );
     }
 
     this.connection.subscribe(this.player);
