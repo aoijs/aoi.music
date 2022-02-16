@@ -301,6 +301,11 @@ class Player {
             this.textChannel,
           );
           this.manager.emit(PlayerEvents.QUEUE_END, this.textChannel);
+          if (this.options.leaveAfter.enabled) {
+            setTimeout(this.options.leaveAfter.time, () => {
+              if (!this.queue.list.length) this.leaveVc();
+            });
+          }
           this._destroyPlayer();
         }
       }
@@ -325,7 +330,7 @@ class Player {
       leaveAfter: { enabled: false, time: 60000 },
       leaveWhenVcEmpty: false,
       autoPlay: null,
-      seekWhenFilter:false,
+      seekWhenFilter: false,
     };
   }
   async _playNextTrack(): Promise<void> {
