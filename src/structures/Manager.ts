@@ -75,7 +75,7 @@ class Manager extends TypedEmitter<ManagerEvents> {
       );
     } catch (error) {
       connection.destroy();
-      console.error("joinVoiceChannelError :" + error);
+      throw new Error(error)
     }
   }
 }
