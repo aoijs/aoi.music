@@ -355,7 +355,6 @@ class Player {
     if (existsSync(`music/${this.textChannel.guildId}`)) {
       rm(`music/${this.textChannel.guildId}`, { recursive: true, force: true });
     }
-    this.manager.emit(PlayerEvents.QUEUE_END, this.textChannel);
     this.manager.players.set(
       this.textChannel.guildId,
       new Player({
