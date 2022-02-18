@@ -43,8 +43,8 @@ class Manager extends TypedEmitter<ManagerEvents> {
   }: {
     voiceChannel: VoiceChannel;
     textChannel: TextChannel;
-    selfDeaf?: boolean,
-    selfMute?:boolean,
+    selfDeaf?: boolean;
+    selfMute?: boolean;
     debug?: boolean;
   }): Promise<void> {
     const data = {
@@ -57,9 +57,6 @@ class Manager extends TypedEmitter<ManagerEvents> {
     };
     //@ts-ignore
     const connection = joinVoiceChannel(data);
-    if (debug) {
-      connection.on("debug", console.log);
-    }
     connection.on("error", console.error);
     try {
       await entersState(connection, VoiceConnectionStatus.Ready, 30000);
@@ -75,7 +72,10 @@ class Manager extends TypedEmitter<ManagerEvents> {
       );
     } catch (error) {
       connection.destroy();
-      throw new Error(error)
+      throw error;
+    }
+    if (debug) {
+      connection.on("debug", console.log);
     }
   }
 }

@@ -67,8 +67,9 @@ export default class FilterManager {
     if (this.player.options.seekWhenFilter) {
       const duration =
         this.player.requestManager.currentStream.playbackDuration;
-      args.push("-ss", Math.trunc(duration / 1000).toString());
+      args.unshift("-ss", Math.trunc(duration / 1000).toString());
     }
+    //console.log({ args });
     const ffmpeg = new prism.FFmpeg({
       args,
     });
@@ -92,13 +93,14 @@ export default class FilterManager {
 
   async seekTo(time: number) {
     const args = [...this.args];
-    args.push("-ss", `${time}`);
+    args.unshift("-ss", `${time}`);
     const filters = Object.entries(this.filters)
       .map((x) => `${x[0]}=${x[1]}`)
       .join(",");
     if (filters.length) {
       args.push("-af", filters);
     }
+    //console.log({ args });
     const ffmpeg = new prism.FFmpeg({
       args,
     });
