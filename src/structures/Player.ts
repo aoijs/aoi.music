@@ -1,5 +1,6 @@
 import { GuildMember, TextChannel, VoiceChannel } from "discord.js";
 import { rm } from "fs/promises";
+import { setTimeout as ST } from "timers";
 import {
   AudioPlayerStatus,
   createAudioResource,
@@ -302,9 +303,9 @@ class Player {
           );
           this.manager.emit(PlayerEvents.QUEUE_END, this.textChannel);
           if (this.options.leaveAfter.enabled) {
-            setTimeout(this.options.leaveAfter.time, () => {
-              if (!this.queue.list.length) this.leaveVc();
-            });
+            ST(() => {
+              this.leaveVc();
+            }, this.options.leaveAfter.time);
           }
           this._destroyPlayer();
         }
@@ -355,16 +356,10 @@ class Player {
     if (existsSync(`music/${this.textChannel.guildId}`)) {
       rm(`music/${this.textChannel.guildId}`, { recursive: true, force: true });
     }
-    this.manager.players.set(
-      this.textChannel.guildId,
-      new Player({
-        textChannel: this.textChannel,
-        voiceChannel: this.voiceChannel,
-        manager: this.manager,
-        connection: this.connection,
-        debug: this.debug,
-      }),
-    );
+    this.options.autoPlay = null;
+    this.options.mode = LoopMode.None;
+    this.options.volume = 100;
+    this.queue = new Queue();
   }
   async _loopQueue() {
     const track = this.queue.list.shift();
