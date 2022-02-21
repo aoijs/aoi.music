@@ -17,6 +17,7 @@ import * as prism from "prism-media";
 export class RequestManager {
   public nextStream: AudioResource = null;
   public currentStream: AudioResource = null;
+  public _currentStream: PossibleStream = null;
   public search: Search;
   private player: Player;
   constructor(player: Player) {
@@ -30,6 +31,7 @@ export class RequestManager {
   public async setCurrentStream(track: Track): Promise<void> {
     let resource: AudioResource<unknown>;
     let rawstream = await this.getStream();
+    this._currentStream = rawstream;
     let stream: Readable | PassThrough | Stream | prism.opus.Encoder;
     if (Object.keys(this.player.filterManager.filters).length) {
       const args = [...this.player.filterManager.args];
@@ -43,11 +45,6 @@ export class RequestManager {
         args,
       });
 
-      const opus = new prism.opus.Encoder({
-        rate: 48000,
-        channels: 2,
-        frameSize: 960,
-      });
 
       stream = rawstream.pipe(ffmpeg);
       resource = createAudioResource(stream, {

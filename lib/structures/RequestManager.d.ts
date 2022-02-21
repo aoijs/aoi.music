@@ -1,10 +1,12 @@
 import { AudioResource } from "@discordjs/voice";
 import { Search } from "../utils/source/Search";
+import { PossibleStream } from "../utils/typings";
 import Player from "./Player";
 import Track from "./Track";
 export declare class RequestManager {
     nextStream: AudioResource;
     currentStream: AudioResource;
+    _currentStream: PossibleStream;
     search: Search;
     private player;
     constructor(player: Player);

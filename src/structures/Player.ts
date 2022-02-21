@@ -492,7 +492,7 @@ class Player {
     }
   }
   leaveVc() {
-    this.connection.disconnect();
+    this.connection.destroy();
     this.manager.players.delete(this.voiceChannel.guildId);
   }
   removeTrack(trackPosition: number) {
