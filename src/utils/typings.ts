@@ -47,8 +47,11 @@ export interface ManagerConfig {
   cache?: CacheOptions;
   soundcloud?: SoundcloudOptions;
   youtube?: YoutubeOptions;
+  playerOptions?: PlayerOpts;
 }
-
+export interface PlayerOpts {
+  trackInfoInterval : number,
+}
 export interface voiceState {
   text: TextChannel;
   channel: VoiceChannel;

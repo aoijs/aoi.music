@@ -24,6 +24,9 @@ class Manager extends TypedEmitter<ManagerEvents> {
         cacheType: CacheType.Memory,
         enabled: true,
       },
+      playerOptions: {
+        trackInfoInterval: 5000,
+      },
     };
     this.searchManager = new Search({
       clientId: this.config?.soundcloud?.clientId,

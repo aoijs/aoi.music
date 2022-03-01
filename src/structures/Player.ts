@@ -62,6 +62,7 @@ class Player {
     this._defaultOptions();
     this.debug = data.debug;
     this._configPlayer();
+    this._configConnection();
     this.cacheManager = new CacheManager(this.manager.config.cache);
   }
 
@@ -123,7 +124,9 @@ class Player {
           //console.log("started playing");
         }
         if (i !== urls.length - 1) {
-          await setTimeout(5000);
+          await setTimeout(
+            this.manager.config.playerOptions?.trackInfoInterval ?? 5000,
+          );
         }
       }
     } else if (type === 1) {
@@ -155,7 +158,9 @@ class Player {
           this.play();
         }
         if (i !== urls.length - 1) {
-          await setTimeout(5000);
+          await setTimeout(
+            this.manager.config.playerOptions?.trackInfoInterval ?? 5000,
+          );
         }
       }
     } else if (type === 2) {
@@ -187,7 +192,9 @@ class Player {
           this.play();
         }
         if (i !== urls.length - 1) {
-          await setTimeout(5000);
+          await setTimeout(
+            this.manager.config.playerOptions?.trackInfoInterval ?? 5000,
+          );
         }
       }
     } else if (type === 3) {
@@ -217,7 +224,9 @@ class Player {
           this.play();
         }
         if (i !== urls.length - 1) {
-          await setTimeout(5000);
+          await setTimeout(
+            this.manager.config.playerOptions?.trackInfoInterval ?? 5000,
+          );
         }
       }
     } else throw new Error(`Invalid Type: '${type}' Provided`);
