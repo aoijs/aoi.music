@@ -45,7 +45,6 @@ export class RequestManager {
         args,
       });
 
-
       stream = rawstream.pipe(ffmpeg);
       resource = createAudioResource(stream, {
         inlineVolume: true,

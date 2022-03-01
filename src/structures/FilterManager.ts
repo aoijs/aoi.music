@@ -2,11 +2,11 @@ import { createAudioResource, StreamType } from "@discordjs/voice";
 import * as prism from "prism-media";
 import Player from "./Player";
 export default class FilterManager {
-  filters: object;
+  filters: string[];
   player: Player;
   args: string[];
   constructor(player: Player) {
-    this.filters = {};
+    this.filters = [];
     this.player = player;
     this.args = [
       "-analyzeduration",
@@ -31,7 +31,7 @@ export default class FilterManager {
    */
   public async addFilters(filters: object) {
     for (const [filter, data] of Object.entries(filters)) {
-      this.filters[filter] = data;
+      this.filters.push(`${filter}=${data}`);
     }
     return await this._applyFilters();
   }
@@ -47,12 +47,15 @@ export default class FilterManager {
   }
 
   public async setFilters(filters: object) {
-    this.filters = filters;
+    this.filters = [];
+    for (const [filter, data] of Object.entries(filters)) {
+      this.filters.push(`${filter}=${data}`);
+    }
     return await this._applyFilters();
   }
 
   public async resetFilters() {
-    this.filters = {};
+    this.filters = [];
     return await this._applyFilters();
   }
   public async _applyFilters() {
@@ -79,15 +82,21 @@ export default class FilterManager {
       channels: 2,
       frameSize: 960,
     });
-    const fdata = (await this.player.requestManager.getStream()).pipe(ffmpeg);
+    //@ts-ignore
+    const stream = this.player.options.seekWhenFilter
+      ? this.player.requestManager._currentStream.unpipe()
+      : await this.player.requestManager.getStream();
+    const fdata = stream.pipe(ffmpeg);
 
-    const resource = createAudioResource(fdata.pipe(opus), {
+    const resource = createAudioResource(fdata, {
+      metadata: stream,
       inlineVolume: true,
-      inputType: StreamType.Opus,
+      inputType: StreamType.Raw,
     });
-
     this.player.requestManager.currentStream = resource;
+
     this.player.play();
+    console.log(this.player.player.checkPlayable());
     return this.filters;
   }
 
