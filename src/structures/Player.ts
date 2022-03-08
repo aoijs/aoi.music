@@ -62,7 +62,7 @@ class Player {
     this._defaultOptions();
     this.debug = data.debug;
     this._configPlayer();
-    this._configConnection();
+   // this._configConnection();
     this.cacheManager = new CacheManager(this.manager.config.cache);
   }
 
