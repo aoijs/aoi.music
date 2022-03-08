@@ -82,13 +82,6 @@ export default class FilterManager {
       channels: 2,
       frameSize: 960,
     });
-    if (this.player.options.seekWhenFilter) {
-      const duration =
-        this.player.requestManager.currentStream.playbackDuration;
-      args.unshift("-ss", `${Math.trunc(duration / 1000)}`);
-    }
-
-    //@ts-ignore
     const stream = await this.player.requestManager.getStream();
     const fdata = stream.pipe(ffmpeg);
 
