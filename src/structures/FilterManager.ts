@@ -82,10 +82,14 @@ export default class FilterManager {
       channels: 2,
       frameSize: 960,
     });
+    if (this.player.options.seekWhenFilter) {
+      const duration =
+        this.player.requestManager.currentStream.playbackDuration;
+      args.unshift("-ss", `${Math.trunc(duration / 1000)}`);
+    }
+
     //@ts-ignore
-    const stream = this.player.options.seekWhenFilter
-      ? this.player.requestManager._currentStream.unpipe()
-      : await this.player.requestManager.getStream();
+    const stream = await this.player.requestManager.getStream();
     const fdata = stream.pipe(ffmpeg);
 
     const resource = createAudioResource(fdata, {
@@ -96,7 +100,7 @@ export default class FilterManager {
     this.player.requestManager.currentStream = resource;
 
     this.player.play();
-    console.log(this.player.player.checkPlayable());
+    //console.log(this.player.player.checkPlayable());
     return this.filters;
   }
 
