@@ -62,7 +62,7 @@ class Player {
     this._defaultOptions();
     this.debug = data.debug;
     this._configPlayer();
-   // this._configConnection();
+    this._configConnection();
     this.cacheManager = new CacheManager(this.manager.config.cache);
   }
 
@@ -267,7 +267,7 @@ class Player {
 
   public _configPlayer(): void {
     this.player.on("stateChange", async (os, ns) => {
-      console.log([os.status, ns.status]?.join("|"));
+      //console.log([os.status, ns.status]?.join("|"));
       if (
         os.status !== AudioPlayerStatus.Idle &&
         ns.status === AudioPlayerStatus.Idle
