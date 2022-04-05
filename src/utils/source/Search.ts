@@ -10,9 +10,18 @@ import {
   LocalInfoType,
   LocalStreamType,
   SoundcloudOptions,
+  YoutubeMixPlaylistData,
+  YoutubeRelatedData,
 } from "../typings";
 
 import * as yts from "youtube-scrapper";
+import {
+  YoutubeMix,
+  YoutubeRelated,
+  ytMixHTMLParser,
+  ytRelatedHTMLParser,
+} from "../helpers";
+import { start } from "repl";
 export class SoundCloud {
   public options?: SoundcloudOptions = { clientId: undefined };
   constructor(config?: SoundcloudOptions) {
@@ -89,13 +98,15 @@ export class SoundCloud {
         const likeUrl = arr.join("/");
 
         const { collection } = await scdl
-          .getLikes({ profileUrl: likeUrl })
-          .catch((_) => {
+          .getLikes({
+            profileUrl: likeUrl,
+            limit: this.options.likeTrackLimit ?? 200,
+          })
+          .catch((e) => {
             return {
               collection: [],
             };
           });
-
         return collection.map(
           (x: {
             track?: {
@@ -127,7 +138,7 @@ export class SoundCloud {
    * @param {string} url url of the track
    */
   public async getInfo(url: string): Promise<any> {
-    const info = await scdl.getInfo(url).catch((e) => console.log(e));
+    const info = await scdl.getInfo(url).catch(console.error);
     if (!info) return;
 
     return info;
@@ -258,6 +269,11 @@ export class Youtube {
         }
 
         return data.tracks.map((x) => x.url);
+      } else if (track.includes("?v=") && track.includes("&list=")) {
+        const rawData: string = (await axios.get(track)).data;
+        const parsedData: YoutubeMixPlaylistData = ytMixHTMLParser(rawData);
+        const data = YoutubeMix(parsedData);
+        return data;
       } else {
         return [track];
       }
@@ -283,16 +299,27 @@ export class Youtube {
       return stream;
     }
   }
-  public related() {}
+  public async related(id: string, limit = 1) {
+    const rawData = ytRelatedHTMLParser(
+      (await axios.get(`https://youtube.com/watch?v=${id}`)).data,
+    );
+    const links = YoutubeRelated(rawData).slice(0, limit);
+    const res = [];
+    for (const link of links) {
+      const info = await yts.getVideoInfo(link, true);
+      res.push(info);
+    }
+    return res;
+  }
 }
 
 export class Search {
-  public soundCloud: SoundCloud;
+  public soundcloud: SoundCloud;
   public localFile: LocalFile = new LocalFile();
   public attachment: Attachments = new Attachments();
   public youtube: Youtube = new Youtube();
   constructor(data: SoundcloudOptions) {
-    this.soundCloud = new SoundCloud({ clientId: data.clientId });
+    this.soundcloud = new SoundCloud({ clientId: data.clientId });
   }
 
   public async search({
@@ -304,9 +331,9 @@ export class Search {
   }): Promise<any[]> {
     let result: any[];
     if (type === 0) {
-      result = await this.soundCloud.search({
+      result = await this.soundcloud.search({
         query,
-        scOptions: this.soundCloud.options,
+        scOptions: this.soundcloud.options,
       });
     } else if (type === 1) {
       result = await this.localFile.search(query);

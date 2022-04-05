@@ -70,7 +70,6 @@ export default class FilterManager {
       args.push("-af");
       args.push(filters);
     }
-    console.log({ args });
     const ffmpeg = new prism.FFmpeg({
       args,
     });
@@ -90,7 +89,6 @@ export default class FilterManager {
     this.player.requestManager.currentStream = resource;
 
     this.player.play();
-    //console.log(this.player.player.checkPlayable());
     return this.filters;
   }
 
@@ -103,7 +101,6 @@ export default class FilterManager {
     if (filters.length) {
       args.push("-af", filters);
     }
-    //console.log({ args });
     const ffmpeg = new prism.FFmpeg({
       args,
     });

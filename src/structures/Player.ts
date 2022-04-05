@@ -33,8 +33,9 @@ import Track from "./Track";
 import CacheManager from "./Cache";
 import FilterManager from "./FilterManager";
 import { RequestManager } from "./RequestManager";
-import { shuffle } from "../utils/helpers";
+import { isMix, shuffle } from "../utils/helpers";
 import { existsSync } from "fs";
+import axios from "axios";
 
 class Player {
   public voiceState: voiceState = {} as any;
@@ -51,6 +52,12 @@ class Player {
   public player: AudioPlayer = new AudioPlayer();
   public cacheManager: CacheManager;
   public filterManager: FilterManager;
+  public extraData: {
+    youtube: {
+      mixLastUrl: string;
+      mixIndex: number;
+    };
+  };
   public reseted: boolean = false;
   constructor(data: PlayerOptions) {
     this.connection = data.connection;
@@ -64,6 +71,12 @@ class Player {
     this._configPlayer();
     this._configConnection();
     this.cacheManager = new CacheManager(this.manager.config.cache);
+    this.extraData = {
+      youtube: {
+        mixLastUrl: "",
+        mixIndex: 0,
+      },
+    };
   }
 
   get state() {
@@ -99,7 +112,7 @@ class Player {
           this.reseted = false;
           break;
         }
-        const info = await this.manager.searchManager.soundCloud.getInfo(
+        const info = await this.manager.searchManager.soundcloud.getInfo(
           urls[i],
         );
         if (!info) {
@@ -118,10 +131,8 @@ class Player {
         if (this.queue.list.length === 1 && !this.queue.current) {
           this.queue.setCurrent(track);
           this.manager.emit(PlayerEvents.QUEUE_START, urls, this.textChannel);
-          //console.log("added first track");
           await this.requestManager.setCurrentStream(track);
           this.play();
-          //console.log("started playing");
         }
         if (i !== urls.length - 1) {
           await setTimeout(
@@ -198,6 +209,10 @@ class Player {
         }
       }
     } else if (type === 3) {
+      if (isMix(urls[urls.length - 1])) {
+        this.extraData.youtube.mixIndex = urls.length - 1;
+        this.extraData.youtube.mixLastUrl = urls[urls.length - 1];
+      }
       for (let i = 0; i < urls.length; i++) {
         if (this.reseted) {
           this.reseted = false;
@@ -208,6 +223,7 @@ class Player {
           console.error(`Cannot Get Data Of ${urls[i]}`);
           continue;
         }
+        info["rawQuery"] = urls[i];
         const track: Track = new Track(
           {
             requestUser: member,
@@ -245,6 +261,20 @@ class Player {
       this.queue.current,
       this.textChannel,
     );
+    if (
+      this.queue.current.rawInfo.rawQuery === this.extraData.youtube.mixLastUrl
+    ) {
+      this.extraData.youtube.mixIndex += 25;
+      this.search(this.queue.current.rawInfo.rawQuery, 3).then(async (res) => {
+        if (res.length > 0) {
+          await this.addTrack({
+            urls: res.slice(1),
+            type: 3,
+            member: this.queue.current.requestUser,
+          });
+        }
+      });
+    }
   }
   //@ts-ignore
   join(channel: VoiceChannel) {
@@ -267,7 +297,6 @@ class Player {
 
   public _configPlayer(): void {
     this.player.on("stateChange", async (os, ns) => {
-      //console.log([os.status, ns.status]?.join("|"));
       if (
         os.status !== AudioPlayerStatus.Idle &&
         ns.status === AudioPlayerStatus.Idle
@@ -390,14 +419,13 @@ class Player {
   }
   public async _autoPlay() {
     if (this.options.autoPlay === "soundcloud") {
-      const data = await this.manager.searchManager.soundCloud.related(
+      const data = await this.manager.searchManager.soundcloud.related(
         this.queue.current.rawInfo.id,
         10,
       );
       if (!data[0]) {
         this._destroyPlayer();
         console.error("failed to get next track");
-        console.log(data);
       } else {
         for (const d of data) {
           this.queue.list.push(
@@ -413,35 +441,56 @@ class Player {
         }
       }
     } else if (this.options.autoPlay === "youtube") {
-      const data = await this.manager.searchManager.soundCloud.related(
-        this.queue.current.rawInfo.id,
-        1,
+      const data = await this.manager.searchManager.youtube.related(
+        this.queue.current.rawInfo.details.id,
+        5,
       );
-      this.queue.list.push(
-        new Track(
-          {
-            requestUser: this.textChannel.guild.me,
-            rawinfo: data[0],
-            type: 0,
-          },
-          this,
-        ),
-      );
+      for (const d of data) {
+        this.queue.list.push(
+          new Track(
+            {
+              requestUser: this.textChannel.guild.me,
+              rawinfo: d,
+              type: 3,
+            },
+            this,
+          ),
+        );
+      }
     } else if (this.options.autoPlay === "relative") {
-      const data = await this.manager.searchManager.soundCloud.related(
-        this.queue.current.rawInfo.id,
-        1,
+      if (
+        !["youtube", "soundcloud"].includes(
+          this.queue.current.info.identifier.toLowerCase(),
+        )
+      ) {
+        this._destroyPlayer();
+        this._destroyPlayer();
+        console.error("Relative only supports Youtube And Soundcloud");
+      }
+      const data = await this.manager.searchManager[
+        this.queue.current.info.identifier.toLowerCase()
+      ].related(
+        this.queue.current.info.identifier.toLowerCase() === "youtube"
+          ? this.queue.current.rawInfo.details.id
+          : this.queue.current.rawInfo.id,
+        5,
       );
-      this.queue.list.push(
-        new Track(
-          {
-            requestUser: this.textChannel.guild.me,
-            rawinfo: data[0],
-            type: 0,
-          },
-          this,
-        ),
-      );
+      for (const d of data) {
+        this.queue.list.push(
+          new Track(
+            {
+              requestUser: this.textChannel.guild.me,
+              rawinfo: d,
+              type:
+                this.queue.current.info.identifier.toLowerCase() ===
+                "soundcloud"
+                  ? 0
+                  : 3,
+            },
+            this,
+          ),
+        );
+      }
     }
 
     await this._playNextTrack();
@@ -507,12 +556,14 @@ class Player {
   }
 
   skipTo(number: number) {
-    if (this.options.mode != LoopMode.Queue)
-      return this.queue.list.splice(0, number);
-    else {
+    if (this.options.mode != LoopMode.Queue) {
+      const a = this.queue.list.splice(0, number);
+      this.player.stop();
+      return a;
+    } else {
       const spliced = this.queue.list.splice(0, number);
       this.queue.list.push(...spliced);
-      this.play();
+      this.player.stop();
       return spliced;
     }
   }

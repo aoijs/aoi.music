@@ -97,10 +97,10 @@ export declare class Youtube {
     search(track: string): Promise<string[]>;
     getInfo(url: string): Promise<yts.YoutubeVideo>;
     getStream(info: yts.YoutubeVideo): Promise<import("stream").PassThrough | import("m3u8stream").Stream>;
-    related(): void;
+    related(id: string, limit?: number): Promise<any[]>;
 }
 export declare class Search {
-    soundCloud: SoundCloud;
+    soundcloud: SoundCloud;
     localFile: LocalFile;
     attachment: Attachments;
     youtube: Youtube;

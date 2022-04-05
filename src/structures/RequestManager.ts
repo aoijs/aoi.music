@@ -35,8 +35,7 @@ export class RequestManager {
     let stream: Readable | PassThrough | Stream | prism.opus.Encoder;
     if (Object.keys(this.player.filterManager.filters).length) {
       const args = [...this.player.filterManager.args];
-      const filters = Object.entries(this.player.filterManager.filters)
-        .map((x) => `${x[0]}=${x[1]}`)
+      const filters = this.player.filterManager.filters
         .join(",");
 
       args.push("-af");
@@ -63,7 +62,6 @@ export class RequestManager {
       !this.player.cacheManager.map.has(track.link) &&
       this.player.options.mode !== LoopMode.None
     ) {
-      //console.log("caching track");
       this.player.cacheManager.write(
         track.link,
         stream,
@@ -80,8 +78,8 @@ export class RequestManager {
     let stream: ReadStream;
     if (!track) this.nextStream = null;
     else if (track.source === 0) {
-      stream = await this.search.soundCloud.getStream(
-        track.rawInfo.permalink_url,
+      stream = await this.search.soundcloud.getStream(
+        track.rawInfo?.permalink_url,
       );
     } else if (track.source === 1) {
       stream = await this.search.localFile.getStream(track.rawInfo.path);
@@ -123,7 +121,7 @@ export class RequestManager {
         this.player.textChannel.guildId,
       );
     } else if (track.type === 0) {
-      return await this.search.soundCloud.getStream(
+      return await this.search.soundcloud.getStream(
         track.rawInfo.permalink_url,
       );
     } else if (track.type === 1) {
@@ -132,7 +130,6 @@ export class RequestManager {
       return await this.search.attachment.getStream(track.rawInfo.url);
     } else if (track.type === 3 && track.rawInfo instanceof YoutubeVideo) {
       return await this.search.youtube.getStream(track.rawInfo);
-      //console.log("using api");
     } else {
     }
   }

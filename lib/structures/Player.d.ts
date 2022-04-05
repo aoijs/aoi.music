@@ -23,6 +23,12 @@ declare class Player {
     player: AudioPlayer;
     cacheManager: CacheManager;
     filterManager: FilterManager;
+    extraData: {
+        youtube: {
+            mixLastUrl: string;
+            mixIndex: number;
+        };
+    };
     reseted: boolean;
     constructor(data: PlayerOptions);
     get state(): PlayerStates;

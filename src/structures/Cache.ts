@@ -40,7 +40,6 @@ class CacheManager {
     type: number,
     guildId: Snowflake,
   ): Promise<void> {
-    console.log({ id });
     if (!this._enabled()) return;
     if (type === 1) return;
     if (this.config?.cacheType === CacheType.Memory) {

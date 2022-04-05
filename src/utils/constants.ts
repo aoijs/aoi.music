@@ -32,3 +32,5 @@ export enum PlayerEvents {
   TRACK_PAUSE = "trackPause",
   TRACK_RESUME = "trackResume",
 }
+
+export const timeMultiPlier = [1, 60, 60, 24];

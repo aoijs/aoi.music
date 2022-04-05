@@ -29,6 +29,7 @@ export interface CacheOptions {
 }
 export interface SoundcloudOptions {
     clientId: string;
+    likeTrackLimit?: number;
 }
 export interface ManagerConfig {
     cache?: CacheOptions;
@@ -47,7 +48,7 @@ export interface voiceState {
 export interface ManagerEvents {
     [PlayerEvents.TRACK_START](Track: Track, textChannel: TextChannel | NewsChannel | ThreadChannel): this;
     [PlayerEvents.TRACK_END](track: Track, textChannel: TextChannel | NewsChannel | ThreadChannel): this;
-    [PlayerEvents.QUEUE_START](urls: string[], textChannel: TextChannel | NewsChannel | ThreadChannel): this;
+    [PlayerEvents.QUEUE_START](urls: unknown[], textChannel: TextChannel | NewsChannel | ThreadChannel): this;
     [PlayerEvents.QUEUE_END](textChannel: TextChannel | NewsChannel | ThreadChannel): this;
     [PlayerEvents.AUDIO_ERROR](error: any, textChannel: TextChannel | NewsChannel | ThreadChannel): this;
     [PlayerEvents.TRACK_RESUME](): this;
@@ -115,4 +116,105 @@ export declare type PlayerOptionsData = {
 export declare type AutoPlayType = "relative" | "youtube" | "soundcloud";
 export interface YoutubeOptions {
     fetchAuthor?: boolean;
+}
+export interface rawYoutubeMixData {
+    contents: {
+        twoColumnWatchNextResults: {
+            results: Record<string, unknown>;
+            secondaryResults: Record<string, unknown>;
+            playlist: {
+                playlist: YoutubeMixPlaylistData;
+            };
+        };
+    };
+}
+export interface YoutubeMixPlaylistData {
+    title: string;
+    contents: Record<"playlistPanelVideoRenderer", YoutubeMixPLaylistPanelVideoRenderData>[];
+    playlistId: string;
+    isInfinite: boolean;
+    playlistShareUrl: string;
+    ownerName: {
+        simpleText: string;
+    };
+}
+export interface YoutubeMixPLaylistPanelVideoRenderData {
+    videoId: any;
+    title: {
+        accessibility: {
+            accessibilityData: {
+                label: string;
+            };
+        };
+        simpleText: string;
+    };
+    longBylineText: {
+        runs: Record<string, unknown>[];
+    };
+    thumbnail: {
+        thumbnails: {
+            url: string;
+            height: number;
+            width: number;
+        }[];
+    };
+    lengthText: {
+        simpleText: string;
+        accessibility: {
+            a: any;
+            accessibilityData: {
+                label: string;
+            };
+        };
+    };
+    indexText: {
+        simpleText: string;
+    };
+    navigationEndpoint: {
+        watchEndpoint: {
+            videoId: string;
+            playlistId: string;
+            index: number;
+        };
+    };
+}
+export interface YoutubeRelatedData {
+    playerOverlays: {
+        playerOverlayRenderer: {
+            endScreen: {
+                watchNextEndScreenRenderer: {
+                    results: {
+                        endScreenVideoRenderer: EndScreenVideoRenderer;
+                    }[];
+                };
+            };
+        };
+    };
+}
+export interface EndScreenVideoRenderer {
+    videoId: string;
+    thumbnail: {
+        thumbnails: {
+            url: string;
+            height: number;
+            width: number;
+        }[];
+        title: {
+            accessibility: {
+                accessibilityData: {
+                    label: string;
+                };
+            };
+            simpleText: string;
+        };
+        lengthText: {
+            simpleText: string;
+            accessibility: {
+                accessibilityData: {
+                    label: string;
+                };
+            };
+        };
+        lengthInSeconds: number;
+    };
 }

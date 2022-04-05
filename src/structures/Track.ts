@@ -82,7 +82,7 @@ export default class Track {
         views: 0,
       };
     } else if (this.type === 3) {
-      rawInfo = rawInfo.details;
+      rawInfo = rawInfo.details ? rawInfo.details : rawInfo;
 
       let channelData: YoutubeChannel;
 

@@ -28,3 +28,4 @@ export declare enum PlayerEvents {
     TRACK_PAUSE = "trackPause",
     TRACK_RESUME = "trackResume"
 }
+export declare const timeMultiPlier: number[];

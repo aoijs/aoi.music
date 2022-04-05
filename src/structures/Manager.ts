@@ -18,6 +18,14 @@ class Manager extends TypedEmitter<ManagerEvents> {
   public config: ManagerConfig;
   public searchManager: Search;
   constructor(config: ManagerConfig) {
+    if (
+      config.soundcloud.likeTrackLimit &&
+      config.soundcloud.likeTrackLimit > 350
+    ) {
+      throw new Error(
+        "[MANAGER](SoundCloudError) Like Track Request Limit is too high, please lower it to 350 or less",
+      );
+    }
     super();
     this.config = config || {
       cache: {
@@ -32,7 +40,7 @@ class Manager extends TypedEmitter<ManagerEvents> {
       clientId: this.config?.soundcloud?.clientId,
     });
 
-    this.searchManager.soundCloud.setClientId(config?.soundcloud?.clientId);
+    this.searchManager.soundcloud.setClientId(config?.soundcloud?.clientId);
   }
   /**
    * joinVc
