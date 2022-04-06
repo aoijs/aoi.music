@@ -19,8 +19,8 @@ class Manager extends TypedEmitter<ManagerEvents> {
   public searchManager: Search;
   constructor(config: ManagerConfig) {
     if (
-      config.soundcloud.likeTrackLimit &&
-      config.soundcloud.likeTrackLimit > 350
+      config.soundcloud?.likeTrackLimit &&
+      config.soundcloud?.likeTrackLimit > 350
     ) {
       throw new Error(
         "[MANAGER](SoundCloudError) Like Track Request Limit is too high, please lower it to 350 or less",
