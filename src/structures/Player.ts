@@ -391,8 +391,13 @@ class Player {
     this.play();
   }
   _destroyPlayer(): void {
-    if (existsSync(`music/${this.textChannel.guildId}`)) {
-      rm(`music/${this.textChannel.guildId}`, { recursive: true, force: true });
+    if (this.manager.config.cache.cacheType === "Disk") {
+      if (existsSync(`music/${this.textChannel.guildId}`)) {
+        rm(`music/${this.textChannel.guildId}`, {
+          recursive: true,
+          force: true,
+        });
+      }
     }
     this.options.autoPlay = null;
     this.options.mode = LoopMode.None;

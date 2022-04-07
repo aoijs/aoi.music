@@ -1,6 +1,6 @@
 {
   "name": "@akarui/aoi.music",
-  "version": "1.1.0",
+  "version": "1.1.1-dev",
   "description": "Addition of the Music properties and foundation for aoi.js",
   "author": {
     "name": "Leref"
