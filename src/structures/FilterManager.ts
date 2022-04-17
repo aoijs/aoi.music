@@ -58,6 +58,7 @@ export default class FilterManager {
     this.filters = [];
     return await this._applyFilters();
   }
+  public async setComplexFilters(filters: string) {}
   public async _applyFilters() {
     const args = [...this.args];
     if (this.player.options.seekWhenFilter) {
@@ -94,27 +95,22 @@ export default class FilterManager {
 
   async seekTo(time: number) {
     const args = [...this.args];
+    console.log({ time });
     args.unshift("-ss", `${time}`);
-    const filters = Object.entries(this.filters)
-      .map((x) => `${x[0]}=${x[1]}`)
-      .join(",");
-    if (filters.length) {
-      args.push("-af", filters);
+    if (this.filters.length > 0) {
+      console.log({ filters: this.filters });
+      args.push("-af");
+      args.push(this.filters.join(","));
     }
+    console.log({ args });
     const ffmpeg = new prism.FFmpeg({
       args,
     });
-
-    const opus = new prism.opus.Encoder({
-      rate: 48000,
-      channels: 2,
-      frameSize: 960,
-    });
     const fdata = (await this.player.requestManager.getStream()).pipe(ffmpeg);
 
-    const resource = createAudioResource(fdata.pipe(opus), {
+    const resource = createAudioResource(fdata, {
       inlineVolume: true,
-      inputType: StreamType.Opus,
+      inputType: StreamType.Raw,
     });
 
     this.player.requestManager.currentStream = resource;

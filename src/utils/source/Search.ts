@@ -292,8 +292,19 @@ export class Youtube {
   public async getStream(info: yts.YoutubeVideo) {
     if (!info.formats.length) throw new Error("429 : Rate Limited!");
     else {
+      console.log({
+        bits: info.formats.map(
+          (c) => `${c.audioBitrate} | ${c.hasAudio} | ${c.hasVideo}`,
+        ),
+        rate: info.formats.map(
+          (c) => `${c.audioSampleRate} | ${c.hasAudio} | ${c.hasVideo}`,
+        ),
+        depth : info.formats.map(
+          (c) => `${c.audioChannels} | ${c.hasAudio} | ${c.hasVideo}`,
+        ),
+      });
       const stream = info.download(
-        info.formats.find((x) => x.hasAudio && !x.hasVideo),
+        info.formats.find((x) => x.hasAudio && !x.hasVideo && x.audioBitrate) ,
         { chunkMode: { chunkSize: 512000 }, pipe: false, debug: true },
       );
       return stream;

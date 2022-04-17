@@ -18,6 +18,7 @@ export default class FilterManager {
     removeFilters(...filters: any[]): void;
     setFilters(filters: object): Promise<string[]>;
     resetFilters(): Promise<string[]>;
+    setComplexFilters(filters: string): Promise<void>;
     _applyFilters(): Promise<string[]>;
     seekTo(time: number): Promise<void>;
 }

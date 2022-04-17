@@ -73,7 +73,7 @@ export default class Track {
       };
     } else if (this.type === 2) {
       this.info = {
-        title: rawInfo.title,
+        title: rawInfo.title.split("?")[0],
         description: "An Attachment or URL",
         url: rawInfo.url,
         duration: rawInfo.duration * 1000,
@@ -89,6 +89,7 @@ export default class Track {
       if (this.player?.manager?.config?.youtube?.fetchAuthor) {
         channelData = await getChannel(rawInfo.channelId);
       }
+      //console.log(rawInfo.thumbnails);
 
       this.info = {
         title: rawInfo.title,
