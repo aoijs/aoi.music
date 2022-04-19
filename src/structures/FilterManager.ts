@@ -95,14 +95,14 @@ export default class FilterManager {
 
   async seekTo(time: number) {
     const args = [...this.args];
-    console.log({ time });
+
     args.unshift("-ss", `${time}`);
     if (this.filters.length > 0) {
-      console.log({ filters: this.filters });
+
       args.push("-af");
       args.push(this.filters.join(","));
     }
-    console.log({ args });
+
     const ffmpeg = new prism.FFmpeg({
       args,
     });
