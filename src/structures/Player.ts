@@ -351,7 +351,7 @@ class Player {
       if (
         os.status === AudioPlayerStatus.Playing &&
         ns.status !== AudioPlayerStatus.Playing &&
-        ns.status !== AudioPlayerStatus.Idle
+        ns.status !== AudioPlayerStatus.Idle && ns.status !== AudioPlayerStatus.Paused
       ) {
         this.manager.emit(
           PlayerEvents.TRACK_END,
