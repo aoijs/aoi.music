@@ -469,7 +469,6 @@ class Player {
         )
       ) {
         this._destroyPlayer();
-        this._destroyPlayer();
         console.error("Relative only supports Youtube And Soundcloud");
       }
       const data = await this.manager.searchManager[
