@@ -1,5 +1,6 @@
 /// <reference types="node" />
 import { VoiceConnection } from "@discordjs/voice";
+import { Tracks } from "spotify-url-info";
 import { NewsChannel, TextChannel, ThreadChannel, VoiceChannel } from "discord.js";
 import { CacheType, LoopMode, PlayerEvents } from "./constants";
 import * as internal from "stream";
@@ -100,7 +101,10 @@ export interface SCTrackInfo extends TrackInfo {
 export interface YTRawInfo extends YoutubeVideo {
     [key: string]: any;
 }
-export declare type TrackRawInfo = SCTrackInfo | LocalInfoType | AttachmentInfoType | YTRawInfo;
+export interface SpotifyInfo extends Tracks {
+    [key: string]: any;
+}
+export declare type TrackRawInfo = SCTrackInfo | LocalInfoType | AttachmentInfoType | YTRawInfo | SpotifyInfo;
 export declare type PlayerOptionsData = {
     paused: boolean;
     mode: LoopMode.None | LoopMode.Queue | LoopMode.Track;

@@ -245,6 +245,38 @@ class Player {
           );
         }
       }
+    } else if (type === 4) {
+      const infos = await this.manager.searchManager.spotify.getInfo(urls[0]);
+      urls = infos.map(x => x.name);
+      for (let i = 0; i < infos.length; i++) {
+        if (this.reseted) {
+          this.reseted = false;
+          break;
+        }
+        const info = infos[i];
+        if (!info) {
+          console.error(`Cannot Get Data Of ${urls[0]}`);
+        }
+        const track: Track = new Track(
+          { requestUser: member, rawinfo: info, type },
+          this,
+        );
+        this.queue.list.push(track);
+        if (this.queue.list.length === 1 && !this.queue.current) {
+          this.queue.setCurrent(track);
+          this.manager.emit(PlayerEvents.QUEUE_START, urls, this.textChannel);
+          await this.requestManager.setCurrentStream(track);
+          this.play();
+        }
+        if(infos.length >1 ) {
+
+        }
+        if (i !== infos.length - 1) {
+          await setTimeout(
+            this.manager.config.playerOptions?.trackInfoInterval ?? 5000,
+          );
+        }
+      }
     } else throw new Error(`Invalid Type: '${type}' Provided`);
 
     return urls.length === 1
@@ -351,7 +383,8 @@ class Player {
       if (
         os.status === AudioPlayerStatus.Playing &&
         ns.status !== AudioPlayerStatus.Playing &&
-        ns.status !== AudioPlayerStatus.Idle && ns.status !== AudioPlayerStatus.Paused
+        ns.status !== AudioPlayerStatus.Idle &&
+        ns.status !== AudioPlayerStatus.Paused
       ) {
         this.manager.emit(
           PlayerEvents.TRACK_END,

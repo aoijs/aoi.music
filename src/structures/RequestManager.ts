@@ -130,7 +130,8 @@ export class RequestManager {
       return await this.search.attachment.getStream(track.rawInfo.url);
     } else if (track.type === 3 && track.rawInfo instanceof YoutubeVideo) {
       return await this.search.youtube.getStream(track.rawInfo);
-    } else {
+    } else if( track.type === 4) {
+      return await this.search.spotify.getStream(track.rawInfo.name + " " + track.rawInfo.artists[0].name);
     }
   }
 }

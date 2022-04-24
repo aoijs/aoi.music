@@ -1,17 +1,453 @@
-<!DOCTYPE html><html class="default"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>@akarui/aoi.music</title><meta name="description" content="Documentation for @akarui/aoi.music"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script async src="assets/search.js" id="search-script"></script></head><body><script>document.body.classList.add(localStorage.getItem("tsd-theme") || "os")</script><header><div class="tsd-page-toolbar"><div class="container"><div class="table-wrap"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget search no-caption">Search</label><input type="text" id="tsd-search-field"/></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">@akarui/aoi.music</a></div><div class="table-cell" id="tsd-widgets"><div id="tsd-filter"><a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a><div class="tsd-filter-group"><div class="tsd-select" id="tsd-filter-visibility"><span class="tsd-select-label">All</span><ul class="tsd-select-list"><li data-value="public">Public</li><li data-value="protected">Public/Protected</li><li data-value="private" class="selected">All</li></ul></div> <input type="checkbox" id="tsd-filter-inherited" checked/><label class="tsd-widget" for="tsd-filter-inherited">Inherited</label><input type="checkbox" id="tsd-filter-externals" checked/><label class="tsd-widget" for="tsd-filter-externals">Externals</label></div></div><a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a></div></div></div></div><div class="tsd-page-title"><div class="container"><h1>@akarui/aoi.music</h1></div></div></header><div class="container container-main"><div class="row"><div class="col-8 col-content"><div class="tsd-panel tsd-typography">
-<a href="#akaruiaoimusic" id="akaruiaoimusic" style="color: inherit; text-decoration: none;">
-  <h1>@akarui/aoi.music</h1>
-</a>
-<p>Addition of the Music properties and foundation for aoi.js</p>
+<!DOCTYPE html>
+<html class="default">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <title>@akarui/aoi.music</title>
+    <meta name="description" content="Documentation for @akarui/aoi.music" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/highlight.css" />
+    <link rel="stylesheet" href="assets/changelog.css" />
+    <script async src="assets/search.js" id="search-script"></script>
+  </head>
+  <body>
+    <script>
+      document.body.classList.add(localStorage.getItem("tsd-theme") || "os");
+    </script>
+    <header>
+      <div class="tsd-page-toolbar">
+        <div class="container">
+          <div class="table-wrap">
+            <div class="table-cell" id="tsd-search" data-base=".">
+              <div class="field">
+                <label
+                  for="tsd-search-field"
+                  class="tsd-widget search no-caption"
+                  >Search</label
+                ><input type="text" id="tsd-search-field" />
+              </div>
+              <ul class="results">
+                <li class="state loading">Preparing search index...</li>
+                <li class="state failure">The search index is not available</li>
+              </ul>
+              <a href="index.html" class="title">@akarui/aoi.music</a>
+            </div>
+            <div class="table-cell" id="tsd-widgets">
+              <div id="tsd-filter">
+                <a
+                  href="#"
+                  class="tsd-widget options no-caption"
+                  data-toggle="options"
+                  >Options</a
+                >
+                <div class="tsd-filter-group">
+                  <div class="tsd-select" id="tsd-filter-visibility">
+                    <span class="tsd-select-label">All</span>
+                    <ul class="tsd-select-list">
+                      <li data-value="public">Public</li>
+                      <li data-value="protected">Public/Protected</li>
+                      <li data-value="private" class="selected">All</li>
+                    </ul>
+                  </div>
+                  <input
+                    type="checkbox"
+                    id="tsd-filter-inherited"
+                    checked
+                  /><label class="tsd-widget" for="tsd-filter-inherited"
+                    >Inherited</label
+                  ><input
+                    type="checkbox"
+                    id="tsd-filter-externals"
+                    checked
+                  /><label class="tsd-widget" for="tsd-filter-externals"
+                    >Externals</label
+                  >
+                </div>
+              </div>
+              <a href="#" class="tsd-widget menu no-caption" data-toggle="menu"
+                >Menu</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tsd-page-title">
+        <div class="container">
+          <h1>@akarui/aoi.music</h1>
+          <a href="changelog.html">
+            <button class="button">v1.2.0</button>
+          </a>
+        </div>
+      </div>
+    </header>
+    <div class="container container-main">
+      <div class="row">
+        <div class="col-8 col-content">
+          <div class="tsd-panel tsd-typography">
+            <a
+              href="#akaruiaoimusic"
+              id="akaruiaoimusic"
+              style="color: inherit; text-decoration: none"
+            >
+              <h1>@akarui/aoi.music</h1>
+            </a>
+            <p>Addition of the Music properties and foundation for aoi.js</p>
 
-<a href="#setup" id="setup" style="color: inherit; text-decoration: none;">
-  <h1>Setup</h1>
-</a>
-<pre><code class="language-js"><span class="hl-0">const</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-2">Client</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-2">MessageEmbed</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-2">TextChannel</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-2">NewsChannel</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-2">ThreadChannel</span><span class="hl-1">,</span><br/><span class="hl-1">} = </span><span class="hl-3">require</span><span class="hl-1">(</span><span class="hl-4">&quot;discord.js&quot;</span><span class="hl-1">);</span><br/><span class="hl-0">const</span><span class="hl-1"> { </span><span class="hl-2">Manager</span><span class="hl-1"> } = </span><span class="hl-3">require</span><span class="hl-1">(</span><span class="hl-4">&quot;@akarui/aoi.music&quot;</span><span class="hl-1">);</span><br/><br/><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">client</span><span class="hl-1"> = </span><span class="hl-0">new</span><span class="hl-1"> </span><span class="hl-3">Client</span><span class="hl-1">({</span><br/><span class="hl-1">  </span><span class="hl-5">intents:</span><span class="hl-1"> [</span><span class="hl-4">&quot;GUILDS&quot;</span><span class="hl-1">, </span><span class="hl-4">&quot;GUILD_MESSAGES&quot;</span><span class="hl-1">, </span><span class="hl-4">&quot;GUILD_VOICE_STATES&quot;</span><span class="hl-1">],</span><br/><span class="hl-1">});</span><br/><br/><span class="hl-5">client</span><span class="hl-1">.</span><span class="hl-3">login</span><span class="hl-1">(</span><span class="hl-4">&quot;YOUR BOT TOKEN&quot;</span><span class="hl-1">);</span><br/><br/><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">manager</span><span class="hl-1"> = </span><span class="hl-0">new</span><span class="hl-1"> </span><span class="hl-3">Manager</span><span class="hl-1">({</span><br/><span class="hl-1">  </span><span class="hl-5">soundcloud:</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-5">clientId:</span><span class="hl-1"> </span><span class="hl-4">&quot;SOUNDCLOUD CLIENTID&quot;</span><span class="hl-1">,</span><br/><span class="hl-1">  },</span><br/><span class="hl-1">  </span><span class="hl-5">cache:</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-5">cacheType:</span><span class="hl-1"> </span><span class="hl-4">&quot;Memory&quot;</span><span class="hl-1">,</span><br/><span class="hl-1">    </span><span class="hl-5">enabled:</span><span class="hl-1"> </span><span class="hl-0">true</span><span class="hl-1">,</span><br/><span class="hl-1">  },</span><br/><span class="hl-1">});</span><br/><span class="hl-5">client</span><span class="hl-1">.</span><span class="hl-5">manager</span><span class="hl-1"> = </span><span class="hl-5">manager</span><span class="hl-1">;</span><br/><br/><span class="hl-5">client</span><span class="hl-1">.</span><span class="hl-3">on</span><span class="hl-1">(</span><span class="hl-4">&quot;messageCreate&quot;</span><span class="hl-1">, </span><span class="hl-0">async</span><span class="hl-1"> (</span><span class="hl-5">msg</span><span class="hl-1">) </span><span class="hl-0">=&gt;</span><span class="hl-1"> {</span><br/><br/><span class="hl-1">    </span><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">args</span><span class="hl-1"> = </span><span class="hl-5">msg</span><span class="hl-1">.</span><span class="hl-5">content</span><span class="hl-1">.</span><span class="hl-3">trim</span><span class="hl-1">().</span><span class="hl-3">split</span><span class="hl-1">(</span><span class="hl-4">&quot; &quot;</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">cmdName</span><span class="hl-1"> = </span><span class="hl-5">args</span><span class="hl-1">.</span><span class="hl-3">shift</span><span class="hl-1">();</span><br/><span class="hl-1">  </span><span class="hl-6">if</span><span class="hl-1"> ( </span><span class="hl-5">cmdName</span><span class="hl-1"> === </span><span class="hl-4">&quot;?play&quot;</span><span class="hl-1">) {</span><br/><br/><span class="hl-1">    </span><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">type</span><span class="hl-1"> = </span><span class="hl-7">Number</span><span class="hl-1">(</span><span class="hl-5">args</span><span class="hl-1">.</span><span class="hl-3">shift</span><span class="hl-1">());</span><br/><span class="hl-1">    </span><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">track</span><span class="hl-1"> = </span><span class="hl-5">args</span><span class="hl-1">.</span><span class="hl-3">join</span><span class="hl-1">(</span><span class="hl-4">&quot; &quot;</span><span class="hl-1">);</span><br/><br/><span class="hl-1">    </span><span class="hl-5">manager</span><span class="hl-1">.</span><span class="hl-5">players</span><br/><span class="hl-1">      .</span><span class="hl-3">get</span><span class="hl-1">(</span><span class="hl-5">msg</span><span class="hl-1">.</span><span class="hl-5">guild</span><span class="hl-1">.</span><span class="hl-5">id</span><span class="hl-1">)</span><br/><span class="hl-1">      .</span><span class="hl-3">search</span><span class="hl-1">(</span><span class="hl-5">track</span><span class="hl-1">, </span><span class="hl-5">type</span><span class="hl-1">)</span><br/><span class="hl-1">      .</span><span class="hl-3">then</span><span class="hl-1">((</span><span class="hl-5">d</span><span class="hl-1">) </span><span class="hl-0">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">        </span><span class="hl-5">manager</span><span class="hl-1">.</span><span class="hl-5">players</span><br/><span class="hl-1">          .</span><span class="hl-3">get</span><span class="hl-1">(</span><span class="hl-5">msg</span><span class="hl-1">.</span><span class="hl-5">guild</span><span class="hl-1">.</span><span class="hl-5">id</span><span class="hl-1">)</span><br/><span class="hl-1">          .</span><span class="hl-3">addTrack</span><span class="hl-1">({ </span><span class="hl-5">urls:</span><span class="hl-1"> </span><span class="hl-5">d</span><span class="hl-1">, </span><span class="hl-5">type:</span><span class="hl-1"> </span><span class="hl-5">type</span><span class="hl-1">, </span><span class="hl-5">member:</span><span class="hl-1"> </span><span class="hl-5">msg</span><span class="hl-1">.</span><span class="hl-5">member</span><span class="hl-1"> })</span><br/><span class="hl-1">          .</span><span class="hl-3">then</span><span class="hl-1">((</span><span class="hl-5">title</span><span class="hl-1">) </span><span class="hl-0">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">            </span><span class="hl-5">msg</span><span class="hl-1">.</span><span class="hl-5">channel</span><span class="hl-1">.</span><span class="hl-3">send</span><span class="hl-1">(</span><span class="hl-4">`Added </span><span class="hl-0">${</span><span class="hl-5">title</span><span class="hl-0">}</span><span class="hl-4">`</span><span class="hl-1">);</span><br/><span class="hl-1">          });</span><br/><span class="hl-1">      });</span><br/><span class="hl-1">  } </span><span class="hl-6">else</span><span class="hl-1"> </span><span class="hl-6">if</span><span class="hl-1"> (</span><span class="hl-5">cmdName</span><span class="hl-1"> === </span><span class="hl-4">&quot;?connect&quot;</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-5">manager</span><br/><span class="hl-1">      .</span><span class="hl-3">joinVc</span><span class="hl-1">({</span><br/><span class="hl-1">        </span><span class="hl-5">voiceChannel:</span><span class="hl-1"> </span><span class="hl-5">msg</span><span class="hl-1">.</span><span class="hl-5">member</span><span class="hl-1">?.</span><span class="hl-5">voice</span><span class="hl-1">.</span><span class="hl-5">channel</span><span class="hl-1">,</span><br/><span class="hl-1">        </span><span class="hl-5">textChannel:</span><span class="hl-1"> </span><span class="hl-5">msg</span><span class="hl-1">.</span><span class="hl-5">channel</span><span class="hl-1">,</span><br/><span class="hl-1">      })</span><br/><span class="hl-1">      .</span><span class="hl-3">then</span><span class="hl-1">((</span><span class="hl-5">x</span><span class="hl-1">) </span><span class="hl-0">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">        </span><span class="hl-5">msg</span><span class="hl-1">.</span><span class="hl-5">channel</span><span class="hl-1">.</span><span class="hl-3">send</span><span class="hl-1">(</span><span class="hl-4">&quot;Connected To VC&quot;</span><span class="hl-1">);</span><br/><span class="hl-1">      })</span><br/><span class="hl-1">      .</span><span class="hl-3">catch</span><span class="hl-1">((</span><span class="hl-5">e</span><span class="hl-1">) </span><span class="hl-0">=&gt;</span><span class="hl-1"> </span><span class="hl-5">msg</span><span class="hl-1">.</span><span class="hl-5">channel</span><span class="hl-1">.</span><span class="hl-3">send</span><span class="hl-1">(</span><span class="hl-4">`Failed To Join VC With Reason: </span><span class="hl-0">${</span><span class="hl-5">e</span><span class="hl-0">}</span><span class="hl-4">`</span><span class="hl-1">));</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">});</span><br/><span class="hl-8">/**</span><br/><span class="hl-8"> * </span><span class="hl-0">@event</span><span class="hl-8">  {} &#39;trackStart&#39;</span><br/><span class="hl-8"> * </span><span class="hl-0">@param</span><span class="hl-8">  </span><span class="hl-7">{Track}</span><span class="hl-8"> </span><span class="hl-5">track</span><br/><span class="hl-8"> * </span><span class="hl-0">@param</span><span class="hl-8">  </span><span class="hl-7">{TextChannel | NewsChannel | ThreadChannel }</span><span class="hl-8"> </span><span class="hl-5">channel</span><br/><span class="hl-8"> */</span><br/><span class="hl-5">manager</span><span class="hl-1">.</span><span class="hl-3">on</span><span class="hl-1">(</span><span class="hl-4">&quot;trackStart&quot;</span><span class="hl-1">, </span><span class="hl-0">async</span><span class="hl-1"> (</span><span class="hl-5">track</span><span class="hl-1">, </span><span class="hl-5">channel</span><span class="hl-1">) </span><span class="hl-0">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">embed</span><span class="hl-1"> = </span><span class="hl-0">new</span><span class="hl-1"> </span><span class="hl-3">MessageEmbed</span><span class="hl-1">()</span><br/><span class="hl-1">    .</span><span class="hl-3">setTitle</span><span class="hl-1">(</span><span class="hl-4">&quot;Now Playing&quot;</span><span class="hl-1">)</span><br/><span class="hl-1">    .</span><span class="hl-3">setDescription</span><span class="hl-1">(</span><span class="hl-5">track</span><span class="hl-1">.</span><span class="hl-5">info</span><span class="hl-1">?.</span><span class="hl-5">description</span><span class="hl-1"> || </span><span class="hl-4">&quot;reee&quot;</span><span class="hl-1">)</span><br/><span class="hl-1">    .</span><span class="hl-3">addField</span><span class="hl-1">(</span><span class="hl-4">&quot;title&quot;</span><span class="hl-1">, </span><span class="hl-5">track</span><span class="hl-1">.</span><span class="hl-5">info</span><span class="hl-1">?.</span><span class="hl-5">title</span><span class="hl-1"> || </span><span class="hl-4">&quot;reee&quot;</span><span class="hl-1">)</span><br/><span class="hl-1">    .</span><span class="hl-3">addField</span><span class="hl-1">(</span><br/><span class="hl-1">      </span><span class="hl-4">&quot;duration&quot;</span><span class="hl-1">,</span><br/><span class="hl-1">      </span><span class="hl-4">`</span><span class="hl-0">${</span><span class="hl-9">(</span><span class="hl-5">track</span><span class="hl-9">.</span><span class="hl-5">info</span><span class="hl-9">?.</span><span class="hl-5">duration</span><span class="hl-9"> </span><span class="hl-1">/</span><span class="hl-9"> </span><span class="hl-10">1000</span><span class="hl-9"> </span><span class="hl-1">/</span><span class="hl-9"> </span><span class="hl-10">60</span><span class="hl-9">).</span><span class="hl-3">toFixed</span><span class="hl-9">(</span><span class="hl-10">2</span><span class="hl-9">)</span><span class="hl-0">}</span><span class="hl-4">mins`</span><span class="hl-1">,</span><br/><span class="hl-1">    )</span><br/><span class="hl-1">    .</span><span class="hl-3">addField</span><span class="hl-1">(</span><span class="hl-4">&quot;requestedBy&quot;</span><span class="hl-1">, </span><span class="hl-5">track</span><span class="hl-1">.</span><span class="hl-5">requestUser</span><span class="hl-1">.</span><span class="hl-5">user</span><span class="hl-1">.</span><span class="hl-5">tag</span><span class="hl-1"> || </span><span class="hl-4">&quot;reee&quot;</span><span class="hl-1">)</span><br/><span class="hl-1">    .</span><span class="hl-3">setColor</span><span class="hl-1">(</span><span class="hl-4">&quot;RANDOM&quot;</span><span class="hl-1">)</span><br/><span class="hl-1">    .</span><span class="hl-3">setImage</span><span class="hl-1">(</span><span class="hl-5">track</span><span class="hl-1">.</span><span class="hl-5">info</span><span class="hl-1">?.</span><span class="hl-5">thumbnail</span><span class="hl-1">);</span><br/><br/><span class="hl-1">  </span><span class="hl-5">channel</span><span class="hl-1">.</span><span class="hl-3">send</span><span class="hl-1">({ </span><span class="hl-5">embeds:</span><span class="hl-1"> [</span><span class="hl-5">embed</span><span class="hl-1">] });</span><br/><span class="hl-1">});</span><br/><span class="hl-5">client</span><span class="hl-1">.</span><span class="hl-3">on</span><span class="hl-1">(</span><span class="hl-4">&quot;ready&quot;</span><span class="hl-1">, (</span><span class="hl-5">eee</span><span class="hl-1">) </span><span class="hl-0">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">console</span><span class="hl-1">.</span><span class="hl-3">log</span><span class="hl-1">(</span><span class="hl-4">&quot;eeee&quot;</span><span class="hl-1">);</span><br/><span class="hl-1">});</span>
+            <a
+              href="#setup"
+              id="setup"
+              style="color: inherit; text-decoration: none"
+            >
+              <h1>Setup</h1>
+            </a>
+            <pre><code class="language-js"><span class="hl-0">const</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-2">Client</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-2">MessageEmbed</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-2">TextChannel</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-2">NewsChannel</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-2">ThreadChannel</span><span class="hl-1">,</span><br/><span class="hl-1">} = </span><span class="hl-3">require</span><span class="hl-1">(</span><span class="hl-4">&quot;discord.js&quot;</span><span class="hl-1">);</span><br/><span class="hl-0">const</span><span class="hl-1"> { </span><span class="hl-2">Manager</span><span class="hl-1"> } = </span><span class="hl-3">require</span><span class="hl-1">(</span><span class="hl-4">&quot;@akarui/aoi.music&quot;</span><span class="hl-1">);</span><br/><br/><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">client</span><span class="hl-1"> = </span><span class="hl-0">new</span><span class="hl-1"> </span><span class="hl-3">Client</span><span class="hl-1">({</span><br/><span class="hl-1">  </span><span class="hl-5">intents:</span><span class="hl-1"> [</span><span class="hl-4">&quot;GUILDS&quot;</span><span class="hl-1">, </span><span class="hl-4">&quot;GUILD_MESSAGES&quot;</span><span class="hl-1">, </span><span class="hl-4">&quot;GUILD_VOICE_STATES&quot;</span><span class="hl-1">],</span><br/><span class="hl-1">});</span><br/><br/><span class="hl-5">client</span><span class="hl-1">.</span><span class="hl-3">login</span><span class="hl-1">(</span><span class="hl-4">&quot;YOUR BOT TOKEN&quot;</span><span class="hl-1">);</span><br/><br/><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">manager</span><span class="hl-1"> = </span><span class="hl-0">new</span><span class="hl-1"> </span><span class="hl-3">Manager</span><span class="hl-1">({</span><br/><span class="hl-1">  </span><span class="hl-5">soundcloud:</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-5">clientId:</span><span class="hl-1"> </span><span class="hl-4">&quot;SOUNDCLOUD CLIENTID&quot;</span><span class="hl-1">,</span><br/><span class="hl-1">  },</span><br/><span class="hl-1">  </span><span class="hl-5">cache:</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-5">cacheType:</span><span class="hl-1"> </span><span class="hl-4">&quot;Memory&quot;</span><span class="hl-1">,</span><br/><span class="hl-1">    </span><span class="hl-5">enabled:</span><span class="hl-1"> </span><span class="hl-0">true</span><span class="hl-1">,</span><br/><span class="hl-1">  },</span><br/><span class="hl-1">});</span><br/><span class="hl-5">client</span><span class="hl-1">.</span><span class="hl-5">manager</span><span class="hl-1"> = </span><span class="hl-5">manager</span><span class="hl-1">;</span><br/><br/><span class="hl-5">client</span><span class="hl-1">.</span><span class="hl-3">on</span><span class="hl-1">(</span><span class="hl-4">&quot;messageCreate&quot;</span><span class="hl-1">, </span><span class="hl-0">async</span><span class="hl-1"> (</span><span class="hl-5">msg</span><span class="hl-1">) </span><span class="hl-0">=&gt;</span><span class="hl-1"> {</span><br/><br/><span class="hl-1">    </span><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">args</span><span class="hl-1"> = </span><span class="hl-5">msg</span><span class="hl-1">.</span><span class="hl-5">content</span><span class="hl-1">.</span><span class="hl-3">trim</span><span class="hl-1">().</span><span class="hl-3">split</span><span class="hl-1">(</span><span class="hl-4">&quot; &quot;</span><span class="hl-1">);</span><br/><span class="hl-1">    </span><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">cmdName</span><span class="hl-1"> = </span><span class="hl-5">args</span><span class="hl-1">.</span><span class="hl-3">shift</span><span class="hl-1">();</span><br/><span class="hl-1">  </span><span class="hl-6">if</span><span class="hl-1"> ( </span><span class="hl-5">cmdName</span><span class="hl-1"> === </span><span class="hl-4">&quot;?play&quot;</span><span class="hl-1">) {</span><br/><br/><span class="hl-1">    </span><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">type</span><span class="hl-1"> = </span><span class="hl-7">Number</span><span class="hl-1">(</span><span class="hl-5">args</span><span class="hl-1">.</span><span class="hl-3">shift</span><span class="hl-1">());</span><br/><span class="hl-1">    </span><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">track</span><span class="hl-1"> = </span><span class="hl-5">args</span><span class="hl-1">.</span><span class="hl-3">join</span><span class="hl-1">(</span><span class="hl-4">&quot; &quot;</span><span class="hl-1">);</span><br/><br/><span class="hl-1">    </span><span class="hl-5">manager</span><span class="hl-1">.</span><span class="hl-5">players</span><br/><span class="hl-1">      .</span><span class="hl-3">get</span><span class="hl-1">(</span><span class="hl-5">msg</span><span class="hl-1">.</span><span class="hl-5">guild</span><span class="hl-1">.</span><span class="hl-5">id</span><span class="hl-1">)</span><br/><span class="hl-1">      .</span><span class="hl-3">search</span><span class="hl-1">(</span><span class="hl-5">track</span><span class="hl-1">, </span><span class="hl-5">type</span><span class="hl-1">)</span><br/><span class="hl-1">      .</span><span class="hl-3">then</span><span class="hl-1">((</span><span class="hl-5">d</span><span class="hl-1">) </span><span class="hl-0">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">        </span><span class="hl-5">manager</span><span class="hl-1">.</span><span class="hl-5">players</span><br/><span class="hl-1">          .</span><span class="hl-3">get</span><span class="hl-1">(</span><span class="hl-5">msg</span><span class="hl-1">.</span><span class="hl-5">guild</span><span class="hl-1">.</span><span class="hl-5">id</span><span class="hl-1">)</span><br/><span class="hl-1">          .</span><span class="hl-3">addTrack</span><span class="hl-1">({ </span><span class="hl-5">urls:</span><span class="hl-1"> </span><span class="hl-5">d</span><span class="hl-1">, </span><span class="hl-5">type:</span><span class="hl-1"> </span><span class="hl-5">type</span><span class="hl-1">, </span><span class="hl-5">member:</span><span class="hl-1"> </span><span class="hl-5">msg</span><span class="hl-1">.</span><span class="hl-5">member</span><span class="hl-1"> })</span><br/><span class="hl-1">          .</span><span class="hl-3">then</span><span class="hl-1">((</span><span class="hl-5">title</span><span class="hl-1">) </span><span class="hl-0">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">            </span><span class="hl-5">msg</span><span class="hl-1">.</span><span class="hl-5">channel</span><span class="hl-1">.</span><span class="hl-3">send</span><span class="hl-1">(</span><span class="hl-4">`Added </span><span class="hl-0">${</span><span class="hl-5">title</span><span class="hl-0">}</span><span class="hl-4">`</span><span class="hl-1">);</span><br/><span class="hl-1">          });</span><br/><span class="hl-1">      });</span><br/><span class="hl-1">  } </span><span class="hl-6">else</span><span class="hl-1"> </span><span class="hl-6">if</span><span class="hl-1"> (</span><span class="hl-5">cmdName</span><span class="hl-1"> === </span><span class="hl-4">&quot;?connect&quot;</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-5">manager</span><br/><span class="hl-1">      .</span><span class="hl-3">joinVc</span><span class="hl-1">({</span><br/><span class="hl-1">        </span><span class="hl-5">voiceChannel:</span><span class="hl-1"> </span><span class="hl-5">msg</span><span class="hl-1">.</span><span class="hl-5">member</span><span class="hl-1">?.</span><span class="hl-5">voice</span><span class="hl-1">.</span><span class="hl-5">channel</span><span class="hl-1">,</span><br/><span class="hl-1">        </span><span class="hl-5">textChannel:</span><span class="hl-1"> </span><span class="hl-5">msg</span><span class="hl-1">.</span><span class="hl-5">channel</span><span class="hl-1">,</span><br/><span class="hl-1">      })</span><br/><span class="hl-1">      .</span><span class="hl-3">then</span><span class="hl-1">((</span><span class="hl-5">x</span><span class="hl-1">) </span><span class="hl-0">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">        </span><span class="hl-5">msg</span><span class="hl-1">.</span><span class="hl-5">channel</span><span class="hl-1">.</span><span class="hl-3">send</span><span class="hl-1">(</span><span class="hl-4">&quot;Connected To VC&quot;</span><span class="hl-1">);</span><br/><span class="hl-1">      })</span><br/><span class="hl-1">      .</span><span class="hl-3">catch</span><span class="hl-1">((</span><span class="hl-5">e</span><span class="hl-1">) </span><span class="hl-0">=&gt;</span><span class="hl-1"> </span><span class="hl-5">msg</span><span class="hl-1">.</span><span class="hl-5">channel</span><span class="hl-1">.</span><span class="hl-3">send</span><span class="hl-1">(</span><span class="hl-4">`Failed To Join VC With Reason: </span><span class="hl-0">${</span><span class="hl-5">e</span><span class="hl-0">}</span><span class="hl-4">`</span><span class="hl-1">));</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">});</span><br/><span class="hl-8">/**</span><br/><span class="hl-8"> * </span><span class="hl-0">@event</span><span class="hl-8">  {} &#39;trackStart&#39;</span><br/><span class="hl-8"> * </span><span class="hl-0">@param</span><span class="hl-8">  </span><span class="hl-7">{Track}</span><span class="hl-8"> </span><span class="hl-5">track</span><br/><span class="hl-8"> * </span><span class="hl-0">@param</span><span class="hl-8">  </span><span class="hl-7">{TextChannel | NewsChannel | ThreadChannel }</span><span class="hl-8"> </span><span class="hl-5">channel</span><br/><span class="hl-8"> */</span><br/><span class="hl-5">manager</span><span class="hl-1">.</span><span class="hl-3">on</span><span class="hl-1">(</span><span class="hl-4">&quot;trackStart&quot;</span><span class="hl-1">, </span><span class="hl-0">async</span><span class="hl-1"> (</span><span class="hl-5">track</span><span class="hl-1">, </span><span class="hl-5">channel</span><span class="hl-1">) </span><span class="hl-0">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">embed</span><span class="hl-1"> = </span><span class="hl-0">new</span><span class="hl-1"> </span><span class="hl-3">MessageEmbed</span><span class="hl-1">()</span><br/><span class="hl-1">    .</span><span class="hl-3">setTitle</span><span class="hl-1">(</span><span class="hl-4">&quot;Now Playing&quot;</span><span class="hl-1">)</span><br/><span class="hl-1">    .</span><span class="hl-3">setDescription</span><span class="hl-1">(</span><span class="hl-5">track</span><span class="hl-1">.</span><span class="hl-5">info</span><span class="hl-1">?.</span><span class="hl-5">description</span><span class="hl-1"> || </span><span class="hl-4">&quot;reee&quot;</span><span class="hl-1">)</span><br/><span class="hl-1">    .</span><span class="hl-3">addField</span><span class="hl-1">(</span><span class="hl-4">&quot;title&quot;</span><span class="hl-1">, </span><span class="hl-5">track</span><span class="hl-1">.</span><span class="hl-5">info</span><span class="hl-1">?.</span><span class="hl-5">title</span><span class="hl-1"> || </span><span class="hl-4">&quot;reee&quot;</span><span class="hl-1">)</span><br/><span class="hl-1">    .</span><span class="hl-3">addField</span><span class="hl-1">(</span><br/><span class="hl-1">      </span><span class="hl-4">&quot;duration&quot;</span><span class="hl-1">,</span><br/><span class="hl-1">      </span><span class="hl-4">`</span><span class="hl-0">${</span><span class="hl-9">(</span><span class="hl-5">track</span><span class="hl-9">.</span><span class="hl-5">info</span><span class="hl-9">?.</span><span class="hl-5">duration</span><span class="hl-9"> </span><span class="hl-1">/</span><span class="hl-9"> </span><span class="hl-10">1000</span><span class="hl-9"> </span><span class="hl-1">/</span><span class="hl-9"> </span><span class="hl-10">60</span><span class="hl-9">).</span><span class="hl-3">toFixed</span><span class="hl-9">(</span><span class="hl-10">2</span><span class="hl-9">)</span><span class="hl-0">}</span><span class="hl-4">mins`</span><span class="hl-1">,</span><br/><span class="hl-1">    )</span><br/><span class="hl-1">    .</span><span class="hl-3">addField</span><span class="hl-1">(</span><span class="hl-4">&quot;requestedBy&quot;</span><span class="hl-1">, </span><span class="hl-5">track</span><span class="hl-1">.</span><span class="hl-5">requestUser</span><span class="hl-1">.</span><span class="hl-5">user</span><span class="hl-1">.</span><span class="hl-5">tag</span><span class="hl-1"> || </span><span class="hl-4">&quot;reee&quot;</span><span class="hl-1">)</span><br/><span class="hl-1">    .</span><span class="hl-3">setColor</span><span class="hl-1">(</span><span class="hl-4">&quot;RANDOM&quot;</span><span class="hl-1">)</span><br/><span class="hl-1">    .</span><span class="hl-3">setImage</span><span class="hl-1">(</span><span class="hl-5">track</span><span class="hl-1">.</span><span class="hl-5">info</span><span class="hl-1">?.</span><span class="hl-5">thumbnail</span><span class="hl-1">);</span><br/><br/><span class="hl-1">  </span><span class="hl-5">channel</span><span class="hl-1">.</span><span class="hl-3">send</span><span class="hl-1">({ </span><span class="hl-5">embeds:</span><span class="hl-1"> [</span><span class="hl-5">embed</span><span class="hl-1">] });</span><br/><span class="hl-1">});</span><br/><span class="hl-5">client</span><span class="hl-1">.</span><span class="hl-3">on</span><span class="hl-1">(</span><span class="hl-4">&quot;ready&quot;</span><span class="hl-1">, (</span><span class="hl-5">eee</span><span class="hl-1">) </span><span class="hl-0">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">console</span><span class="hl-1">.</span><span class="hl-3">log</span><span class="hl-1">(</span><span class="hl-4">&quot;eeee&quot;</span><span class="hl-1">);</span><br/><span class="hl-1">});</span>
 </code></pre>
 
-<a href="#links" id="links" style="color: inherit; text-decoration: none;">
-  <h1>links</h1>
-</a>
-<p><a href="https://akaruidevelopment.github.io/music">docs</a></p>
-</div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class="current"><a href="modules.html">Exports</a></li></ul></nav><nav class="tsd-navigation secondary menu-sticky"><ul><li class="tsd-kind-enum"><a href="enums/CacheType.html" class="tsd-kind-icon">Cache<wbr/>Type</a></li><li class="tsd-kind-enum"><a href="enums/LoopMode.html" class="tsd-kind-icon">Loop<wbr/>Mode</a></li><li class="tsd-kind-enum"><a href="enums/PlayerEvents.html" class="tsd-kind-icon">Player<wbr/>Events</a></li><li class="tsd-kind-enum"><a href="enums/PlayerStates.html" class="tsd-kind-icon">Player<wbr/>States</a></li><li class="tsd-kind-enum"><a href="enums/SourceProviders.html" class="tsd-kind-icon">Source<wbr/>Providers</a></li><li class="tsd-kind-class"><a href="classes/Attachments.html" class="tsd-kind-icon">Attachments</a></li><li class="tsd-kind-class"><a href="classes/Cache.html" class="tsd-kind-icon">Cache</a></li><li class="tsd-kind-class"><a href="classes/FilterManager.html" class="tsd-kind-icon">Filter<wbr/>Manager</a></li><li class="tsd-kind-class"><a href="classes/LocalFile.html" class="tsd-kind-icon">Local<wbr/>File</a></li><li class="tsd-kind-class"><a href="classes/Manager.html" class="tsd-kind-icon">Manager</a></li><li class="tsd-kind-class"><a href="classes/Player.html" class="tsd-kind-icon">Player</a></li><li class="tsd-kind-class"><a href="classes/PlayerQueue.html" class="tsd-kind-icon">Player<wbr/>Queue</a></li><li class="tsd-kind-class"><a href="classes/RequestManager.html" class="tsd-kind-icon">Request<wbr/>Manager</a></li><li class="tsd-kind-class"><a href="classes/Search.html" class="tsd-kind-icon">Search</a></li><li class="tsd-kind-class"><a href="classes/SoundCloud.html" class="tsd-kind-icon">Sound<wbr/>Cloud</a></li><li class="tsd-kind-class"><a href="classes/Track.html" class="tsd-kind-icon">Track</a></li><li class="tsd-kind-class"><a href="classes/Youtube.html" class="tsd-kind-icon">Youtube</a></li><li class="tsd-kind-interface"><a href="interfaces/CacheOptions.html" class="tsd-kind-icon">Cache<wbr/>Options</a></li><li class="tsd-kind-interface"><a href="interfaces/EndScreenVideoRenderer.html" class="tsd-kind-icon">End<wbr/>Screen<wbr/>Video<wbr/>Renderer</a></li><li class="tsd-kind-interface"><a href="interfaces/LocalResponse.html" class="tsd-kind-icon">Local<wbr/>Response</a></li><li class="tsd-kind-interface"><a href="interfaces/ManagerConfig.html" class="tsd-kind-icon">Manager<wbr/>Config</a></li><li class="tsd-kind-interface"><a href="interfaces/ManagerEvents.html" class="tsd-kind-icon">Manager<wbr/>Events</a></li><li class="tsd-kind-interface"><a href="interfaces/PlayerOpts.html" class="tsd-kind-icon">Player<wbr/>Opts</a></li><li class="tsd-kind-interface"><a href="interfaces/SCTrackInfo.html" class="tsd-kind-icon">SCTrack<wbr/>Info</a></li><li class="tsd-kind-interface"><a href="interfaces/SoundcloudOptions.html" class="tsd-kind-icon">Soundcloud<wbr/>Options</a></li><li class="tsd-kind-interface"><a href="interfaces/TwitchOptions.html" class="tsd-kind-icon">Twitch<wbr/>Options</a></li><li class="tsd-kind-interface"><a href="interfaces/YTRawInfo.html" class="tsd-kind-icon">YTRaw<wbr/>Info</a></li><li class="tsd-kind-interface"><a href="interfaces/YoutubeMixPLaylistPanelVideoRenderData.html" class="tsd-kind-icon">Youtube<wbr/>MixPLaylist<wbr/>Panel<wbr/>Video<wbr/>Render<wbr/>Data</a></li><li class="tsd-kind-interface"><a href="interfaces/YoutubeMixPlaylistData.html" class="tsd-kind-icon">Youtube<wbr/>Mix<wbr/>Playlist<wbr/>Data</a></li><li class="tsd-kind-interface"><a href="interfaces/YoutubeOptions.html" class="tsd-kind-icon">Youtube<wbr/>Options</a></li><li class="tsd-kind-interface"><a href="interfaces/YoutubeRelatedData.html" class="tsd-kind-icon">Youtube<wbr/>Related<wbr/>Data</a></li><li class="tsd-kind-interface"><a href="interfaces/rawYoutubeMixData.html" class="tsd-kind-icon">raw<wbr/>Youtube<wbr/>Mix<wbr/>Data</a></li><li class="tsd-kind-interface"><a href="interfaces/voiceState.html" class="tsd-kind-icon">voice<wbr/>State</a></li><li class="tsd-kind-type-alias"><a href="modules.html#AttachmentInfoType" class="tsd-kind-icon">Attachment<wbr/>Info<wbr/>Type</a></li><li class="tsd-kind-type-alias"><a href="modules.html#AttachmentStreamType" class="tsd-kind-icon">Attachment<wbr/>Stream<wbr/>Type</a></li><li class="tsd-kind-type-alias"><a href="modules.html#AutoPlayType" class="tsd-kind-icon">Auto<wbr/>Play<wbr/>Type</a></li><li class="tsd-kind-type-alias"><a href="modules.html#LocalInfoType" class="tsd-kind-icon">Local<wbr/>Info<wbr/>Type</a></li><li class="tsd-kind-type-alias"><a href="modules.html#LocalStreamType" class="tsd-kind-icon">Local<wbr/>Stream<wbr/>Type</a></li><li class="tsd-kind-type-alias"><a href="modules.html#PlayerOptions" class="tsd-kind-icon">Player<wbr/>Options</a></li><li class="tsd-kind-type-alias"><a href="modules.html#PlayerOptionsData" class="tsd-kind-icon">Player<wbr/>Options<wbr/>Data</a></li><li class="tsd-kind-type-alias"><a href="modules.html#PossibleStream" class="tsd-kind-icon">Possible<wbr/>Stream</a></li><li class="tsd-kind-type-alias"><a href="modules.html#RawTrackTypes" class="tsd-kind-icon">Raw<wbr/>Track<wbr/>Types</a></li><li class="tsd-kind-type-alias"><a href="modules.html#TrackInfoType" class="tsd-kind-icon">Track<wbr/>Info<wbr/>Type</a></li><li class="tsd-kind-type-alias"><a href="modules.html#TrackRawInfo" class="tsd-kind-icon">Track<wbr/>Raw<wbr/>Info</a></li><li class="tsd-kind-variable"><a href="modules.html#timeMultiPlier" class="tsd-kind-icon">time<wbr/>Multi<wbr/>Plier</a></li><li class="tsd-kind-function"><a href="modules.html#YoutubeMix" class="tsd-kind-icon">Youtube<wbr/>Mix</a></li><li class="tsd-kind-function"><a href="modules.html#YoutubeMixVideo" class="tsd-kind-icon">Youtube<wbr/>Mix<wbr/>Video</a></li><li class="tsd-kind-function"><a href="modules.html#YoutubeRelated" class="tsd-kind-icon">Youtube<wbr/>Related</a></li><li class="tsd-kind-function"><a href="modules.html#isMix" class="tsd-kind-icon">is<wbr/>Mix</a></li><li class="tsd-kind-function"><a href="modules.html#shuffle" class="tsd-kind-icon">shuffle</a></li><li class="tsd-kind-function"><a href="modules.html#ytMixHTMLParser" class="tsd-kind-icon">yt<wbr/>MixHTMLParser</a></li><li class="tsd-kind-function"><a href="modules.html#ytRelatedHTMLParser" class="tsd-kind-icon">yt<wbr/>RelatedHTMLParser</a></li></ul></nav></div></div></div><footer class="with-border-bottom"><div class="container"><h2>Legend</h2><div class="tsd-legend-group"><ul class="tsd-legend"><li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li><li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li><li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li><li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li></ul><ul class="tsd-legend"><li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li><li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li></ul><ul class="tsd-legend"><li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li><li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li></ul></div><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="container tsd-generator"><p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div><div class="overlay"></div><script src="assets/main.js"></script></body></html>
+            <a
+              href="#links"
+              id="links"
+              style="color: inherit; text-decoration: none"
+            >
+              <h1>links</h1>
+            </a>
+            <p><a href="https://akaruidevelopment.github.io/music">docs</a></p>
+          </div>
+        </div>
+        <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+          <nav class="tsd-navigation primary">
+            <ul>
+              <li class="current"><a href="modules.html">Exports</a></li>
+            </ul>
+          </nav>
+          <nav class="tsd-navigation secondary menu-sticky">
+            <ul>
+              <li class="tsd-kind-enum">
+                <a href="enums/CacheType.html" class="tsd-kind-icon"
+                  >Cache<wbr />Type</a
+                >
+              </li>
+              <li class="tsd-kind-enum">
+                <a href="enums/LoopMode.html" class="tsd-kind-icon"
+                  >Loop<wbr />Mode</a
+                >
+              </li>
+              <li class="tsd-kind-enum">
+                <a href="enums/PlayerEvents.html" class="tsd-kind-icon"
+                  >Player<wbr />Events</a
+                >
+              </li>
+              <li class="tsd-kind-enum">
+                <a href="enums/PlayerStates.html" class="tsd-kind-icon"
+                  >Player<wbr />States</a
+                >
+              </li>
+              <li class="tsd-kind-enum">
+                <a href="enums/SourceProviders.html" class="tsd-kind-icon"
+                  >Source<wbr />Providers</a
+                >
+              </li>
+              <li class="tsd-kind-class">
+                <a href="classes/Attachments.html" class="tsd-kind-icon"
+                  >Attachments</a
+                >
+              </li>
+              <li class="tsd-kind-class">
+                <a href="classes/Cache.html" class="tsd-kind-icon">Cache</a>
+              </li>
+              <li class="tsd-kind-class">
+                <a href="classes/FilterManager.html" class="tsd-kind-icon"
+                  >Filter<wbr />Manager</a
+                >
+              </li>
+              <li class="tsd-kind-class">
+                <a href="classes/LocalFile.html" class="tsd-kind-icon"
+                  >Local<wbr />File</a
+                >
+              </li>
+              <li class="tsd-kind-class">
+                <a href="classes/Manager.html" class="tsd-kind-icon">Manager</a>
+              </li>
+              <li class="tsd-kind-class">
+                <a href="classes/Player.html" class="tsd-kind-icon">Player</a>
+              </li>
+              <li class="tsd-kind-class">
+                <a href="classes/PlayerQueue.html" class="tsd-kind-icon"
+                  >Player<wbr />Queue</a
+                >
+              </li>
+              <li class="tsd-kind-class">
+                <a href="classes/RequestManager.html" class="tsd-kind-icon"
+                  >Request<wbr />Manager</a
+                >
+              </li>
+              <li class="tsd-kind-class">
+                <a href="classes/Search.html" class="tsd-kind-icon">Search</a>
+              </li>
+              <li class="tsd-kind-class">
+                <a href="classes/SoundCloud.html" class="tsd-kind-icon"
+                  >Sound<wbr />Cloud</a
+                >
+              </li>
+              <li class="tsd-kind-class">
+                <a href="classes/Spotify.html" class="tsd-kind-icon">Spotify</a>
+              </li>
+              <li class="tsd-kind-class">
+                <a href="classes/Track.html" class="tsd-kind-icon">Track</a>
+              </li>
+              <li class="tsd-kind-class">
+                <a href="classes/Youtube.html" class="tsd-kind-icon">Youtube</a>
+              </li>
+              <li class="tsd-kind-interface">
+                <a href="interfaces/CacheOptions.html" class="tsd-kind-icon"
+                  >Cache<wbr />Options</a
+                >
+              </li>
+              <li class="tsd-kind-interface">
+                <a
+                  href="interfaces/EndScreenVideoRenderer.html"
+                  class="tsd-kind-icon"
+                  >End<wbr />Screen<wbr />Video<wbr />Renderer</a
+                >
+              </li>
+              <li class="tsd-kind-interface">
+                <a href="interfaces/LocalResponse.html" class="tsd-kind-icon"
+                  >Local<wbr />Response</a
+                >
+              </li>
+              <li class="tsd-kind-interface">
+                <a href="interfaces/ManagerConfig.html" class="tsd-kind-icon"
+                  >Manager<wbr />Config</a
+                >
+              </li>
+              <li class="tsd-kind-interface">
+                <a href="interfaces/ManagerEvents.html" class="tsd-kind-icon"
+                  >Manager<wbr />Events</a
+                >
+              </li>
+              <li class="tsd-kind-interface">
+                <a href="interfaces/PlayerOpts.html" class="tsd-kind-icon"
+                  >Player<wbr />Opts</a
+                >
+              </li>
+              <li class="tsd-kind-interface">
+                <a href="interfaces/SCTrackInfo.html" class="tsd-kind-icon"
+                  >SCTrack<wbr />Info</a
+                >
+              </li>
+              <li class="tsd-kind-interface">
+                <a
+                  href="interfaces/SoundcloudOptions.html"
+                  class="tsd-kind-icon"
+                  >Soundcloud<wbr />Options</a
+                >
+              </li>
+              <li class="tsd-kind-interface">
+                <a href="interfaces/SpotifyInfo.html" class="tsd-kind-icon"
+                  >Spotify<wbr />Info</a
+                >
+              </li>
+              <li class="tsd-kind-interface">
+                <a href="interfaces/TwitchOptions.html" class="tsd-kind-icon"
+                  >Twitch<wbr />Options</a
+                >
+              </li>
+              <li class="tsd-kind-interface">
+                <a href="interfaces/YTRawInfo.html" class="tsd-kind-icon"
+                  >YTRaw<wbr />Info</a
+                >
+              </li>
+              <li class="tsd-kind-interface">
+                <a
+                  href="interfaces/YoutubeMixPLaylistPanelVideoRenderData.html"
+                  class="tsd-kind-icon"
+                  >Youtube<wbr />MixPLaylist<wbr />Panel<wbr />Video<wbr />Render<wbr />Data</a
+                >
+              </li>
+              <li class="tsd-kind-interface">
+                <a
+                  href="interfaces/YoutubeMixPlaylistData.html"
+                  class="tsd-kind-icon"
+                  >Youtube<wbr />Mix<wbr />Playlist<wbr />Data</a
+                >
+              </li>
+              <li class="tsd-kind-interface">
+                <a href="interfaces/YoutubeOptions.html" class="tsd-kind-icon"
+                  >Youtube<wbr />Options</a
+                >
+              </li>
+              <li class="tsd-kind-interface">
+                <a
+                  href="interfaces/YoutubeRelatedData.html"
+                  class="tsd-kind-icon"
+                  >Youtube<wbr />Related<wbr />Data</a
+                >
+              </li>
+              <li class="tsd-kind-interface">
+                <a
+                  href="interfaces/rawYoutubeMixData.html"
+                  class="tsd-kind-icon"
+                  >raw<wbr />Youtube<wbr />Mix<wbr />Data</a
+                >
+              </li>
+              <li class="tsd-kind-interface">
+                <a href="interfaces/voiceState.html" class="tsd-kind-icon"
+                  >voice<wbr />State</a
+                >
+              </li>
+              <li class="tsd-kind-type-alias">
+                <a href="modules.html#AttachmentInfoType" class="tsd-kind-icon"
+                  >Attachment<wbr />Info<wbr />Type</a
+                >
+              </li>
+              <li class="tsd-kind-type-alias">
+                <a
+                  href="modules.html#AttachmentStreamType"
+                  class="tsd-kind-icon"
+                  >Attachment<wbr />Stream<wbr />Type</a
+                >
+              </li>
+              <li class="tsd-kind-type-alias">
+                <a href="modules.html#AutoPlayType" class="tsd-kind-icon"
+                  >Auto<wbr />Play<wbr />Type</a
+                >
+              </li>
+              <li class="tsd-kind-type-alias">
+                <a href="modules.html#LocalInfoType" class="tsd-kind-icon"
+                  >Local<wbr />Info<wbr />Type</a
+                >
+              </li>
+              <li class="tsd-kind-type-alias">
+                <a href="modules.html#LocalStreamType" class="tsd-kind-icon"
+                  >Local<wbr />Stream<wbr />Type</a
+                >
+              </li>
+              <li class="tsd-kind-type-alias">
+                <a href="modules.html#PlayerOptions" class="tsd-kind-icon"
+                  >Player<wbr />Options</a
+                >
+              </li>
+              <li class="tsd-kind-type-alias">
+                <a href="modules.html#PlayerOptionsData" class="tsd-kind-icon"
+                  >Player<wbr />Options<wbr />Data</a
+                >
+              </li>
+              <li class="tsd-kind-type-alias">
+                <a href="modules.html#PossibleStream" class="tsd-kind-icon"
+                  >Possible<wbr />Stream</a
+                >
+              </li>
+              <li class="tsd-kind-type-alias">
+                <a href="modules.html#RawTrackTypes" class="tsd-kind-icon"
+                  >Raw<wbr />Track<wbr />Types</a
+                >
+              </li>
+              <li class="tsd-kind-type-alias">
+                <a href="modules.html#TrackInfoType" class="tsd-kind-icon"
+                  >Track<wbr />Info<wbr />Type</a
+                >
+              </li>
+              <li class="tsd-kind-type-alias">
+                <a href="modules.html#TrackRawInfo" class="tsd-kind-icon"
+                  >Track<wbr />Raw<wbr />Info</a
+                >
+              </li>
+              <li class="tsd-kind-variable">
+                <a href="modules.html#timeMultiPlier" class="tsd-kind-icon"
+                  >time<wbr />Multi<wbr />Plier</a
+                >
+              </li>
+              <li class="tsd-kind-function">
+                <a href="modules.html#YoutubeMix" class="tsd-kind-icon"
+                  >Youtube<wbr />Mix</a
+                >
+              </li>
+              <li class="tsd-kind-function">
+                <a href="modules.html#YoutubeMixVideo" class="tsd-kind-icon"
+                  >Youtube<wbr />Mix<wbr />Video</a
+                >
+              </li>
+              <li class="tsd-kind-function">
+                <a href="modules.html#YoutubeRelated" class="tsd-kind-icon"
+                  >Youtube<wbr />Related</a
+                >
+              </li>
+              <li class="tsd-kind-function">
+                <a href="modules.html#isMix" class="tsd-kind-icon"
+                  >is<wbr />Mix</a
+                >
+              </li>
+              <li class="tsd-kind-function">
+                <a href="modules.html#shuffle" class="tsd-kind-icon">shuffle</a>
+              </li>
+              <li class="tsd-kind-function">
+                <a href="modules.html#ytMixHTMLParser" class="tsd-kind-icon"
+                  >yt<wbr />MixHTMLParser</a
+                >
+              </li>
+              <li class="tsd-kind-function">
+                <a href="modules.html#ytRelatedHTMLParser" class="tsd-kind-icon"
+                  >yt<wbr />RelatedHTMLParser</a
+                >
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <footer class="with-border-bottom">
+      <div class="container">
+        <h2>Legend</h2>
+        <div class="tsd-legend-group">
+          <ul class="tsd-legend">
+            <li class="tsd-kind-constructor tsd-parent-kind-class">
+              <span class="tsd-kind-icon">Constructor</span>
+            </li>
+            <li class="tsd-kind-property tsd-parent-kind-class">
+              <span class="tsd-kind-icon">Property</span>
+            </li>
+            <li class="tsd-kind-method tsd-parent-kind-class">
+              <span class="tsd-kind-icon">Method</span>
+            </li>
+            <li class="tsd-kind-accessor tsd-parent-kind-class">
+              <span class="tsd-kind-icon">Accessor</span>
+            </li>
+          </ul>
+          <ul class="tsd-legend">
+            <li class="tsd-kind-property tsd-parent-kind-interface">
+              <span class="tsd-kind-icon">Property</span>
+            </li>
+            <li class="tsd-kind-method tsd-parent-kind-interface">
+              <span class="tsd-kind-icon">Method</span>
+            </li>
+          </ul>
+          <ul class="tsd-legend">
+            <li class="tsd-kind-property tsd-parent-kind-class tsd-is-private">
+              <span class="tsd-kind-icon">Private property</span>
+            </li>
+            <li class="tsd-kind-method tsd-parent-kind-class tsd-is-private">
+              <span class="tsd-kind-icon">Private method</span>
+            </li>
+          </ul>
+        </div>
+        <h2>Settings</h2>
+        <p>
+          Theme
+          <select id="theme">
+            <option value="os">OS</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </p>
+      </div>
+    </footer>
+    <div class="container tsd-generator">
+      <p>
+        Generated using
+        <a href="https://typedoc.org/" target="_blank">TypeDoc</a>
+      </p>
+    </div>
+    <div class="overlay"></div>
+    <script src="assets/main.js"></script>
+  </body>
+</html>

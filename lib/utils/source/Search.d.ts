@@ -1,4 +1,5 @@
 /// <reference types="node" />
+/// <reference types="spotify-url-info" />
 import { AttachmentInfoType, AttachmentStreamType, LocalInfoType, LocalStreamType, SoundcloudOptions } from "../typings";
 import * as yts from "youtube-scrapper";
 export declare class SoundCloud {
@@ -96,13 +97,19 @@ export declare class Youtube {
     get baseURL(): string[];
     search(track: string): Promise<string[]>;
     getInfo(url: string): Promise<yts.YoutubeVideo>;
-    getStream(info: yts.YoutubeVideo): Promise<import("stream").PassThrough | import("m3u8stream").Stream>;
+    getStream(info: yts.YoutubeVideo): Promise<import("m3u8stream").Stream | import("stream").PassThrough>;
     related(id: string, limit?: number): Promise<any[]>;
+}
+export declare class Spotify {
+    search(track: string): Promise<string[]>;
+    getInfo(track: string): Promise<import("spotify-url-info").Tracks[]>;
+    getStream(track: string): Promise<import("m3u8stream").Stream | import("stream").PassThrough>;
 }
 export declare class Search {
     soundcloud: SoundCloud;
     localFile: LocalFile;
     attachment: Attachments;
+    spotify: Spotify;
     youtube: Youtube;
     constructor(data: SoundcloudOptions);
     search({ query, type, }: {

@@ -1,4 +1,5 @@
 import { VoiceConnection } from "@discordjs/voice";
+import {Tracks} from "spotify-url-info"
 import {
   NewsChannel,
   TextChannel,
@@ -12,6 +13,7 @@ import { TrackInfo } from "soundcloud-downloader/src/info";
 import Manager from "../structures/Manager";
 import { YoutubeVideo, YoutubeVideoDetails } from "youtube-scrapper";
 import Track from "../structures/Track";
+import { Spotify } from "./source/Search";
 export type PossibleStream =
   | internal.Readable
   | internal.PassThrough
@@ -135,11 +137,16 @@ export interface SCTrackInfo extends TrackInfo {
 export interface YTRawInfo extends YoutubeVideo {
   [key: string]: any;
 }
+export interface SpotifyInfo extends Tracks {
+  [key :string] : any;
+}
 export type TrackRawInfo =
   | SCTrackInfo
   | LocalInfoType
   | AttachmentInfoType
-  | YTRawInfo;
+  | YTRawInfo
+  | SpotifyInfo;
+
 
 export type PlayerOptionsData = {
   paused: boolean;

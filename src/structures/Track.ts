@@ -106,7 +106,23 @@ export default class Track {
         likes: null,
         views: rawInfo.viewCount,
       };
-    } else {
+    } else if(this.type === 4 ) {
+      this.info = {
+        title : rawInfo.name,
+        description : null,
+        url : `https://open.spotify.com/track/${rawInfo.id}`,
+        thumbnail : rawInfo.album.images[0].url,
+        raw_duration : rawInfo.duration_ms,
+        duration : rawInfo.duration_ms,
+        identifier : "Spotify",
+        author : rawInfo.artists[0].name,
+        authorAvatar : null,
+        authorURL : `https://open.spotify.com/artist/${rawInfo.artists[0].id}`,
+        likes : rawInfo.popularity,
+        views : null,
+      }
+    }
+    else {
       this.info = {
         title: rawInfo.title,
         description: rawInfo.description,

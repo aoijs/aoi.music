@@ -5,3 +5,5 @@ Classes
 .npm
 node_modules
 test
+/changelogs
+/docs-extra

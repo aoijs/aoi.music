@@ -3,7 +3,9 @@ import fs from "fs";
 import path from "path";
 import axios from "axios";
 import { getAudioDurationInSeconds } from "get-audio-duration";
-
+import fetch from "node-fetch";
+import spotify from "spotify-url-info";
+const { getTracks } = spotify(fetch);
 import {
   AttachmentInfoType,
   AttachmentStreamType,
@@ -304,7 +306,7 @@ export class Youtube {
       //   ),
       // });
       const stream = info.download(
-        info.formats.find((x) => x.hasAudio && !x.hasVideo && x.audioBitrate) ,
+        info.formats.find((x) => x.hasAudio && !x.hasVideo && x.audioBitrate),
         { chunkMode: { chunkSize: 512000 }, pipe: false, debug: true },
       );
       return stream;
@@ -324,10 +326,32 @@ export class Youtube {
   }
 }
 
+export class Spotify {
+  async search(track: string) {
+    return [track];
+  }
+  async getInfo(track: string) {
+    return await getTracks(track);
+  }
+  async getStream(track: string) {
+    const info = await yts.getVideoInfo((await yts.search(track)).videos[0].id);
+
+    if (!info.formats.length) throw new Error("429 : Rate Limited!");
+    else {
+      const stream = info.download(
+        info.formats.find((x) => x.hasAudio && !x.hasVideo && x.audioBitrate),
+        { chunkMode: { chunkSize: 512000 }, pipe: false, debug: true },
+      );
+      return stream;
+    }
+  }
+}
+
 export class Search {
   public soundcloud: SoundCloud;
   public localFile: LocalFile = new LocalFile();
   public attachment: Attachments = new Attachments();
+  public spotify : Spotify = new Spotify();
   public youtube: Youtube = new Youtube();
   constructor(data: SoundcloudOptions) {
     this.soundcloud = new SoundCloud({ clientId: data.clientId });
@@ -352,6 +376,8 @@ export class Search {
       result = await this.attachment.search(query);
     } else if (type === 3) {
       result = await this.youtube.search(query);
+    } else if (type === 4) {
+      result = await this.spotify.search(query);
     }
 
     return result;
