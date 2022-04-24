@@ -106,7 +106,7 @@ export class RequestManager {
    * @returns void
    */
   public _setVolume(number: number): void {
-    return this.currentStream.volume.setVolume(number);
+    return this.currentStream?.volume.setVolume(number);
   }
   /**
    * getStream
