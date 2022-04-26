@@ -103,7 +103,10 @@ export declare class Youtube {
 export declare class Spotify {
     search(track: string): Promise<string[]>;
     getInfo(track: string): Promise<import("spotify-url-info").Tracks[]>;
-    getStream(track: string): Promise<import("m3u8stream").Stream | import("stream").PassThrough>;
+    getStream(track: string): Promise<{
+        ytData: yts.YoutubeVideo;
+        stream: import("m3u8stream").Stream | import("stream").PassThrough;
+    }>;
 }
 export declare class Search {
     soundcloud: SoundCloud;

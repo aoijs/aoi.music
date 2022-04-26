@@ -131,7 +131,14 @@ export class RequestManager {
     } else if (track.type === 3 && track.rawInfo instanceof YoutubeVideo) {
       return await this.search.youtube.getStream(track.rawInfo);
     } else if( track.type === 4) {
-      return await this.search.spotify.getStream(track.rawInfo.name + " " + track.rawInfo.artists[0].name);
+      if(track.rawInfo.ytData) {
+        return await this.search.youtube.getStream(track.rawInfo.ytData);
+      }
+      else {
+      const data = await this.search.spotify.getStream(track.rawInfo.name + " " + track.rawInfo.artists[0].name);
+      track.rawInfo.ytData = data.ytData;
+      return data.stream;
+      }
     }
   }
 }

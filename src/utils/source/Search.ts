@@ -342,7 +342,7 @@ export class Spotify {
         info.formats.find((x) => x.hasAudio && !x.hasVideo && x.audioBitrate),
         { chunkMode: { chunkSize: 512000 }, pipe: false, debug: true },
       );
-      return stream;
+      return { ytData: info, stream };
     }
   }
 }
@@ -351,7 +351,7 @@ export class Search {
   public soundcloud: SoundCloud;
   public localFile: LocalFile = new LocalFile();
   public attachment: Attachments = new Attachments();
-  public spotify : Spotify = new Spotify();
+  public spotify: Spotify = new Spotify();
   public youtube: Youtube = new Youtube();
   constructor(data: SoundcloudOptions) {
     this.soundcloud = new SoundCloud({ clientId: data.clientId });
