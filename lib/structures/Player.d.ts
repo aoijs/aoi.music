@@ -51,7 +51,7 @@ declare class Player {
     _configPlayer(): void;
     _defaultOptions(): void;
     _playNextTrack(): Promise<void>;
-    _destroyPlayer(): void;
+    _destroyPlayer(): Promise<void>;
     _loopQueue(): Promise<void>;
     _playSingleTrack(): Promise<void>;
     loop(mode: LoopMode.None | LoopMode.Queue | LoopMode.Track): void;

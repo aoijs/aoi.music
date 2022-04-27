@@ -56,15 +56,27 @@ class CacheManager {
       }
       this.map.set(
         id,
-        `${this.config.directory}/${guildId}/` + id.replaceAll("/", "#SLASH#"),
+        `${this.config.directory}/${guildId}/` +
+          id
+            .replaceAll("/", "#SLASH#")
+            .replaceAll(":", "#COLON#")
+            .replaceAll("?", "#QUESTION#"),
       );
 
       fs.writeFileSync(
-        `${this.config.directory}/${guildId}/` + id.replaceAll("/", "#SLASH#"),
+        `${this.config.directory}/${guildId}/` +
+          id
+            .replaceAll("/", "#SLASH#")
+            .replaceAll(":", "#COLON#")
+            .replaceAll("?", "#QUESTION#"),
         "",
       );
       const st = fs.createWriteStream(
-        `${this.config.directory}/${guildId}/` + id.replaceAll("/", "#SLASH#"),
+        `${this.config.directory}/${guildId}/` +
+          id
+            .replaceAll("/", "#SLASH#")
+            .replaceAll(":", "#COLON#")
+            .replaceAll("?", "#QUESTION#"),
       );
       stream.pipe(st);
       return;
@@ -81,10 +93,10 @@ class CacheManager {
       let st: unknown;
       try {
         st = fs.createReadStream(
-          `${this.config.directory}/${guildId}/${id.replaceAll(
-            "/",
-            "#SLASH#",
-          )}`,
+          `${this.config.directory}/${guildId}/${id
+            .replaceAll("/", "#SLASH#")
+            .replaceAll(":", "#COLON#")
+            .replaceAll("?", "#QUESTION#")}`,
         );
       } catch (_) {}
       return st;

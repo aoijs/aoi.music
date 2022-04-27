@@ -34,7 +34,7 @@ import CacheManager from "./Cache";
 import FilterManager from "./FilterManager";
 import { RequestManager } from "./RequestManager";
 import { isMix, shuffle } from "../utils/helpers";
-import { existsSync } from "fs";
+import { existsSync, readdirSync, rmdirSync, unlinkSync } from "fs";
 import axios from "axios";
 
 class Player {
@@ -247,7 +247,7 @@ class Player {
       }
     } else if (type === 4) {
       const infos = await this.manager.searchManager.spotify.getInfo(urls[0]);
-      urls = infos.map(x => x.name);
+      urls = infos.map((x) => x.name);
       for (let i = 0; i < infos.length; i++) {
         if (this.reseted) {
           this.reseted = false;
@@ -268,8 +268,7 @@ class Player {
           await this.requestManager.setCurrentStream(track);
           this.play();
         }
-        if(infos.length >1 ) {
-
+        if (infos.length > 1) {
         }
         if (i !== infos.length - 1) {
           await setTimeout(
@@ -377,7 +376,7 @@ class Player {
               this.leaveVc();
             }, this.options.leaveAfter.time);
           }
-          this._destroyPlayer();
+          await this._destroyPlayer();
         }
       }
       if (
@@ -423,10 +422,10 @@ class Player {
     await this.requestManager.setCurrentStream(this.queue.list[0]);
     this.play();
   }
-  _destroyPlayer(): void {
+  async _destroyPlayer() {
     if (this.manager.config.cache.cacheType === "Disk") {
       if (existsSync(`music/${this.textChannel.guildId}`)) {
-        rm(`music/${this.textChannel.guildId}`, {
+        await rm(`music/${this.textChannel.guildId}`, {
           recursive: true,
           force: true,
         });
@@ -462,7 +461,7 @@ class Player {
         10,
       );
       if (!data[0]) {
-        this._destroyPlayer();
+        await this._destroyPlayer();
         console.error("failed to get next track");
       } else {
         for (const d of data) {
@@ -501,7 +500,7 @@ class Player {
           this.queue.current.info.identifier.toLowerCase(),
         )
       ) {
-        this._destroyPlayer();
+        await this._destroyPlayer();
         console.error("Relative only supports Youtube And Soundcloud");
       }
       const data = await this.manager.searchManager[
@@ -638,6 +637,7 @@ class Player {
               );
             } catch {
               this.connection.destroy();
+              await this._destroyPlayer();
               this.manager.players.delete(this.textChannel.guildId);
             }
           } else if (this.connection.rejoinAttempts < 5) {
@@ -645,6 +645,7 @@ class Player {
             this.connection.rejoin();
           } else {
             this.connection.destroy();
+            await this._destroyPlayer();
             this.manager.players.delete(this.textChannel.guildId);
           }
         } else if (newState.status === VoiceConnectionStatus.Destroyed) {
