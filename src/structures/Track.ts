@@ -12,11 +12,13 @@ export default class Track {
   public type: number;
 
   public player: Player;
+  public _ogPos:number;
   constructor(
     data: {
       requestUser: GuildMember;
       rawinfo: TrackRawInfo;
       type: number;
+      position: number;
     },
     player: Player,
   ) {
@@ -26,6 +28,7 @@ export default class Track {
     this.source = data.type;
     this.transformInfo(data.rawinfo);
     this.player = player;
+    Object.defineProperty(this, "_ogPos", {value:data.position})
   }
   /**
    * @method link

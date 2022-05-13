@@ -67,6 +67,7 @@ declare class Player {
     leaveVc(): void;
     removeTrack(trackPosition: number): void;
     shuffleQueue(): void;
+    unShuffleQueue(): void;
     skipTo(number: number): Track[];
     stop(): void;
     set volume(volume: number);

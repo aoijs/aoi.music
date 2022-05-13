@@ -90,8 +90,8 @@ class Player {
   /**
    * search
    */
-  public async search(query: string, type: number,limit = 1): Promise<any[]> {
-    return await this.manager.searchManager.search({ query, type,limit });
+  public async search(query: string, type: number, limit = 1): Promise<any[]> {
+    return await this.manager.searchManager.search({ query, type, limit });
   }
 
   /**
@@ -124,6 +124,7 @@ class Player {
             requestUser: member,
             rawinfo: info,
             type,
+            position: this.queue.list.length,
           },
           this,
         );
@@ -158,6 +159,7 @@ class Player {
             requestUser: member,
             rawinfo: info,
             type,
+            position: this.queue.list.length,
           },
           this,
         );
@@ -192,6 +194,7 @@ class Player {
             requestUser: member,
             rawinfo: info,
             type,
+            position: this.queue.list.length,
           },
           this,
         );
@@ -229,6 +232,7 @@ class Player {
             requestUser: member,
             rawinfo: info,
             type,
+            position: this.queue.list.length,
           },
           this,
         );
@@ -258,7 +262,12 @@ class Player {
           console.error(`Cannot Get Data Of ${urls[0]}`);
         }
         const track: Track = new Track(
-          { requestUser: member, rawinfo: info, type },
+          {
+            requestUser: member,
+            rawinfo: info,
+            type,
+            position: this.queue.list.length,
+          },
           this,
         );
         this.queue.list.push(track);
@@ -471,6 +480,7 @@ class Player {
                 requestUser: this.textChannel.guild.me,
                 rawinfo: d,
                 type: 0,
+                position: this.queue.list.length,
               },
               this,
             ),
@@ -489,6 +499,7 @@ class Player {
               requestUser: this.textChannel.guild.me,
               rawinfo: d,
               type: 3,
+              position: this.queue.list.length,
             },
             this,
           ),
@@ -522,6 +533,7 @@ class Player {
                 "soundcloud"
                   ? 0
                   : 3,
+              position: this.queue.list.length,
             },
             this,
           ),
@@ -534,12 +546,12 @@ class Player {
   pause() {
     this.options.paused = true;
     this.player.pause(true);
-    this.manager.emit(PlayerEvents.TRACK_PAUSE,this.textChannel);
+    this.manager.emit(PlayerEvents.TRACK_PAUSE, this.textChannel);
   }
   resume() {
     this.options.paused = false;
     this.player.unpause();
-    this.manager.emit(PlayerEvents.TRACK_RESUME,this.textChannel);
+    this.manager.emit(PlayerEvents.TRACK_RESUME, this.textChannel);
   }
   getQueue(
     page = 1,
@@ -589,6 +601,9 @@ class Player {
   }
   shuffleQueue() {
     this.queue.list = shuffle(this.queue.list);
+  }
+  unShuffleQueue() {
+    this.queue.list = this.queue.list.sort((a,b) => a._ogPos - b._ogPos);
   }
 
   skipTo(number: number) {

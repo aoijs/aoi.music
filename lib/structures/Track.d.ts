@@ -9,10 +9,12 @@ export default class Track {
     source: SourceProviders;
     type: number;
     player: Player;
+    _ogPos: number;
     constructor(data: {
         requestUser: GuildMember;
         rawinfo: TrackRawInfo;
         type: number;
+        position: number;
     }, player: Player);
     /**
      * @method link
