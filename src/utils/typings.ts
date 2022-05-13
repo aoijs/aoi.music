@@ -154,6 +154,7 @@ export type TrackRawInfo =
 
 export type PlayerOptionsData = {
   paused: boolean;
+  shuffled:boolean;
   mode: LoopMode.None | LoopMode.Queue | LoopMode.Track;
   volume: number;
   leaveAfter: { enabled: boolean; time: number };

@@ -107,6 +107,7 @@ export interface SpotifyInfo extends Tracks {
 export declare type TrackRawInfo = SCTrackInfo | LocalInfoType | AttachmentInfoType | YTRawInfo | SpotifyInfo;
 export declare type PlayerOptionsData = {
     paused: boolean;
+    shuffled: boolean;
     mode: LoopMode.None | LoopMode.Queue | LoopMode.Track;
     volume: number;
     leaveAfter: {

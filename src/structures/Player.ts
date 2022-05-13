@@ -415,6 +415,7 @@ class Player {
   }
   _defaultOptions() {
     this.options = {
+      shuffled:false,
       paused: false,
       mode: LoopMode.None,
       volume: 100,
@@ -601,9 +602,11 @@ class Player {
   }
   shuffleQueue() {
     this.queue.list = shuffle(this.queue.list);
+    this.options.shuffled = true;
   }
   unShuffleQueue() {
     this.queue.list = this.queue.list.sort((a,b) => a._ogPos - b._ogPos);
+    this.options.shuffled = false;
   }
 
   skipTo(number: number) {
