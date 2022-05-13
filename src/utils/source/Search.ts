@@ -374,13 +374,15 @@ export class Search {
         query,
         limit,
         scOptions: this.soundcloud.options,
-      })).map(x => x.permalink_url);
+      })).map(x => typeof x === "string" ? x : x.permalink_url);
     } else if (type === 1) {
       result = await this.localFile.search(query);
     } else if (type === 2) {
       result = await this.attachment.search(query);
     } else if (type === 3) {
-      result = (await this.youtube.search(query, limit)).map((x : any) => x.url);
+      result = (await this.youtube.search(query, limit)).map((x: any) =>
+        typeof x === "string" ? x : x.url,
+      );
     } else if (type === 4) {
       result = await this.spotify.search(query);
     }
