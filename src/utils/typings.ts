@@ -81,8 +81,12 @@ export interface ManagerEvents {
     error: any,
     textChannel: TextChannel | NewsChannel | ThreadChannel,
   ): this;
-  [PlayerEvents.TRACK_RESUME](): this;
-  [PlayerEvents.TRACK_PAUSE](): this;
+  [PlayerEvents.TRACK_RESUME](
+    textChannel: TextChannel | NewsChannel | ThreadChannel,
+  ): this;
+  [PlayerEvents.TRACK_PAUSE](
+    textChannel: TextChannel | NewsChannel | ThreadChannel,
+  ): this;
 }
 
 export type LocalStreamType = Promise<ReadStream>;

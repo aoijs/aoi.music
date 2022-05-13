@@ -52,8 +52,8 @@ export interface ManagerEvents {
     [PlayerEvents.QUEUE_START](urls: unknown[], textChannel: TextChannel | NewsChannel | ThreadChannel): this;
     [PlayerEvents.QUEUE_END](textChannel: TextChannel | NewsChannel | ThreadChannel): this;
     [PlayerEvents.AUDIO_ERROR](error: any, textChannel: TextChannel | NewsChannel | ThreadChannel): this;
-    [PlayerEvents.TRACK_RESUME](): this;
-    [PlayerEvents.TRACK_PAUSE](): this;
+    [PlayerEvents.TRACK_RESUME](textChannel: TextChannel | NewsChannel | ThreadChannel): this;
+    [PlayerEvents.TRACK_PAUSE](textChannel: TextChannel | NewsChannel | ThreadChannel): this;
 }
 export declare type LocalStreamType = Promise<ReadStream>;
 export declare type LocalInfoType = {

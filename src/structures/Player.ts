@@ -534,12 +534,12 @@ class Player {
   pause() {
     this.options.paused = true;
     this.player.pause(true);
-    this.manager.emit(PlayerEvents.TRACK_PAUSE);
+    this.manager.emit(PlayerEvents.TRACK_PAUSE,this.textChannel);
   }
   resume() {
     this.options.paused = false;
     this.player.unpause();
-    this.manager.emit(PlayerEvents.TRACK_RESUME);
+    this.manager.emit(PlayerEvents.TRACK_RESUME,this.textChannel);
   }
   getQueue(
     page = 1,
