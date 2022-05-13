@@ -601,7 +601,9 @@ class Player {
     this.queue.list.splice(trackPosition, 1);
   }
   shuffleQueue() {
-    this.queue.list = shuffle(this.queue.list);
+    const current = this.queue.current;
+    this.queue.list = shuffle(this.queue.list.slice(1));
+    this.queue.list.unshift(current);
     this.options.shuffled = true;
   }
   unShuffleQueue() {
