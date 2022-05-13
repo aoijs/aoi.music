@@ -35,9 +35,10 @@ export declare class SoundCloud {
      * @param {string} query query required for search
      * @param {SoundcloudOptions} scOptions options for soundcloud-downloader
      */
-    search({ query, }: {
+    search({ query, limit, }: {
         query: string;
         scOptions?: SoundcloudOptions;
+        limit?: number;
     }): Promise<any[]>;
     /**
      * @method getInfo
@@ -95,7 +96,7 @@ export declare class Attachments {
 }
 export declare class Youtube {
     get baseURL(): string[];
-    search(track: string): Promise<string[]>;
+    search(track: string, limit?: number): Promise<string[]>;
     getInfo(url: string): Promise<yts.YoutubeVideo>;
     getStream(info: yts.YoutubeVideo): Promise<import("m3u8stream").Stream | import("stream").PassThrough>;
     related(id: string, limit?: number): Promise<any[]>;
@@ -115,8 +116,9 @@ export declare class Search {
     spotify: Spotify;
     youtube: Youtube;
     constructor(data: SoundcloudOptions);
-    search({ query, type, }: {
+    search({ query, type, limit, }: {
         query: string;
+        limit?: number;
         type: number;
     }): Promise<any[]>;
 }

@@ -76,9 +76,11 @@ export class SoundCloud {
    */
   public async search({
     query,
+    limit = 1,
   }: {
     query: string;
     scOptions?: SoundcloudOptions;
+    limit?: number;
   }): Promise<any[]> {
     if (this.baseURL.some((x) => query.startsWith(x))) {
       query = this.parseURL(query);
@@ -121,7 +123,7 @@ export class SoundCloud {
       }
     } else {
       const { collection } = await scdl
-        .search({ limit: 1, query, resourceType: "tracks" })
+        .search({ limit, query, resourceType: "tracks" })
         .catch((e) => {
           console.error(e);
           return {
@@ -131,7 +133,7 @@ export class SoundCloud {
 
       if (!collection.length) return [];
       // fixed e
-      return [collection[0].permalink_url];
+      return collection.map((x: any) => x.permalink_url);
     }
   }
   /**
@@ -261,7 +263,7 @@ export class Youtube {
       "https://www.youtube.com/",
     ];
   }
-  public async search(track: string) {
+  public async search(track: string, limit = 1) {
     if (this.baseURL.some((x) => track.startsWith(x))) {
       if (track.includes("/playlist?list=")) {
         let data = await yts.getPlaylistInfo(track, { full: true });
@@ -282,9 +284,9 @@ export class Youtube {
     } else {
       const data = await yts.search(track);
 
-      const vid = data.videos[0];
+      const vid = data.videos.slice(0, limit);
 
-      return [vid.url];
+      return vid.map((x) => x.url);
     }
   }
   public async getInfo(url: string): Promise<yts.YoutubeVideo> {
@@ -360,14 +362,17 @@ export class Search {
   public async search({
     query,
     type,
+    limit = 1,
   }: {
     query: string;
+    limit?: number;
     type: number;
   }): Promise<any[]> {
     let result: any[];
     if (type === 0) {
       result = await this.soundcloud.search({
         query,
+        limit,
         scOptions: this.soundcloud.options,
       });
     } else if (type === 1) {
@@ -375,7 +380,7 @@ export class Search {
     } else if (type === 2) {
       result = await this.attachment.search(query);
     } else if (type === 3) {
-      result = await this.youtube.search(query);
+      result = await this.youtube.search(query, limit);
     } else if (type === 4) {
       result = await this.spotify.search(query);
     }
