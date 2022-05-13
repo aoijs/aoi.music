@@ -133,7 +133,7 @@ export class SoundCloud {
 
       if (!collection.length) return [];
       // fixed e
-      return collection.map((x: any) => x.permalink_url);
+      return collection;
     }
   }
   /**
@@ -286,7 +286,7 @@ export class Youtube {
 
       const vid = data.videos.slice(0, limit);
 
-      return vid.map((x) => x.url);
+      return vid;
     }
   }
   public async getInfo(url: string): Promise<yts.YoutubeVideo> {
@@ -370,17 +370,17 @@ export class Search {
   }): Promise<any[]> {
     let result: any[];
     if (type === 0) {
-      result = await this.soundcloud.search({
+      result = (await this.soundcloud.search({
         query,
         limit,
         scOptions: this.soundcloud.options,
-      });
+      })).map(x => x.permalink_url);
     } else if (type === 1) {
       result = await this.localFile.search(query);
     } else if (type === 2) {
       result = await this.attachment.search(query);
     } else if (type === 3) {
-      result = await this.youtube.search(query, limit);
+      result = (await this.youtube.search(query, limit)).map((x : any) => x.url);
     } else if (type === 4) {
       result = await this.spotify.search(query);
     }

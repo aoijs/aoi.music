@@ -96,7 +96,7 @@ export declare class Attachments {
 }
 export declare class Youtube {
     get baseURL(): string[];
-    search(track: string, limit?: number): Promise<string[]>;
+    search(track: string, limit?: number): Promise<string[] | yts.YoutubeSearchVideoInfo[]>;
     getInfo(url: string): Promise<yts.YoutubeVideo>;
     getStream(info: yts.YoutubeVideo): Promise<import("m3u8stream").Stream | import("stream").PassThrough>;
     related(id: string, limit?: number): Promise<any[]>;
