@@ -90,8 +90,8 @@ class Player {
   /**
    * search
    */
-  public async search(query: string, type: number): Promise<any[]> {
-    return await this.manager.searchManager.search({ query, type });
+  public async search(query: string, type: number,limit = 1): Promise<any[]> {
+    return await this.manager.searchManager.search({ query, type,limit });
   }
 
   /**

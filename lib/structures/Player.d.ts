@@ -36,7 +36,7 @@ declare class Player {
     /**
      * search
      */
-    search(query: string, type: number): Promise<any[]>;
+    search(query: string, type: number, limit?: number): Promise<any[]>;
     /**
      * addTrack
      */
