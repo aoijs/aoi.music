@@ -111,13 +111,7 @@ export class SoundCloud {
               collection: [],
             };
           });
-        return collection.map(
-          (x: {
-            track?: {
-              permalink_url?: string;
-            };
-          }) => x.track.permalink_url,
-        );
+        return collection.map(x => x.track)
       } else {
         return [query]; // hardest line
       }
