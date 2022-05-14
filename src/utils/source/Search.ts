@@ -107,11 +107,12 @@ export class SoundCloud {
             limit: this.options.likeTrackLimit ?? 200,
           })
           .catch((e) => {
+            console.error(e);
             return {
               collection: [],
             };
           });
-        return collection.map(x => x.track)
+        return collection.map(x => x.track.permalink_url);
       } else {
         return [query]; // hardest line
       }
