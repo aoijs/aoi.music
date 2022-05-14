@@ -10,6 +10,7 @@ export default class Track {
     type: number;
     player: Player;
     _ogPos: number;
+    position: number;
     constructor(data: {
         requestUser: GuildMember;
         rawinfo: TrackRawInfo;

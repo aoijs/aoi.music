@@ -13,6 +13,7 @@ export default class Track {
 
   public player: Player;
   public _ogPos:number;
+  public position:number;
   constructor(
     data: {
       requestUser: GuildMember;
@@ -29,6 +30,7 @@ export default class Track {
     this.transformInfo(data.rawinfo);
     this.player = player;
     Object.defineProperty(this, "_ogPos", {value:data.position})
+    this.position = data.position;
   }
   /**
    * @method link

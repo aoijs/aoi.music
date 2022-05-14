@@ -7,5 +7,7 @@ declare class PlayerQueue {
     previous: Track;
     setPlayer(player: Player): void;
     setCurrent(track: Track): void;
+    reOrder(): void;
+    originalOrder(): void;
 }
 export default PlayerQueue;

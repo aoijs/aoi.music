@@ -14,6 +14,15 @@ class PlayerQueue {
   setCurrent(track: Track) {
     this.current = track;
   }
+  reOrder() {
+    this.list.forEach((x, y) => {
+      x.position = y;
+    });
+  }
+  originalOrder() {
+        this.list = this.list.sort((a, b) => a._ogPos - b._ogPos);
+        this.reOrder();
+  }
 }
 
 export default PlayerQueue;

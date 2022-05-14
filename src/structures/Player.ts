@@ -415,7 +415,7 @@ class Player {
   }
   _defaultOptions() {
     this.options = {
-      shuffled:false,
+      shuffled: false,
       paused: false,
       mode: LoopMode.None,
       volume: 100,
@@ -450,6 +450,7 @@ class Player {
     const track = this.queue.list.shift();
     this.queue.previous = track;
     this.queue.list.push(track);
+    if (this.options.shuffled) this.queue.reOrder();
     this.queue.setCurrent(this.queue.list[0]);
     await this.requestManager.setCurrentStream(this.queue.list[0]);
     this.play();
@@ -602,12 +603,15 @@ class Player {
   }
   shuffleQueue() {
     const current = this.queue.current;
-    this.queue.list = shuffle(this.queue.list.slice(1));
+    const last = this.queue.list[this.queue.list.length - 1];
+    this.queue.list = shuffle(this.queue.list.slice(1, -1));
     this.queue.list.unshift(current);
+    this.queue.list.push(last);
+    this.queue.reOrder();
     this.options.shuffled = true;
   }
   unShuffleQueue() {
-    this.queue.list = this.queue.list.sort((a,b) => a._ogPos - b._ogPos);
+    this.queue.originalOrder();
     this.options.shuffled = false;
   }
 
