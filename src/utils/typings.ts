@@ -1,10 +1,12 @@
 import { VoiceConnection } from "@discordjs/voice";
-import {Tracks} from "spotify-url-info"
-import {
-  NewsChannel,
-  TextChannel,
-  ThreadChannel,
-  VoiceChannel,
+//@ts-ignore
+import { Tracks } from "spotify-url-info";
+import
+  {
+    NewsChannel,
+    TextChannel,
+    ThreadChannel,
+    VoiceChannel,
 } from "discord.js";
 import { CacheType, LoopMode, PlayerEvents } from "./constants";
 import * as internal from "stream";
@@ -20,71 +22,80 @@ export type PossibleStream =
   | ReadStream;
 export type RawTrackTypes = TrackInfo | LocalResponse;
 
-export interface LocalResponse {
+export interface LocalResponse
+{
   url: string;
   is_m3u8: boolean;
   content_length: number;
 }
 
-export interface TwitchOptions {
+export interface TwitchOptions
+{
   clientId: string;
 }
 
-export interface SoundcloudOptions {
+export interface SoundcloudOptions
+{
   clientId: string;
 }
 
-export interface CacheOptions {
+export interface CacheOptions
+{
   enabled: boolean;
   cacheType: CacheType;
   limit?: number;
   directory?: string;
 }
 
-export interface SoundcloudOptions {
+export interface SoundcloudOptions
+{
   clientId: string;
-  likeTrackLimit?:number;
+  likeTrackLimit?: number;
 }
 
-export interface ManagerConfig {
+export interface ManagerConfig
+{
   cache?: CacheOptions;
   soundcloud?: SoundcloudOptions;
   youtube?: YoutubeOptions;
   playerOptions?: PlayerOpts;
 }
-export interface PlayerOpts {
+export interface PlayerOpts
+{
   trackInfoInterval: number;
 }
-export interface voiceState {
+export interface voiceState
+{
   text: TextChannel;
   channel: VoiceChannel;
   connection: VoiceConnection;
 }
 
-export interface ManagerEvents {
-  [PlayerEvents.TRACK_START](
+export interface ManagerEvents
+{
+  [ PlayerEvents.TRACK_START ] (
     Track: Track,
     textChannel: TextChannel | NewsChannel | ThreadChannel,
   ): this;
-  [PlayerEvents.TRACK_END](
+  [ PlayerEvents.TRACK_END ] (
     track: Track,
     textChannel: TextChannel | NewsChannel | ThreadChannel,
   ): this;
-  [PlayerEvents.QUEUE_START](
+  [ PlayerEvents.QUEUE_START ] (
     urls: unknown[],
     textChannel: TextChannel | NewsChannel | ThreadChannel,
   ): this;
-  [PlayerEvents.QUEUE_END](
+  [ PlayerEvents.QUEUE_END ] (
     textChannel: TextChannel | NewsChannel | ThreadChannel,
   ): this;
-  [PlayerEvents.AUDIO_ERROR](
+  [ PlayerEvents.AUDIO_ERROR ] (
     error: any,
     textChannel: TextChannel | NewsChannel | ThreadChannel,
   ): this;
-  [PlayerEvents.TRACK_RESUME](
+  [ PlayerEvents.TRACK_RESUME ] (
     textChannel: TextChannel | NewsChannel | ThreadChannel,
   ): this;
-  [PlayerEvents.TRACK_PAUSE](
+  [ PlayerEvents.TRACK_PAUSE ] (
     textChannel: TextChannel | NewsChannel | ThreadChannel,
   ): this;
 }
@@ -97,14 +108,14 @@ export type LocalInfoType = {
   path?: string;
   dir: string;
   createdTimestamp: number;
-  [keys: string]: any;
+  [ keys: string ]: any;
 };
 
 export type AttachmentInfoType = {
   title: string;
   description: string;
   url: string;
-  [keys: string]: any;
+  [ keys: string ]: any;
 };
 
 export type AttachmentStreamType = Promise<ReadStream>;
@@ -135,14 +146,17 @@ export type TrackInfoType = {
   createdTimestamp?: number;
 };
 
-export interface SCTrackInfo extends TrackInfo {
-  [key: string]: any;
+export interface SCTrackInfo extends TrackInfo
+{
+  [ key: string ]: any;
 }
-export interface YTRawInfo extends YoutubeVideo {
-  [key: string]: any;
+export interface YTRawInfo extends YoutubeVideo
+{
+  [ key: string ]: any;
 }
-export interface SpotifyInfo extends Tracks {
-  [key :string] : any;
+export interface SpotifyInfo extends Tracks
+{
+  [ key: string ]: any;
 }
 export type TrackRawInfo =
   | SCTrackInfo
@@ -154,30 +168,33 @@ export type TrackRawInfo =
 
 export type PlayerOptionsData = {
   paused: boolean;
-  shuffled:boolean;
+  shuffled: boolean;
   mode: LoopMode.None | LoopMode.Queue | LoopMode.Track;
   volume: number;
-  leaveAfter: { enabled: boolean; time: number };
+  leaveAfter: { enabled: boolean; time: number; };
   leaveWhenVcEmpty: boolean;
   autoPlay?: AutoPlayType;
   seekWhenFilter?: boolean;
 };
 export type AutoPlayType = "relative" | "youtube" | "soundcloud";
 
-export interface YoutubeOptions {
+export interface YoutubeOptions
+{
   fetchAuthor?: boolean;
 }
 
-export interface rawYoutubeMixData {
+export interface rawYoutubeMixData
+{
   contents: {
     twoColumnWatchNextResults: {
       results: Record<string, unknown>;
       secondaryResults: Record<string, unknown>;
-      playlist: { playlist: YoutubeMixPlaylistData };
+      playlist: { playlist: YoutubeMixPlaylistData; };
     };
   };
 }
-export interface YoutubeMixPlaylistData {
+export interface YoutubeMixPlaylistData
+{
   title: string;
   contents: Record<
     "playlistPanelVideoRenderer",
@@ -186,10 +203,11 @@ export interface YoutubeMixPlaylistData {
   playlistId: string;
   isInfinite: boolean;
   playlistShareUrl: string;
-  ownerName: { simpleText: string };
+  ownerName: { simpleText: string; };
 }
 
-export interface YoutubeMixPLaylistPanelVideoRenderData {
+export interface YoutubeMixPLaylistPanelVideoRenderData
+{
   videoId: any;
   title: {
     accessibility: {
@@ -218,7 +236,7 @@ export interface YoutubeMixPLaylistPanelVideoRenderData {
       };
     };
   };
-  indexText: { simpleText: string };
+  indexText: { simpleText: string; };
   navigationEndpoint: {
     watchEndpoint: {
       videoId: string;
@@ -228,21 +246,23 @@ export interface YoutubeMixPLaylistPanelVideoRenderData {
   };
 }
 
-export interface YoutubeRelatedData {
+export interface YoutubeRelatedData
+{
   playerOverlays: {
     playerOverlayRenderer: {
       endScreen: {
         watchNextEndScreenRenderer: {
-          results: {endScreenVideoRenderer :EndScreenVideoRenderer}[];
+          results: { endScreenVideoRenderer: EndScreenVideoRenderer; }[];
         };
       };
     };
   };
 }
-export interface EndScreenVideoRenderer {
+export interface EndScreenVideoRenderer
+{
   videoId: string;
   thumbnail: {
-    thumbnails: { url: string; height: number; width: number }[];
+    thumbnails: { url: string; height: number; width: number; }[];
     title: {
       accessibility: {
         accessibilityData: {

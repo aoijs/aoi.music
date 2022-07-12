@@ -1,4 +1,5 @@
 /// <reference types="node" />
+/// <reference types="node" />
 import { VoiceConnection } from "@discordjs/voice";
 import { Tracks } from "spotify-url-info";
 import { NewsChannel, TextChannel, ThreadChannel, VoiceChannel } from "discord.js";

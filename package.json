@@ -28,7 +28,7 @@
     "url": "git+https://github.com/AkaruiDevelopment/music.git"
   },
   "dependencies": {
-    "@discordjs/opus": "^0.6.0",
+    "@discordjs/opus": "^0.8.0",
     "@discordjs/voice": "^0.8.0",
     "axios": "^0.26.1",
     "discord.js": "^13.6.0",

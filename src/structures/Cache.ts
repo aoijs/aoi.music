@@ -3,7 +3,7 @@ import { constructCache } from "../utils/decorators/constructs";
 import { CacheOptions, PossibleStream } from "../utils/typings";
 import { CacheType } from "../utils/constants";
 import { Readable } from "stream";
-import { Snowflake } from "discord.js";
+import { Snowflake } from "discord.js"
 @constructCache()
 class CacheManager {
   public config?: CacheOptions = {

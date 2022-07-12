@@ -4,6 +4,7 @@ import path from "path";
 import axios from "axios";
 import { getAudioDurationInSeconds } from "get-audio-duration";
 import fetch from "node-fetch";
+//@ts-ignore
 import spotify from "spotify-url-info";
 const { getTracks } = spotify(fetch);
 import {
@@ -23,7 +24,7 @@ import {
   ytMixHTMLParser,
   ytRelatedHTMLParser,
 } from "../helpers";
-import { start } from "repl";
+
 export class SoundCloud {
   public options?: SoundcloudOptions = { clientId: undefined };
   constructor(config?: SoundcloudOptions) {
