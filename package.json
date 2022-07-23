@@ -6,8 +6,7 @@
     "name": "Leref"
   },
   "maintainers": [
-    "USERSATOSHI",
-    "kino-leref-abandoned-child"
+    "USERSATOSHI"
   ],
   "files": [
     "lib",
@@ -27,6 +26,17 @@
     "type": "git",
     "url": "git+https://github.com/AkaruiDevelopment/music.git"
   },
+  "keywords": [
+    "aoi.music",
+    "aoimusic",
+    "aoi",
+    "api",
+    "aoi.js",
+    "discord",
+    "ffmpeg",
+    "music",
+    "filters"
+  ],
   "dependencies": {
     "@discordjs/opus": "^0.8.0",
     "@discordjs/voice": "^0.8.0",
