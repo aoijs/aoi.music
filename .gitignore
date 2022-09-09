@@ -1,11 +1,11 @@
 #Packages
 /Classes
 /index.js
-.cache
-.npm
-node_modules
-test
+/.cache
+/.npm
+/node_modules
+/test
 /changelogs
-/docs-extra
-/music
+/docs-extra/.vscode
+/tmp
 /.vscode

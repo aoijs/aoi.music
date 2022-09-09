@@ -1,6 +1,6 @@
 import { GuildMember, TextChannel, VoiceChannel } from "discord.js";
 import { VoiceConnection } from "@discordjs/voice";
-import { LoopMode, PlayerStates } from "../utils/constants";
+import { LoopMode, PlayerStates } from "../typings/enums";
 import { PlayerOptions, PlayerOptionsData, voiceState } from "../utils/typings";
 import { AudioPlayer } from "@discordjs/voice";
 import Manager from "./Manager";

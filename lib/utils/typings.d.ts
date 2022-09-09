@@ -3,7 +3,7 @@
 import { VoiceConnection } from "@discordjs/voice";
 import { Tracks } from "spotify-url-info";
 import { NewsChannel, TextChannel, ThreadChannel, VoiceChannel } from "discord.js";
-import { CacheType, LoopMode, PlayerEvents } from "./constants";
+import { CacheType, LoopMode, PlayerEvents } from "../typings/enums";
 import * as internal from "stream";
 import { ReadStream } from "fs";
 import { TrackInfo } from "soundcloud-downloader/src/info";

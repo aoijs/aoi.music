@@ -1,5 +1,5 @@
 import { GuildMember } from "discord.js";
-import { SourceProviders } from "../utils/constants";
+import { SourceProviders } from "../typings/enums";
 import { TrackInfoType, TrackRawInfo } from "../utils/typings";
 import Player from "./Player";
 export default class Track {
