@@ -1,6 +1,5 @@
-import { Track } from "../structures";
 import { YoutubeMixPlaylistData, YoutubeMixPLaylistPanelVideoRenderData, YoutubeRelatedData } from "../typings/interfaces";
-export declare function shuffle(array: Array<Track>): Track[];
+export declare function shuffle(array: Array<object>): object[];
 export declare function ytMixHTMLParser(file: string): YoutubeMixPlaylistData;
 export declare function ytRelatedHTMLParser(file: string): {
     endScreenVideoRenderer: import("../typings/interfaces").EndScreenVideoRenderer;

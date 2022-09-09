@@ -124,7 +124,6 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
     } else if (type === "Spotify") {
         const spotify = manager.platforms.spotify;
         const data = await spotify.getData(id);
-        console.log(data);
         switch (data.type) {
             case "track":
                 return <Track<T>>(<unknown>{
@@ -193,23 +192,23 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
                     });
                 });
             case "artist":
-                return data.tracks.items.map((x: any) => {
+                return data.tracks.map((x: any) => {
                     return <Track<T>>(<unknown>{
                         title: x.name,
                         artist: x.artists
                             .map((a: { name: any }) => a.name)
                             .join(", "),
-                        duration: x.duration,
-                        preview: x.audioPreview.url,
+                        duration: x.duration_ms,
+                        preview: x.preview_url,
                         url: x.external_urls.spotify,
                         identifier: "spotify",
                         views: 0,
                         likes: 0,
-                        thumbnail: x.coverArt.sources[0]?.url,
+                        thumbnail: x.album.images[0].url,
                         spotifyId: x.id,
                         id: null,
                         description: null,
-                        createdAt: new Date(x.releaseDate.isoString) ?? null,
+                        createdAt: new Date(x.releaseDate?.isoString) ?? null,
                         platformType: PlatformType.Spotify,
                         formatedPlatforms:
                             formatedPlatforms[PlatformType.Spotify],
@@ -242,8 +241,8 @@ export async function requestStream<T extends keyof typeof PlatformType>(
                     type: "video",
                 },
             );
-            track.id = data.videos.as(Video)[0].id;
-            return yt.download(data.videos.as(Video)[0].id, {
+            track.id = data.videos.as( Video )[ 0 ].id;
+            return yt.download(track.id, {
                 client: manager.configs.searchOptions.youtubeClient ?? "WEB",
                 quality: "best",
             });

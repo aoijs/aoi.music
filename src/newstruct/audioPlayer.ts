@@ -14,7 +14,7 @@ import {
 } from "./../typings/enums";
 import { AudioPlayerMode, AudioPLayerOptions } from "./../typings/interfaces";
 import { requestInfo, requestStream } from "../newutils/request";
-import { Track } from "../typings/types";
+import { SpotifyTrackInfo, Track } from "../typings/types";
 import { GuildMember } from "discord.js";
 import { setTimeout } from "timers/promises";
 export class AudioPlayer {
@@ -187,14 +187,20 @@ export class AudioPlayer {
                     await this.play();
                 }
             } else if (type === PlatformType.Spotify) {
-                const info = await requestInfo(
-                    track[i],
-                    "Spotify",
-                    this.options.manager,
+                const info = <SpotifyTrackInfo[]>(
+                    (<unknown>(
+                        await requestInfo(
+                            track[i],
+                            "Spotify",
+                            this.options.manager,
+                        )
+                    ))
                 );
-                this.queue.push(info);
-                if (this.queue.length === 1) {
-                    await this.play();
+                for (let i = 0; i < info.length; i++) {
+                    this.queue.push(info[i]);
+                    if (this.queue.length === 1) {
+                        await this.play();
+                    }
                 }
             }
 
