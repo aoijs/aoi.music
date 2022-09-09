@@ -147,22 +147,23 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
                 });
             case "playlist":
                 return data.tracks.items.map((x: any) => {
+                    x = x.track;
                     return <Track<T>>(<unknown>{
                         title: x.name,
                         artist: x.artists
                             .map((a: { name: any }) => a.name)
                             .join(", "),
-                        duration: x.duration,
-                        preview: x.audioPreview.url,
+                        duration: x.duration_ms,
+                        preview: x.preview_url,
                         url: x.external_urls.spotify,
                         identifier: "spotify",
                         views: 0,
                         likes: 0,
-                        thumbnail: x.coverArt.sources[0]?.url,
+                        thumbnail: x.album.images[0]?.url,
                         spotifyId: x.id,
                         id: null,
                         description: null,
-                        createdAt: new Date(x.releaseDate.isoString) ?? null,
+                        createdAt: new Date(x.releaseDate?.isoString) ?? null,
                         platformType: PlatformType.Spotify,
                         formatedPlatforms:
                             formatedPlatforms[PlatformType.Spotify],
@@ -175,17 +176,17 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
                         artist: x.artists
                             .map((a: { name: any }) => a.name)
                             .join(", "),
-                        duration: x.duration,
-                        preview: x.audioPreview.url,
+                        duration: x.duration_ms,
+                        preview: x.preview_url,
                         url: x.external_urls.spotify,
                         identifier: "spotify",
                         views: 0,
                         likes: 0,
-                        thumbnail: x.coverArt.sources[0]?.url,
+                        thumbnail: data.images[0]?.url,
                         spotifyId: x.id,
                         id: null,
                         description: null,
-                        createdAt: new Date(x.releaseDate.isoString) ?? null,
+                        createdAt: new Date(x.releaseDate?.isoString) ?? null,
                         platformType: PlatformType.Spotify,
                         formatedPlatforms:
                             formatedPlatforms[PlatformType.Spotify],
@@ -241,7 +242,7 @@ export async function requestStream<T extends keyof typeof PlatformType>(
                     type: "video",
                 },
             );
-            track.id = data.videos.as( Video )[ 0 ].id;
+            track.id = data.videos.as(Video)[0].id;
             return yt.download(track.id, {
                 client: manager.configs.searchOptions.youtubeClient ?? "WEB",
                 quality: "best",
