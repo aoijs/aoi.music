@@ -14,4 +14,10 @@ export const FFMPEG_ARGS = [
     "-vn",
 ];
 
-export const formatedPlatforms = ["SoundCloud", "LocalFile", "Url", "Youtube", "Spotify"];
+export const formatedPlatforms = [
+    "SoundCloud",
+    "LocalFile",
+    "Url",
+    "Youtube",
+    "Spotify",
+] as const;

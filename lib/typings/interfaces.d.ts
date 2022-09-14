@@ -38,6 +38,10 @@ export interface AudioPlayerMode {
     paused: boolean;
     volume: number;
     currentTrack: number;
+    ytMix: {
+        enabled: boolean;
+        lastUrl: string | null;
+    };
 }
 export interface ManagerEvents {
     [PlayerEvents.TRACK_START](Track: any): this;

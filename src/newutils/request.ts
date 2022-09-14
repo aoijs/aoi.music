@@ -25,15 +25,20 @@ export async function generateInfo<T extends "LocalFile" | "Url">(
     } else if (type === "Url") {
         const array = id.split("/");
         const title = array.pop().split("?")[0];
-        const filetype = title.split(".")[1] ?? "N/A";
         const reqData = await request(id);
+        let filetype = reqData.headers["content-type"]?.split("/") ?? [];
+        const ftype = filetype.length
+            ? filetype.length > 1
+                ? filetype[1]
+                : filetype[0]
+            : null;
         let size = Number(reqData.headers["content-length"]);
         if (isNaN(size)) size = (await reqData.body.blob()).size;
         const duration = await getAudioDurationInSeconds(id);
         return <Track<T>>{
             title,
             idetifier: "url",
-            type: filetype,
+            type: ftype,
             size,
             duration: duration * 1000,
             url: id,
@@ -69,31 +74,91 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
     id: string,
     type: T,
     manager: Manager,
-): Promise<Track<T>> {
+): Promise<Track<T> | Track<T>[]> {
     if (type === "SoundCloud") {
-        const scData: TrackInfo | undefined = await scdl
-            .getInfo(id)
-            .catch((_) => undefined);
-        if (!scData) return;
-        return <Track<T>>{
-            title: scData.title,
-            artist: scData.user.username,
-            artistURL: scData.user.permalink_url,
-            artistAvatar: scData.user.avatar_url,
-            duration: scData.duration,
-            url: scData.permalink_url,
-            identifier: "soundcloud",
-            views: scData.playback_count,
-            likes: scData.likes_count,
-            thumbnail: scData.artwork_url?.replace(
-                "-large.jpg",
-                "-t500x500.jpg",
-            ),
-            id: scData.permalink_url,
-            description: scData.description,
-            createdAt: new Date(scData.created_at) ?? null,
-            platformType: PlatformType.SoundCloud,
-        };
+        const sc = manager.platforms.soundcloud;
+        if (id.split("/")[4] === "sets") {
+            const setinfo = await sc.getSetInfo(id);
+            return <Track<T>[]>(setinfo.tracks.map((scData) => {
+                return {
+                    title: scData.title,
+                    artist: scData.user.username,
+                    artistURL: scData.user.permalink_url,
+                    artistAvatar: scData.user.avatar_url,
+                    duration: scData.duration,
+                    url: scData.permalink_url,
+                    identifier: "soundcloud",
+                    views: scData.playback_count,
+                    likes: scData.likes_count,
+                    thumbnail: scData.artwork_url?.replace(
+                        "-large.jpg",
+                        "-t500x500.jpg",
+                    ),
+                    id: scData.permalink_url,
+                    description: scData.description,
+                    createdAt: new Date(scData.created_at) ?? null,
+                    platformType: PlatformType.SoundCloud,
+                    formatedPlatforms:
+                        formatedPlatforms[PlatformType.SoundCloud],
+                };
+            }));
+        } else if (id.split("/").pop() === "likes") {
+            return <Track<T>[]>(
+                await sc.getLikes({
+                    limit: manager.configs.requestOptions
+                        .soundcloudLikeTrackLimit,
+                    profileUrl: id.split("/").slice(0, 4).join("/"),
+                })
+            ).collection.map( like=> {
+                const scData = like.track;
+                return {
+                    title: scData.title,
+                    artist: scData.user.username,
+                    artistURL: scData.user.permalink_url,
+                    artistAvatar: scData.user.avatar_url,
+                    duration: scData.duration,
+                    url: scData.permalink_url,
+                    identifier: "soundcloud",
+                    views: scData.playback_count,
+                    likes: scData.likes_count,
+                    thumbnail: scData.artwork_url?.replace(
+                        "-large.jpg",
+                        "-t500x500.jpg",
+                    ),
+                    id: scData.permalink_url,
+                    description: scData.description,
+                    createdAt: new Date(scData.created_at) ?? null,
+                    platformType: PlatformType.SoundCloud,
+                    formatedPlatforms:
+                        formatedPlatforms[PlatformType.SoundCloud],
+                };
+            });
+        } else {
+            const scData: TrackInfo | undefined = await scdl
+                .getInfo(id)
+                .catch((_) => undefined);
+            if (!scData) return;
+            return <Track<T>[]>[{
+                title: scData.title,
+                artist: scData.user.username,
+                artistURL: scData.user.permalink_url,
+                artistAvatar: scData.user.avatar_url,
+                duration: scData.duration,
+                url: scData.permalink_url,
+                identifier: "soundcloud",
+                views: scData.playback_count,
+                likes: scData.likes_count,
+                thumbnail: scData.artwork_url?.replace(
+                    "-large.jpg",
+                    "-t500x500.jpg",
+                ),
+                id: scData.permalink_url,
+                description: scData.description,
+                createdAt: new Date(scData.created_at) ?? null,
+                platformType: PlatformType.SoundCloud,
+                formatedPlatforms: formatedPlatforms[PlatformType.SoundCloud],
+            }];
+        }
     } else if (type === "LocalFile" || type === "Url") {
         return <Track<T>>(<unknown>generateInfo(id, type));
     } else if (type === "Youtube") {
@@ -225,11 +290,16 @@ export async function requestStream<T extends keyof typeof PlatformType>(
     manager: Manager,
 ) {
     if (type === "SoundCloud") {
-        return scdl.download(track.id).catch((_) => undefined);
+        return scdl.download(track.id).catch((e) => {
+            console.error(
+                "Failed to download track from SoundCloud With Reason: " + e,
+            );
+            return undefined;
+        });
     } else if (type === "LocalFile") {
         return createReadStream(track.id);
     } else if (type === "Url") {
-        return (await request(track.id)).body.arrayBuffer();
+        return (await (await request(track.id)).body.blob()).stream();
     } else if (type === "Youtube") {
         const yt = await manager.platforms.youtube;
         return yt.download(track.id);

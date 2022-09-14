@@ -5,8 +5,8 @@ import { PlatformType } from "../typings/enums";
 import { YoutubeMix, ytMixHTMLParser } from "./helpers";
 import { fetch } from "undici";
 import { existsSync } from "fs";
-import { setTimeout } from "timers/promises";
 import * as fsp from "fs/promises";
+import { SearchOptions } from "soundcloud-downloader/src/search";
 export async function search(
     query: string,
     type: PlatformType,
@@ -41,27 +41,15 @@ export async function search(
     } else if (type === PlatformType.SoundCloud) {
         const sc = manager.platforms.soundcloud;
         if (query.startsWith("https://")) {
-            if (query.split("/")[4] === "sets") {
-                (await sc.getSetInfo(query)).tracks.map(
-                    (track) => track.permalink_url,
-                );
-            } else if (query.split("/").pop() === "likes") {
-                return (
-                    await sc.getLikes({
-                        limit: manager.configs.requestOptions
-                            .soundcloudLikeTrackLimit,
-                        profileUrl: query.split("/").slice(0, 4).join("/"),
-                    })
-                ).collection.map((like) => like.track.permalink_url);
-            } else {
-                return [query];
-            }
+            return [ query ];
         }
 
-        const sq = {
+        const sq: SearchOptions = {
             query: query,
+            resourceType: "tracks",
+            limit: 1,
         };
-        return (await sc.search(sq)).collection.map((x) => x.permalink_url);
+        return [(await sc.search(sq)).collection[0].permalink_url];
     } else if (type === PlatformType.LocalFile) {
         if (existsSync(query)) {
             const stats = await fsp.stat(query);
@@ -91,12 +79,7 @@ export async function search(
         }
         return [];
     } else if (type === PlatformType.Url) {
-        const res = await fetch(query);
-        const ct = res.headers.get("content-type");
-        if (ct.startsWith("audio") || ct.startsWith("video")) {
-            return [query];
-        }
-        return [];
+        return [query];
     } else if (type === PlatformType.Spotify) {
         return [query];
     }

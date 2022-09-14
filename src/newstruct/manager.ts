@@ -1,25 +1,35 @@
-import { DiscordGatewayAdapterCreator, entersState, joinVoiceChannel, VoiceConnectionStatus } from "@discordjs/voice";
+import {
+    DiscordGatewayAdapterCreator,
+    entersState,
+    joinVoiceChannel,
+    VoiceConnectionStatus,
+} from "@discordjs/voice";
 import { Snowflake, VoiceChannel } from "discord.js";
-import { existsSync, readFileSync } from "fs";
+import { existsSync, readFileSync, writeFileSync } from "fs";
 import { TypedEmitter } from "tiny-typed-emitter";
 import InnerTube from "youtubei.js";
 import IT from "youtubei.js/dist/src/Innertube";
-import { AudioPLayerOptions, ManagerConfigurations, ManagerEvents } from "../typings/interfaces";
+import {
+    AudioPLayerOptions,
+    ManagerConfigurations,
+    ManagerEvents,
+} from "../typings/interfaces";
 import { AudioPlayer } from "./audioPlayer";
 import scdl from "soundcloud-downloader";
 import { SCDL } from "soundcloud-downloader/src";
-import  sui, { Spotify } from "spotify-url-info"
+import sui, { Spotify } from "spotify-url-info";
 import { fetch } from "undici";
+import { PlatformType } from "../typings/enums";
+import Video from "youtubei.js/dist/src/parser/classes/Video";
+import { TrackInfo } from "soundcloud-downloader/src/info";
 
-export class Manager extends TypedEmitter<ManagerEvents>
-{
+export class Manager extends TypedEmitter<ManagerEvents> {
     configs: ManagerConfigurations;
     players: Map<Snowflake, AudioPlayer>;
     platforms: { youtube: Promise<IT>; spotify?: Spotify; soundcloud: SCDL };
-    constructor ( config?: ManagerConfigurations )
-    {
+    constructor(config?: ManagerConfigurations) {
         super();
-        this.#validateConfig( config );
+        this.#validateConfig(config);
         this.configs = config ?? Manager.defaultConfig();
         this.players = new Map();
         const ytoptions: {
@@ -27,46 +37,65 @@ export class Manager extends TypedEmitter<ManagerEvents>
             cookie?: string;
             debug?: boolean;
         } = {};
-        if ( config.searchOptions?.youtubeCookie )
-        {
+        if (config.searchOptions?.youtubeCookie) {
             ytoptions.cookie = config.searchOptions?.youtubeCookie;
         }
-        if ( config.searchOptions?.youtubegl )
-        {
-            ytoptions.cookie = config.searchOptions?.youtubegl ?? 'US';
+        if (config.searchOptions?.youtubegl) {
+            ytoptions.cookie = config.searchOptions?.youtubegl ?? "US";
         }
         this.platforms = {
-            youtube:  InnerTube.create(),
+            youtube: InnerTube.create(),
             soundcloud: scdl,
-            spotify: sui( fetch ),
+            spotify: sui(fetch),
         };
-        if ( config.searchOptions.soundcloudClientId )
-        {
-            this.platforms.soundcloud.setClientID( config.searchOptions.soundcloudClientId );
+        if (config.searchOptions.soundcloudClientId) {
+            this.platforms.soundcloud.setClientID(
+                config.searchOptions.soundcloudClientId,
+            );
         }
-        if ( config.searchOptions?.youtubeAuth )
-        {
-            const cred = JSON.parse( readFileSync( config.searchOptions?.youtubeAuth ).toString() );
-            this.platforms.youtube.then( d => d.session.signIn( cred ) );
+        if (config.searchOptions?.youtubeAuth) {
+            this.platforms.youtube.then((yt) => {
+                const cred = JSON.parse(
+                    readFileSync(config.searchOptions?.youtubeAuth).toString(),
+                );
+                yt.session.on("auth-pending", (data) => {
+                    console.log({
+                        url: data.verification_url,
+                        code: data.user_code,
+                    });
+                    // data.verification_url contains the URL to visit to authenticate.
+                    // data.user_code contains the code to enter on the website.
+                });
+
+                // 'auth' is fired once the authentication is complete
+                yt.session.on("auth", ({ credentials }) => {
+                    writeFileSync(config.searchOptions.youtubeAuth, JSON.stringify(credentials));
+                    // do something with the credentials, eg; save them in a database.
+                    console.log("Sign in successful");
+                });
+
+                // 'update-credentials' is fired when the access token expires, if you do not save the updated credentials any subsequent request will fail
+                yt.session.on("update-credentials", ({ credentials }) => {
+                    // do something with the updated credentials
+                    writeFileSync(config.searchOptions.youtubeAuth, JSON.stringify(credentials));
+                });
+                yt.session.signIn(cred);
+            });
         }
     }
-    static defaultConfig (): ManagerConfigurations
-    {
+    static defaultConfig(): ManagerConfigurations {
         return {
-            devOptions:
-            {
+            devOptions: {
                 debug: false,
             },
-            searchOptions:
-            {
+            searchOptions: {
                 soundcloudClientId: undefined,
                 youtubeCookie: undefined,
                 youtubeAuth: undefined,
-                youtubegl: 'US',
-                youtubeClient: "WEB"
+                youtubegl: "US",
+                youtubeClient: "WEB",
             },
-            requestOptions:
-            {
+            requestOptions: {
                 offsetTimeout: 500,
                 soundcloudLikeTrackLimit: -1,
                 youtubePlaylistLimit: -1,
@@ -75,82 +104,110 @@ export class Manager extends TypedEmitter<ManagerEvents>
         };
     }
 
-    #validateConfig ( config: ManagerConfigurations )
-    {
-        if ( config.requestOptions?.offsetTimeout && ( typeof config.requestOptions.offsetTimeout !== "number" || config.requestOptions.offsetTimeout < 0 ) )
-        {
-            throw new Error( `Invalid Time Provided in ManagerConfig#requestOptions['offsetTimeout']` );
-        }
-        else if ( config.requestOptions?.soundcloudLikeTrackLimit && (
-            typeof config.requestOptions.soundcloudLikeTrackLimit !== "number" ||
-            config.requestOptions.soundcloudLikeTrackLimit < -1
-        ) )
-        {
-            throw new Error( `Invalid Limit Provided in ManagerConfig#requestOptions['soundcloudLikeTrackLimit']` );
-        }
-        else if ( config.requestOptions?.youtubePlaylistLimit && (
-            typeof config.requestOptions.youtubePlaylistLimit !== "number" ||
-            config.requestOptions.youtubePlaylistLimit < -1
-        ) )
-        {
-            throw new Error( `Invalid Limit Provided in ManagerConfig#requestOptions['youtubePlaylistLimit']` );
-        }
-        else if ( config.requestOptions?.spotifyPlaylistLimit && (
-            typeof config.requestOptions.spotifyPlaylistLimit !== "number" ||
-            config.requestOptions.spotifyPlaylistLimit < -1
-        ) )
-        {
-            throw new Error( `Invalid Limit Provided in ManagerConfig#requestOptions['spotifyPlaylistLimit']` );
-        }
-        else if ( config.searchOptions?.youtubeAuth && !existsSync( config.searchOptions.youtubeAuth ) )
-        {
-            throw new Error( `Invalid Auth Path Provided in ManagerConfig#searchOptions['youtubeAuth']` );
+    #validateConfig(config: ManagerConfigurations) {
+        if (
+            config.requestOptions?.offsetTimeout &&
+            (typeof config.requestOptions.offsetTimeout !== "number" ||
+                config.requestOptions.offsetTimeout < 0)
+        ) {
+            throw new Error(
+                `Invalid Time Provided in ManagerConfig#requestOptions['offsetTimeout']`,
+            );
+        } else if (
+            config.requestOptions?.soundcloudLikeTrackLimit &&
+            (typeof config.requestOptions.soundcloudLikeTrackLimit !==
+                "number" ||
+                config.requestOptions.soundcloudLikeTrackLimit < -1)
+        ) {
+            throw new Error(
+                `Invalid Limit Provided in ManagerConfig#requestOptions['soundcloudLikeTrackLimit']`,
+            );
+        } else if (
+            config.requestOptions?.youtubePlaylistLimit &&
+            (typeof config.requestOptions.youtubePlaylistLimit !== "number" ||
+                config.requestOptions.youtubePlaylistLimit < -1)
+        ) {
+            throw new Error(
+                `Invalid Limit Provided in ManagerConfig#requestOptions['youtubePlaylistLimit']`,
+            );
+        } else if (
+            config.requestOptions?.spotifyPlaylistLimit &&
+            (typeof config.requestOptions.spotifyPlaylistLimit !== "number" ||
+                config.requestOptions.spotifyPlaylistLimit < -1)
+        ) {
+            throw new Error(
+                `Invalid Limit Provided in ManagerConfig#requestOptions['spotifyPlaylistLimit']`,
+            );
+        } else if (
+            config.searchOptions?.youtubeAuth &&
+            !existsSync(config.searchOptions.youtubeAuth)
+        ) {
+            throw new Error(
+                `Invalid Auth Path Provided in ManagerConfig#searchOptions['youtubeAuth']`,
+            );
         }
     }
 
-    async joinVc ( {
+    async joinVc({
         type = "default",
         voiceChannel,
         selfDeaf = true,
         selfMute = false,
     }: {
-        type: AudioPLayerOptions[ 'type' ];
+        type: AudioPLayerOptions["type"];
         voiceChannel: VoiceChannel;
         selfDeaf?: boolean;
         selfMute?: boolean;
-    } ): Promise<void>
-    {
+    }): Promise<void> {
         const data = {
             channelId: voiceChannel.id,
             guildId: voiceChannel.guildId,
             selfDeaf,
             selfMute,
-            adapterCreator: <DiscordGatewayAdapterCreator> <unknown> voiceChannel.guild.voiceAdapterCreator,
+            adapterCreator: <DiscordGatewayAdapterCreator>(
+                (<unknown>voiceChannel.guild.voiceAdapterCreator)
+            ),
             group: voiceChannel.client.user.id,
         };
-        const connection = joinVoiceChannel( data );
-        connection.on( "error", console.error );
-        try
-        {
-            await entersState( connection, VoiceConnectionStatus.Ready, 30000 );
+        const connection = joinVoiceChannel(data);
+        connection.on("error", console.error);
+        try {
+            await entersState(connection, VoiceConnectionStatus.Ready, 30000);
             this.players.set(
                 voiceChannel.guildId,
-                new AudioPlayer( {
+                new AudioPlayer({
                     type,
                     connection,
                     voiceChannel: voiceChannel.id,
                     manager: this,
                     debug: this.configs.devOptions?.debug ?? false,
-                } ),
+                }),
             );
-        } catch ( error )
-        {
+        } catch (error) {
             connection.destroy();
             throw error;
         }
-        if ( this.configs.devOptions?.debug )
-        {
-            connection.on( "debug", console.log );
+        if (this.configs.devOptions?.debug) {
+            connection.on("debug", console.log);
+        }
+    }
+
+    async search<T extends PlatformType>(type: T, query: string, limit = 1) {
+        if (type === PlatformType.Youtube) {
+            const yt = await this.platforms.youtube;
+            const res = await yt.search(query, {
+                type: "video",
+            });
+            return res.videos.as(Video).slice(0, limit);
+        } else if (type === PlatformType.SoundCloud) {
+            const sc = this.platforms.soundcloud;
+            const res = await sc.search({
+                query,
+                limit,
+                offset: 0,
+                resourceType: "tracks",
+            });
+            return <TrackInfo[]>res.collection;
         }
     }
 }

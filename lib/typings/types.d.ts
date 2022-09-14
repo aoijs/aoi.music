@@ -1,5 +1,6 @@
 import { TrackInfo } from "soundcloud-downloader/src/info";
 import { PlatformType } from "./enums";
+import { GuildMember } from "discord.js";
 export declare type SoundCloudTrackInfo = {
     title: string;
     artist: string;
@@ -17,6 +18,7 @@ export declare type SoundCloudTrackInfo = {
     platformType: PlatformType;
     rawData: TrackInfo;
     formatedPlatforms: "SoundCloud";
+    requester: GuildMember;
 };
 export declare type YoutubeTrackInfo = {
     title: string;
@@ -34,6 +36,7 @@ export declare type YoutubeTrackInfo = {
     createdAt: Date | null;
     platformType: PlatformType;
     formatedPlatforms: "Youtube";
+    requester: GuildMember;
 };
 export declare type LocalFileTrackInfo = {
     title: string;
@@ -47,6 +50,7 @@ export declare type LocalFileTrackInfo = {
     id: string;
     platformType: PlatformType;
     formatedPlatforms: "LocalFile";
+    requester: GuildMember;
 };
 export declare type UrlTrackInfo = {
     title: string;
@@ -60,6 +64,7 @@ export declare type UrlTrackInfo = {
     id: string;
     platformType: PlatformType;
     formatedPlatforms: "Url";
+    requester: GuildMember;
 };
 export declare type SpotifyTrackInfo = {
     title: string;
@@ -75,5 +80,6 @@ export declare type SpotifyTrackInfo = {
     createdAt: Date | null;
     platformType: PlatformType;
     formatedPlatforms: "Spotify";
+    requester: GuildMember;
 };
 export declare type Track<type extends keyof typeof PlatformType> = type extends "SoundCloud" ? SoundCloudTrackInfo : type extends "LocalFile" ? LocalFileTrackInfo : type extends "Url" ? UrlTrackInfo : type extends "Youtube" ? YoutubeTrackInfo : SpotifyTrackInfo;

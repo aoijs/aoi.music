@@ -14,9 +14,19 @@ import {
 } from "./../typings/enums";
 import { AudioPlayerMode, AudioPLayerOptions } from "./../typings/interfaces";
 import { requestInfo, requestStream } from "../newutils/request";
-import { SpotifyTrackInfo, Track } from "../typings/types";
+import {
+    LocalFileTrackInfo,
+    SoundCloudTrackInfo,
+    SpotifyTrackInfo,
+    Track,
+    UrlTrackInfo,
+    YoutubeTrackInfo,
+} from "../typings/types";
 import { GuildMember } from "discord.js";
 import { setTimeout } from "timers/promises";
+import { formatedPlatforms } from "../newutils/constants";
+import { search } from "../newutils/search";
+import Video from "youtubei.js/dist/src/parser/classes/Video";
 export class AudioPlayer {
     options: AudioPLayerOptions;
     modes: AudioPlayerMode;
@@ -40,6 +50,10 @@ export class AudioPlayer {
             currentTrack: 0,
             autoPlay: AutoPlay.None,
             filters: [],
+            ytMix: {
+                enabled: false,
+                lastUrl: null,
+            },
         };
     }
 
@@ -60,6 +74,27 @@ export class AudioPlayer {
             this.currentResource = resource;
         }
         this.player.play(resource);
+        if (this.modes.ytMix) {
+            if (
+                this.queue[this.modes.currentTrack].id ===
+                this.modes.ytMix.lastUrl
+            ) {
+                const tracks = <Video[]>(
+                    await this.options.manager.search(
+                        PlatformType.Youtube,
+                        this.queue[this.modes.currentTrack].id,
+                        3,
+                    )
+                );
+                await this.add(
+                    tracks.map(
+                        (x) => `https://www.youtube.com/watch?v=${x.id}`,
+                    ),
+                    PlatformType.Youtube,
+                    this.queue[this.modes.currentTrack].requester,
+                );
+            }
+        }
     }
     async _loopQueue() {
         if (this.modes.currentTrack >= this.queue.length) {
@@ -70,13 +105,16 @@ export class AudioPlayer {
         await this.play();
     }
     async _playNext() {
-        this.modes.currentTrack += 1;
         if (this.options.type === "default") {
-            if (this.modes.currentTrack > 1) {
+            if (this.modes.currentTrack >= 1) {
                 this.queue.shift();
+            } else {
+                this.modes.currentTrack += 1;
             }
         } else if (this.options.type === "fonly") {
             this.queue.shift();
+        } else {
+            this.modes.currentTrack += 1;
         }
         await this.play();
     }
@@ -165,24 +203,57 @@ export class AudioPlayer {
     async add(track: string[], type: PlatformType, member: GuildMember) {
         for (let i = 0; i < track.length; i++) {
             if (type === PlatformType.Youtube) {
-                const id = track[i].split("?v=").pop();
+                const id = track[i].split("?v=")[1].split("&")[0];
+                if (
+                    track[i].includes("&list=") &&
+                    track[i].includes("&index=") &&
+                    track.includes("watch?v=") &&
+                    !this.modes.ytMix.enabled
+                ) {
+                    this.modes.ytMix.enabled = true;
+                    this.modes.ytMix.lastUrl = track[track.length - 1];
+                }
                 const info = await requestInfo(
                     id,
                     "Youtube",
                     this.options.manager,
                 );
-                this.queue.push(info);
+                if (!info) continue;
+                this.queue.push({
+                    ...(<YoutubeTrackInfo>info),
+                    requester: member,
+                });
                 if (this.queue.length === 1) {
                     await this.play();
                 }
             } else if (type === PlatformType.SoundCloud) {
+                const info = await requestInfo(
+                    track[i],
+                    formatedPlatforms[PlatformType.SoundCloud],
+                    this.options.manager,
+                );
+
+                if (!info) continue;
+                for (let i = 0; i < (<SoundCloudTrackInfo[]>info).length; i++) {
+                    this.queue.push({
+                        ...(<SoundCloudTrackInfo>info[i]),
+                        requester: member,
+                    });
+                    if (this.queue.length === 1) {
+                        await this.play();
+                    }
+                }
             } else if (type === PlatformType.LocalFile) {
                 const info = await requestInfo(
                     track[i],
                     "LocalFile",
                     this.options.manager,
                 );
-                this.queue.push(info);
+                if (!info) continue;
+                this.queue.push({
+                    ...(<LocalFileTrackInfo>info),
+                    requester: member,
+                });
                 if (this.queue.length === 1) {
                     await this.play();
                 }
@@ -196,11 +267,22 @@ export class AudioPlayer {
                         )
                     ))
                 );
+                if (!info) continue;
                 for (let i = 0; i < info.length; i++) {
-                    this.queue.push(info[i]);
+                    this.queue.push({ ...info[i], requester: member });
                     if (this.queue.length === 1) {
                         await this.play();
                     }
+                }
+            } else if (type === PlatformType.Url) {
+                const info = await requestInfo(
+                    track[i],
+                    formatedPlatforms[PlatformType.Url],
+                    this.options.manager,
+                );
+                this.queue.push({ ...(<UrlTrackInfo>info), requester: member });
+                if (this.queue.length === 1) {
+                    await this.play();
                 }
             }
 
