@@ -5,9 +5,10 @@ import { AudioPLayerOptions, ManagerConfigurations, ManagerEvents } from "../typ
 import { AudioPlayer } from "./audioPlayer";
 import { SCDL } from "soundcloud-downloader/src";
 import { Spotify } from "spotify-url-info";
-import { PlatformType } from "../typings/enums";
+import { PlatformType, PluginName } from "../typings/enums";
 import Video from "youtubei.js/dist/src/parser/classes/Video";
 import { TrackInfo } from "soundcloud-downloader/src/info";
+import { Plugin } from "../typings/types";
 export declare class Manager extends TypedEmitter<ManagerEvents> {
     #private;
     configs: ManagerConfigurations;
@@ -17,6 +18,7 @@ export declare class Manager extends TypedEmitter<ManagerEvents> {
         spotify?: Spotify;
         soundcloud: SCDL;
     };
+    plugins: Map<PluginName, Plugin<PluginName>>;
     constructor(config?: ManagerConfigurations);
     static defaultConfig(): ManagerConfigurations;
     joinVc({ type, voiceChannel, selfDeaf, selfMute, }: {
@@ -26,4 +28,5 @@ export declare class Manager extends TypedEmitter<ManagerEvents> {
         selfMute?: boolean;
     }): Promise<void>;
     search<T extends PlatformType>(type: T, query: string, limit?: number): Promise<TrackInfo[] | Video[]>;
+    addPlugin<A extends PluginName>(name: A, plugin: Plugin<A>): void;
 }

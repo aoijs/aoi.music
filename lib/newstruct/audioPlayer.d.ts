@@ -1,14 +1,13 @@
-import { AudioPlayer as AP, AudioResource } from "@discordjs/voice";
+import { AudioPlayer as AP } from "@discordjs/voice";
 import { AutoPlay, LoopMode, PlatformType } from "./../typings/enums";
 import { AudioPlayerMode, AudioPLayerOptions } from "./../typings/interfaces";
-import { Track } from "../typings/types";
+import { LocalFileTrackInfo, SoundCloudTrackInfo, SpotifyTrackInfo, Track, UrlTrackInfo, YoutubeTrackInfo } from "../typings/types";
 import { GuildMember } from "discord.js";
 export declare class AudioPlayer {
+    #private;
     options: AudioPLayerOptions;
-    modes: AudioPlayerMode;
     queue: Track<keyof typeof PlatformType>[];
     player: AP;
-    currentResource: AudioResource<unknown> | null;
     constructor(options: AudioPLayerOptions);
     defaultMode(): AudioPlayerMode;
     play(): Promise<void>;
@@ -26,4 +25,16 @@ export declare class AudioPlayer {
     get loop(): LoopMode;
     set autoPlay(autoPlay: AutoPlay);
     get autoPlay(): AutoPlay;
+    shuffle(): void;
+    unshuffle(): void;
+    isShuffled(): boolean;
+    isPaused(): boolean;
+    isLoopEnabled(): boolean;
+    isAutoPlayEnabled(): boolean;
+    currentPosition(): number;
+    getTrackCurrentDuration(): number;
+    get currentTrack(): SoundCloudTrackInfo | LocalFileTrackInfo | UrlTrackInfo | YoutubeTrackInfo | SpotifyTrackInfo;
+    get previousTrack(): SoundCloudTrackInfo | LocalFileTrackInfo | UrlTrackInfo | YoutubeTrackInfo | SpotifyTrackInfo;
+    updateFilters(filterArr: string[]): void;
+    get filters(): string[];
 }

@@ -1,9 +1,12 @@
 /// <reference types="node" />
+/// <reference types="node" />
 import { Snowflake } from "discord.js";
 import { Manager } from "./../newstruct/manager";
 import { VoiceConnection } from "@discordjs/voice";
 import { AutoPlay, LoopMode, PlayerEvents } from "./enums";
 import { PathLike } from "fs";
+import { AudioPlayer } from "../newstruct/audioPlayer";
+import { Track } from "./types";
 export interface ManagerConfigurations {
     devOptions?: {
         debug: boolean;
@@ -44,13 +47,13 @@ export interface AudioPlayerMode {
     };
 }
 export interface ManagerEvents {
-    [PlayerEvents.TRACK_START](Track: any): this;
-    [PlayerEvents.TRACK_END](track: any): this;
-    [PlayerEvents.QUEUE_START](urls: unknown[]): this;
-    [PlayerEvents.QUEUE_END](): this;
-    [PlayerEvents.AUDIO_ERROR](error: any): this;
-    [PlayerEvents.TRACK_RESUME](): this;
-    [PlayerEvents.TRACK_PAUSE](): this;
+    [PlayerEvents.TRACK_START](Track: Track<"LocalFile" | "SoundCloud" | "Spotify" | "Url" | "Youtube">, player: AudioPlayer): this;
+    [PlayerEvents.TRACK_END](track: Track<"LocalFile" | "SoundCloud" | "Spotify" | "Url" | "Youtube">, player: AudioPlayer): this;
+    [PlayerEvents.QUEUE_START](urls: unknown[], player: AudioPlayer): this;
+    [PlayerEvents.QUEUE_END](player: AudioPlayer): this;
+    [PlayerEvents.AUDIO_ERROR](error: any, player: AudioPlayer): this;
+    [PlayerEvents.TRACK_RESUME](player: AudioPlayer): this;
+    [PlayerEvents.TRACK_PAUSE](player: AudioPlayer): this;
 }
 export interface rawYoutubeMixData {
     contents: {
@@ -152,4 +155,19 @@ export interface EndScreenVideoRenderer {
         };
         lengthInSeconds: number;
     };
+}
+export interface CacherMemoryConfig<T extends "memory"> {
+    type: T;
+    map: Map<string, Buffer>;
+    limit: number;
+}
+export interface CacheDiskConfig<T extends "disk"> {
+    type: T;
+    path: string;
+    limit: number;
+    map: Map<string, PathLike>;
+}
+export declare type CacheConfig<T extends "memory" | "disk"> = T extends "memory" ? CacherMemoryConfig<"memory"> : CacheDiskConfig<"disk">;
+export interface FilterConfig {
+    filterFromStart: boolean;
 }

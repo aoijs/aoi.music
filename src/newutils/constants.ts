@@ -1,4 +1,6 @@
 export const FFMPEG_ARGS = [
+    "-i",
+    "-",
     "-analyzeduration",
     "0",
     "-loglevel",

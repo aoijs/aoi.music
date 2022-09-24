@@ -43,3 +43,7 @@ export declare enum PlatformType {
     Youtube = 3,
     Spotify = 4
 }
+export declare enum PluginName {
+    Cacher = "cache",
+    Filter = "filter"
+}

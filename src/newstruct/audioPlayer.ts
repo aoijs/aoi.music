@@ -11,11 +11,13 @@ import {
     LoopMode,
     PlatformType,
     PlayerEvents,
+    PluginName,
 } from "./../typings/enums";
 import { AudioPlayerMode, AudioPLayerOptions } from "./../typings/interfaces";
 import { requestInfo, requestStream } from "../newutils/request";
 import {
     LocalFileTrackInfo,
+    Plugin,
     SoundCloudTrackInfo,
     SpotifyTrackInfo,
     Track,
@@ -27,15 +29,19 @@ import { setTimeout } from "timers/promises";
 import { formatedPlatforms } from "../newutils/constants";
 import { search } from "../newutils/search";
 import Video from "youtubei.js/dist/src/parser/classes/Video";
+import { shuffle } from "../newutils/helpers";
+import { Filter } from "./filter";
+import { PassThrough, Readable } from "stream";
+import { ReadableStream } from "stream/web";
+import { FFmpeg } from "prism-media";
 export class AudioPlayer {
     options: AudioPLayerOptions;
-    modes: AudioPlayerMode;
+    #modes: AudioPlayerMode;
     queue: Track<keyof typeof PlatformType>[];
     player: AP;
-    currentResource: AudioResource<unknown> | null = null;
     constructor(options: AudioPLayerOptions) {
         this.options = options;
-        this.modes = this.defaultMode();
+        this.#modes = this.defaultMode();
         this.queue = [];
         this.player = createAudioPlayer();
         this._configPlayer();
@@ -59,30 +65,46 @@ export class AudioPlayer {
 
     async play() {
         let resource: AudioResource;
-        const current = this.queue[this.modes.currentTrack];
+        const current = this.queue[this.#modes.currentTrack];
         let stream = await requestStream(
             current,
             current.formatedPlatforms,
             this.options.manager,
         );
-        if (this.modes.filters.length) {
-        } else {
-            resource = createAudioResource(stream, {
-                inlineVolume: true,
-                inputType: StreamType.Arbitrary,
-            });
-            this.currentResource = resource;
+        if (this.options.manager.plugins.has(PluginName.Cacher)) {
+            const Cacher = <Plugin<PluginName.Cacher>>(
+                this.options.manager.plugins.get(PluginName.Cacher)
+            );
+            Cacher.write(current, stream);
         }
+        let s: string | Readable | FFmpeg;
+        if (
+            this.options.manager.plugins.has(PluginName.Filter) &&
+            this.#modes.filters.length
+        ) {
+            const f = <Filter>(
+                this.options.manager.plugins.get(PluginName.Filter)
+            );
+            const ffmpeg = f.createFFmpeg("-af", this.filters.join(","));
+            s = stream.pipe(ffmpeg);
+        } else {
+            s = stream;
+        }
+        resource = createAudioResource(s, {
+            inlineVolume: true,
+            inputType: StreamType.Arbitrary,
+        });
+        this.options.manager.emit(PlayerEvents.TRACK_START, current,this);
         this.player.play(resource);
-        if (this.modes.ytMix) {
+        if (this.#modes.ytMix) {
             if (
-                this.queue[this.modes.currentTrack].id ===
-                this.modes.ytMix.lastUrl
+                this.queue[this.#modes.currentTrack].id ===
+                this.#modes.ytMix.lastUrl
             ) {
                 const tracks = <Video[]>(
                     await this.options.manager.search(
                         PlatformType.Youtube,
-                        this.queue[this.modes.currentTrack].id,
+                        this.queue[this.#modes.currentTrack].id,
                         3,
                     )
                 );
@@ -91,35 +113,35 @@ export class AudioPlayer {
                         (x) => `https://www.youtube.com/watch?v=${x.id}`,
                     ),
                     PlatformType.Youtube,
-                    this.queue[this.modes.currentTrack].requester,
+                    this.queue[this.#modes.currentTrack].requester,
                 );
             }
         }
     }
     async _loopQueue() {
-        if (this.modes.currentTrack >= this.queue.length) {
-            this.modes.currentTrack = 0;
+        if (this.#modes.currentTrack >= this.queue.length) {
+            this.#modes.currentTrack = 0;
         } else {
-            this.modes.currentTrack++;
+            this.#modes.currentTrack++;
         }
         await this.play();
     }
     async _playNext() {
         if (this.options.type === "default") {
-            if (this.modes.currentTrack >= 1) {
+            if (this.#modes.currentTrack >= 1) {
                 this.queue.shift();
             } else {
-                this.modes.currentTrack += 1;
+                this.#modes.currentTrack += 1;
             }
         } else if (this.options.type === "fonly") {
             this.queue.shift();
         } else {
-            this.modes.currentTrack += 1;
+            this.#modes.currentTrack += 1;
         }
         await this.play();
     }
     _destroy() {
-        this.modes = this.defaultMode();
+        this.#modes = this.defaultMode();
         this.queue = [];
     }
     _configPlayer(): void {
@@ -128,49 +150,54 @@ export class AudioPlayer {
                 os.status !== AudioPlayerStatus.Idle &&
                 ns.status === AudioPlayerStatus.Idle
             ) {
-                if (this.modes.paused) {
+                if (this.#modes.paused) {
                 } else if (
-                    this.modes.loop === LoopMode.Track &&
-                    this.queue[this.modes.currentTrack]
+                    this.#modes.loop === LoopMode.Track &&
+                    this.queue[this.#modes.currentTrack]
                 ) {
                     this.options.manager.emit(
                         PlayerEvents.TRACK_END,
-                        this.queue[this.modes.currentTrack],
+                        this.queue[this.#modes.currentTrack],
+                        this,
                     );
                     await this.play();
                 } else if (
-                    this.modes.loop === LoopMode.Queue &&
+                    this.#modes.loop === LoopMode.Queue &&
                     this.queue.length
                 ) {
                     this.options.manager.emit(
                         PlayerEvents.TRACK_END,
-                        this.queue[this.modes.currentTrack],
+                        this.queue[this.#modes.currentTrack],
+                        this,
                     );
                     await this._loopQueue();
                 } else if (
-                    this.modes.autoPlay != "none" &&
+                    this.#modes.autoPlay != "none" &&
                     this.queue.length === 1
                 ) {
                     this.options.manager.emit(
                         PlayerEvents.TRACK_END,
-                        this.queue[this.modes.currentTrack],
+                        this.queue[this.#modes.currentTrack],
+                        this,
                     );
                     // this._autoPlay();
                 } else if (
                     this.queue.length > 1 &&
-                    this.modes.currentTrack < this.queue.length - 1
+                    this.#modes.currentTrack < this.queue.length - 1
                 ) {
                     this.options.manager.emit(
                         PlayerEvents.TRACK_END,
-                        this.queue[this.modes.currentTrack],
+                        this.queue[this.#modes.currentTrack],
+                        this,
                     );
                     await this._playNext();
                 } else {
                     this.options.manager.emit(
                         PlayerEvents.TRACK_END,
-                        this.queue[this.modes.currentTrack],
+                        this.queue[this.#modes.currentTrack],
+                        this,
                     );
-                    this.options.manager.emit(PlayerEvents.QUEUE_END);
+                    this.options.manager.emit(PlayerEvents.QUEUE_END, this);
                     this._destroy();
                 }
             }
@@ -182,12 +209,13 @@ export class AudioPlayer {
             ) {
                 this.options.manager.emit(
                     PlayerEvents.TRACK_END,
-                    this.queue[this.modes.currentTrack],
+                    this.queue[this.#modes.currentTrack],
+                    this,
                 );
             }
         });
         this.player.on("error", async (error: any) => {
-            this.options.manager.emit(PlayerEvents.AUDIO_ERROR, error);
+            this.options.manager.emit(PlayerEvents.AUDIO_ERROR, error, this);
         });
 
         if (this.options.manager.configs?.devOptions?.debug) {
@@ -208,10 +236,10 @@ export class AudioPlayer {
                     track[i].includes("&list=") &&
                     track[i].includes("&index=") &&
                     track.includes("watch?v=") &&
-                    !this.modes.ytMix.enabled
+                    !this.#modes.ytMix.enabled
                 ) {
-                    this.modes.ytMix.enabled = true;
-                    this.modes.ytMix.lastUrl = track[track.length - 1];
+                    this.#modes.ytMix.enabled = true;
+                    this.#modes.ytMix.lastUrl = track[track.length - 1];
                 }
                 const info = await requestInfo(
                     id,
@@ -222,6 +250,7 @@ export class AudioPlayer {
                 this.queue.push({
                     ...(<YoutubeTrackInfo>info),
                     requester: member,
+                    position: this.queue.length,
                 });
                 if (this.queue.length === 1) {
                     await this.play();
@@ -238,6 +267,7 @@ export class AudioPlayer {
                     this.queue.push({
                         ...(<SoundCloudTrackInfo>info[i]),
                         requester: member,
+                        position: this.queue.length,
                     });
                     if (this.queue.length === 1) {
                         await this.play();
@@ -253,6 +283,7 @@ export class AudioPlayer {
                 this.queue.push({
                     ...(<LocalFileTrackInfo>info),
                     requester: member,
+                    position: this.queue.length,
                 });
                 if (this.queue.length === 1) {
                     await this.play();
@@ -269,7 +300,11 @@ export class AudioPlayer {
                 );
                 if (!info) continue;
                 for (let i = 0; i < info.length; i++) {
-                    this.queue.push({ ...info[i], requester: member });
+                    this.queue.push({
+                        ...info[i],
+                        requester: member,
+                        position: this.queue.length,
+                    });
                     if (this.queue.length === 1) {
                         await this.play();
                     }
@@ -280,7 +315,11 @@ export class AudioPlayer {
                     formatedPlatforms[PlatformType.Url],
                     this.options.manager,
                 );
-                this.queue.push({ ...(<UrlTrackInfo>info), requester: member });
+                this.queue.push({
+                    ...(<UrlTrackInfo>info),
+                    requester: member,
+                    position: this.queue.length,
+                });
                 if (this.queue.length === 1) {
                     await this.play();
                 }
@@ -297,29 +336,69 @@ export class AudioPlayer {
         return this.player.stop();
     }
     pause() {
-        return (this.modes.paused = this.player.pause());
+        return (this.#modes.paused = this.player.pause());
     }
     resume() {
-        this.modes.paused = false;
+        this.#modes.paused = false;
         return this.player.unpause();
     }
     set volume(volume: number) {
-        this.modes.volume = volume;
-        this.currentResource.volume.setVolume(volume / 100);
+        this.#modes.volume = volume;
+        //@ts-ignore
+        this.player.state.resource.volume.setVolume(volume / 100);
     }
     get volume() {
-        return this.modes.volume;
+        return this.#modes.volume;
     }
     set loop(loop: LoopMode) {
-        this.modes.loop = loop;
+        this.#modes.loop = loop;
     }
     get loop() {
-        return this.modes.loop;
+        return this.#modes.loop;
     }
     set autoPlay(autoPlay: AutoPlay) {
-        this.modes.autoPlay = autoPlay;
+        this.#modes.autoPlay = autoPlay;
     }
     get autoPlay() {
-        return this.modes.autoPlay;
+        return this.#modes.autoPlay;
+    }
+    shuffle() {
+        this.queue = shuffle(this.queue);
+        this.#modes.shuffled = true;
+    }
+    unshuffle() {
+        this.queue = this.queue.sort((a, b) => a.position - b.position);
+        this.#modes.shuffled = false;
+    }
+    isShuffled() {
+        return this.#modes.shuffled;
+    }
+    isPaused() {
+        return this.#modes.paused;
+    }
+    isLoopEnabled() {
+        return this.#modes.loop !== LoopMode.None;
+    }
+    isAutoPlayEnabled() {
+        return this.#modes.autoPlay !== AutoPlay.None;
+    }
+    currentPosition() {
+        return this.#modes.currentTrack;
+    }
+    getTrackCurrentDuration() {
+        //@ts-ignore
+        return <number>this.player.state.resource?.playbackDuration ?? 0;
+    }
+    get currentTrack() {
+        return this.queue[this.#modes.currentTrack];
+    }
+    get previousTrack() {
+        return this.queue[this.#modes.currentTrack - 1];
+    }
+    updateFilters(filterArr: string[]) {
+        this.#modes.filters = filterArr;
+    }
+    get filters() {
+        return [...this.#modes.filters];
     }
 }

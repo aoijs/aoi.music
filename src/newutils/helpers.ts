@@ -5,7 +5,7 @@ import {
     YoutubeRelatedData,
 } from "../typings/interfaces";
 
-export function shuffle(array: Array<object>) {
+export function shuffle<T>(array: Array<T>) {
     let currentIndex = array.length,
         randomIndex: number;
 

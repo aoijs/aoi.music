@@ -32,7 +32,7 @@ export async function search(
                 return [query];
             } else if (query.includes("playlist?list=")) {
                 const yt = await manager.platforms.youtube;
-                const playlist = await yt.getPlaylist(query);
+                const playlist = await yt.getPlaylist( query.split( "list=" )[ 1 ].split( "&" )[ 0 ] );
                 return playlist.videos
                     .as(PlaylistVideo)
                     .map((video) => `https://youtube.com/watch?v=${video.id}`);

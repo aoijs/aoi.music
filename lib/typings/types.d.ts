@@ -1,6 +1,8 @@
 import { TrackInfo } from "soundcloud-downloader/src/info";
-import { PlatformType } from "./enums";
+import { PlatformType, PluginName } from "./enums";
 import { GuildMember } from "discord.js";
+import { Cacher } from "../newstruct/cacher";
+import { Filter } from "../newstruct/filter";
 export declare type SoundCloudTrackInfo = {
     title: string;
     artist: string;
@@ -19,6 +21,7 @@ export declare type SoundCloudTrackInfo = {
     rawData: TrackInfo;
     formatedPlatforms: "SoundCloud";
     requester: GuildMember;
+    position: number;
 };
 export declare type YoutubeTrackInfo = {
     title: string;
@@ -37,6 +40,7 @@ export declare type YoutubeTrackInfo = {
     platformType: PlatformType;
     formatedPlatforms: "Youtube";
     requester: GuildMember;
+    position: number;
 };
 export declare type LocalFileTrackInfo = {
     title: string;
@@ -51,6 +55,7 @@ export declare type LocalFileTrackInfo = {
     platformType: PlatformType;
     formatedPlatforms: "LocalFile";
     requester: GuildMember;
+    position: number;
 };
 export declare type UrlTrackInfo = {
     title: string;
@@ -65,6 +70,7 @@ export declare type UrlTrackInfo = {
     platformType: PlatformType;
     formatedPlatforms: "Url";
     requester: GuildMember;
+    position: number;
 };
 export declare type SpotifyTrackInfo = {
     title: string;
@@ -81,5 +87,7 @@ export declare type SpotifyTrackInfo = {
     platformType: PlatformType;
     formatedPlatforms: "Spotify";
     requester: GuildMember;
+    position: number;
 };
 export declare type Track<type extends keyof typeof PlatformType> = type extends "SoundCloud" ? SoundCloudTrackInfo : type extends "LocalFile" ? LocalFileTrackInfo : type extends "Url" ? UrlTrackInfo : type extends "Youtube" ? YoutubeTrackInfo : SpotifyTrackInfo;
+export declare type Plugin<T extends PluginName> = T extends PluginName.Cacher ? Cacher<"memory" | "disk"> : Filter;

@@ -19,14 +19,19 @@ import scdl from "soundcloud-downloader";
 import { SCDL } from "soundcloud-downloader/src";
 import sui, { Spotify } from "spotify-url-info";
 import { fetch } from "undici";
-import { PlatformType } from "../typings/enums";
+import { PlatformType, PluginName } from "../typings/enums";
 import Video from "youtubei.js/dist/src/parser/classes/Video";
 import { TrackInfo } from "soundcloud-downloader/src/info";
+import { Plugin } from "../typings/types";
 
 export class Manager extends TypedEmitter<ManagerEvents> {
     configs: ManagerConfigurations;
     players: Map<Snowflake, AudioPlayer>;
     platforms: { youtube: Promise<IT>; spotify?: Spotify; soundcloud: SCDL };
+    plugins: Map<PluginName, Plugin<PluginName>> = new Map<
+        PluginName,
+        Plugin<PluginName>
+    >();
     constructor(config?: ManagerConfigurations) {
         super();
         this.#validateConfig(config);
@@ -69,7 +74,10 @@ export class Manager extends TypedEmitter<ManagerEvents> {
 
                 // 'auth' is fired once the authentication is complete
                 yt.session.on("auth", ({ credentials }) => {
-                    writeFileSync(config.searchOptions.youtubeAuth, JSON.stringify(credentials));
+                    writeFileSync(
+                        config.searchOptions.youtubeAuth,
+                        JSON.stringify(credentials),
+                    );
                     // do something with the credentials, eg; save them in a database.
                     console.log("Sign in successful");
                 });
@@ -77,7 +85,10 @@ export class Manager extends TypedEmitter<ManagerEvents> {
                 // 'update-credentials' is fired when the access token expires, if you do not save the updated credentials any subsequent request will fail
                 yt.session.on("update-credentials", ({ credentials }) => {
                     // do something with the updated credentials
-                    writeFileSync(config.searchOptions.youtubeAuth, JSON.stringify(credentials));
+                    writeFileSync(
+                        config.searchOptions.youtubeAuth,
+                        JSON.stringify(credentials),
+                    );
                 });
                 yt.session.signIn(cred);
             });
@@ -209,5 +220,8 @@ export class Manager extends TypedEmitter<ManagerEvents> {
             });
             return <TrackInfo[]>res.collection;
         }
+    }
+    addPlugin<A extends PluginName>(name: A, plugin: Plugin<A>) {
+        this.plugins.set(name, plugin);
     }
 }

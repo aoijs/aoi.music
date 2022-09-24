@@ -59,3 +59,9 @@ export enum PlatformType
     
 
 }
+
+export enum PluginName {
+    Cacher= "cache",
+    Filter = "filter",
+}
+
