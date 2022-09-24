@@ -22,25 +22,23 @@ export class Filter {
         player: AudioPlayer,
     ) {
         const f = player.filters;
-        for ( const option of options )
-        {
+        for (const option of options) {
             const { filter, value } = option;
-            f.push( `${ filter }=${ value }` );
+            f.push(`${filter}=${value}`);
         }
-            player.updateFilters( f );
+        player.updateFilters(f);
         await this.#apply(player);
     }
     async remove(filter: string, player: AudioPlayer) {
-        const f = player.filters.filter( ( f ) => !f.startsWith( filter ) );
+        const f = player.filters.filter((f) => !f.startsWith(filter));
         player.updateFilters(f);
         await this.#apply(player);
     }
     async removeFirst(filter: string, player: AudioPlayer) {
-        const index = player.filters.findIndex( ( f ) => f.startsWith( filter ) );
-        if ( index !== -1 )
-        {
+        const index = player.filters.findIndex((f) => f.startsWith(filter));
+        if (index !== -1) {
             const f = player.filters;
-            f.splice( index, 1 );
+            f.splice(index, 1);
             player.updateFilters(f);
             await this.#apply(player);
         }
@@ -60,16 +58,24 @@ export class Filter {
             track.formatedPlatforms,
             player.options.manager,
         );
-        const ffmpeg = new FFmpeg( {
-            //@ts-ignore
-            args: player.filters.length ? this.#config.filterFromStart ? [...FFMPEG_ARGS, ...player.filters] : ["-ss",`${player.player.state.resource.playbackDuration}ms`,...FFMPEG_ARGS, "-af", player.filters.join(",")] : [...FFMPEG_ARGS],
+        const ffmpeg = new FFmpeg({
+            args: player.filters.length
+                ? this.#config.filterFromStart
+                    ? [...FFMPEG_ARGS, ...player.filters]
+                    : [
+                          "-ss",
+                          //@ts-ignore
+                          `${player.player.state.resource.playbackDuration}ms`,
+                          ...FFMPEG_ARGS,
+                          "-af",
+                          player.filters.join(","),
+                      ]
+                : [...FFMPEG_ARGS],
         });
-        let str:  Readable | FFmpeg;
-        if ( stream instanceof ReadableStream )
-        {
-            str = <FFmpeg>Readable.from( stream ).pipe( ffmpeg );
-        }
-        else str = stream.pipe( ffmpeg );
+        let str: Readable | FFmpeg;
+        if (stream instanceof ReadableStream) {
+            str = <FFmpeg>Readable.from(stream).pipe(ffmpeg);
+        } else str = stream.pipe(ffmpeg);
 
         const newResource = createAudioResource(str, {
             inlineVolume: true,
@@ -78,26 +84,29 @@ export class Filter {
         player.player.play(newResource);
     }
     async seek(time: number, player: AudioPlayer) {
-        const ffmpeg = new FFmpeg( {
-            args: [ "-ss", `${ time }ms`, ...FFMPEG_ARGS ],
-        } );
+        const ffmpeg = new FFmpeg({
+            args: ["-ss", `${time}ms`, ...FFMPEG_ARGS],
+        });
         const track = player.currentTrack;
         const stream = await requestStream(
             track,
             track.formatedPlatforms,
             player.options.manager,
         );
-        let str = stream.pipe( ffmpeg );
-        const newResource = createAudioResource( str, {
+        let str: Readable | FFmpeg;
+        if (stream instanceof ReadableStream) {
+            str = <FFmpeg>Readable.from(stream).pipe(ffmpeg);
+        } else str = stream.pipe(ffmpeg);
+        const newResource = createAudioResource(str, {
             inlineVolume: true,
             inputType: StreamType.Raw,
-        } );
-        player.player.play( newResource );
+        });
+        player.player.play(newResource);
         return true;
     }
-    createFFmpeg(...args:string[]) {
+    createFFmpeg(...args: string[]) {
         const ffmpeg = new FFmpeg({
-            args: [...FFMPEG_ARGS,...args],
+            args: [...FFMPEG_ARGS, ...args],
         });
         return ffmpeg;
     }
