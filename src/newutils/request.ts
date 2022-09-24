@@ -16,7 +16,7 @@ import {
     Track,
     UrlTrackInfo,
 } from "../typings/types";
-import { PassThrough } from "stream";
+import { PassThrough, Readable } from "stream";
 import VideoInfo from "youtubei.js/dist/src/parser/youtube/VideoInfo";
 import { SpotifyTrackInfo as SpotifyInfo } from "../typings/types";
 import Video from "youtubei.js/dist/src/parser/classes/Video";
@@ -319,7 +319,7 @@ export async function requestStream<T extends keyof typeof PlatformType>(
         return (await (await request(track.id)).body.blob()).stream();
     } else if (type === "Youtube") {
         const yt = await manager.platforms.youtube;
-        return yt.download(track.id);
+        return Readable.from(await yt.download(track.id));
     } else if (type === "Spotify") {
         const yt = await manager.platforms.youtube;
         if (!track.id) {
@@ -330,15 +330,15 @@ export async function requestStream<T extends keyof typeof PlatformType>(
                 },
             );
             track.id = data.videos.as(Video)[0].id;
-            return yt.download(track.id, {
+            return Readable.from(await yt.download(track.id, {
                 client: manager.configs.searchOptions.youtubeClient ?? "WEB",
                 quality: "best",
-            });
+            }));
         } else {
-            return yt.download(track.id, {
+            return Readable.from(await yt.download(track.id, {
                 client: manager.configs.searchOptions.youtubeClient ?? "WEB",
                 quality: "best",
-            });
+            }));
         }
     }
 }

@@ -7,6 +7,7 @@ import { AutoPlay, LoopMode, PlayerEvents } from "./enums";
 import { PathLike } from "fs";
 import { AudioPlayer } from "../newstruct/audioPlayer";
 import { Track } from "./types";
+import { Readable } from "stream";
 export interface ManagerConfigurations {
     devOptions?: {
         debug: boolean;
@@ -158,7 +159,7 @@ export interface EndScreenVideoRenderer {
 }
 export interface CacherMemoryConfig<T extends "memory"> {
     type: T;
-    map: Map<string, Buffer>;
+    map: Map<string, Readable | PathLike>;
     limit: number;
 }
 export interface CacheDiskConfig<T extends "disk"> {

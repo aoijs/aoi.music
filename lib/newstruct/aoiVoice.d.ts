@@ -1,12 +1,13 @@
-import { Collection, Message, Snowflake, TextBasedChannel } from "discord.js";
+import { Collection, Message, Snowflake, VoiceChannel } from "discord.js";
 import { PlayerEvents } from "../typings/enums";
+import { AudioPLayerOptions } from "../typings/interfaces";
 import { Manager } from "./manager";
 export declare class AoiVoice<T> {
     #private;
     manager: Manager;
     prunes: Map<Snowflake, {
         message: Message<boolean>;
-        channel: TextBasedChannel;
+        channel: Snowflake;
     }>;
     cmds: {
         trackStart: Collection<string, Record<string, any>>;
@@ -21,4 +22,11 @@ export declare class AoiVoice<T> {
     addEvent(event: PlayerEvents): void;
     addEvents(...events: PlayerEvents[]): void;
     bindExecutor(executor: Function): void;
+    joinVc({ type, voiceChannel, textChannel, selfDeaf, selfMute, }: {
+        type: AudioPLayerOptions["type"];
+        voiceChannel: VoiceChannel;
+        textChannel: Snowflake;
+        selfDeaf?: boolean;
+        selfMute?: boolean;
+    }): Promise<void>;
 }

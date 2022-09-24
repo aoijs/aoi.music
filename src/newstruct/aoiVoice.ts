@@ -1,5 +1,12 @@
-import { Collection, Message, Snowflake, TextBasedChannel } from "discord.js";
+import {
+    Collection,
+    Message,
+    Snowflake,
+    TextBasedChannel,
+    VoiceChannel,
+} from "discord.js";
 import { PlayerEvents } from "../typings/enums";
+import { AudioPLayerOptions } from "../typings/interfaces";
 import { AudioPlayer } from "./audioPlayer";
 import { Manager } from "./manager";
 
@@ -10,7 +17,7 @@ export class AoiVoice<T> {
         Snowflake,
         {
             message: Message<boolean>;
-            channel: TextBasedChannel;
+            channel: Snowflake;
         }
     >;
     cmds: {
@@ -141,4 +148,26 @@ export class AoiVoice<T> {
             return PlayerEvents[event];
         });
     }
+    async joinVc ( {
+        type = "default",
+        voiceChannel,
+        textChannel,
+        selfDeaf = true,
+        selfMute = false,
+    }: {
+        type: AudioPLayerOptions[ "type" ];
+        voiceChannel: VoiceChannel;
+        textChannel: Snowflake;
+        selfDeaf?: boolean;
+        selfMute?: boolean;
+    } )
+    {
+        await this.manager
+            .joinVc({
+                type ,
+                voiceChannel,
+                selfDeaf,
+                selfMute,
+            })
+    };
 }

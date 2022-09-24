@@ -4,6 +4,7 @@ import { PlatformType, PluginName } from "./enums";
 import { GuildMember } from "discord.js";
 import { Cacher } from "../newstruct/cacher";
 import { Filter } from "../newstruct/filter";
+import { PathLike } from "fs";
 export type SoundCloudTrackInfo = {
     title: string;
     artist: string;
@@ -50,7 +51,7 @@ export type LocalFileTrackInfo = {
     type: string;
     size: number;
     duration: number;
-    url: string;
+    url: PathLike;
     likes: 0;
     views: 0;
     id: string;

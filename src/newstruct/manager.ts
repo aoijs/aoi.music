@@ -157,6 +157,13 @@ export class Manager extends TypedEmitter<ManagerEvents> {
                 `Invalid Auth Path Provided in ManagerConfig#searchOptions['youtubeAuth']`,
             );
         }
+        else if(config.devOptions?.debug && typeof config.devOptions.debug !== "boolean") {
+            throw new Error(`Invalid Debug Option Provided in ManagerConfig#devOptions['debug']`)
+        }
+        if(config.devOptions?.debug) {
+            console.log( "Debug Mode Enabled" );
+        }
+
     }
 
     async joinVc({
@@ -169,7 +176,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
         voiceChannel: VoiceChannel;
         selfDeaf?: boolean;
         selfMute?: boolean;
-    }): Promise<void> {
+    }): Promise<boolean> {
         const data = {
             channelId: voiceChannel.id,
             guildId: voiceChannel.guildId,
@@ -194,12 +201,20 @@ export class Manager extends TypedEmitter<ManagerEvents> {
                     debug: this.configs.devOptions?.debug ?? false,
                 }),
             );
+            if (this.configs.devOptions?.debug) {
+                console.log(
+                    `#DEBUG:\n Class -> Manager \n Method -> joinVc \n Message -> Joined Voice Channel ${voiceChannel.name} in Guild ${voiceChannel.guild.name}`,
+                );
+            }
+            return true;
         } catch (error) {
             connection.destroy();
-            throw error;
-        }
-        if (this.configs.devOptions?.debug) {
-            connection.on("debug", console.log);
+            if (this.configs.devOptions?.debug) {
+                console.log(
+                    `#DEBUG:\n Class -> Manager \n Method -> joinVc \n Message -> Failed to join Voice Channel ${voiceChannel.name} in Guild ${voiceChannel.guild.name}`,
+                );
+            }
+            return false;
         }
     }
 
@@ -222,6 +237,9 @@ export class Manager extends TypedEmitter<ManagerEvents> {
         }
     }
     addPlugin<A extends PluginName>(name: A, plugin: Plugin<A>) {
-        this.plugins.set(name, plugin);
+        this.plugins.set( name, plugin );
+        if(this.configs.devOptions?.debug) {
+            console.log(`#DEBUG:\n Class -> Manager \n Method -> addPlugin \n Message -> Added Plugin ${plugin.constructor.name} with name : ${name} `);
+        }
     }
 }

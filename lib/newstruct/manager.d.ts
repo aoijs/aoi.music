@@ -26,7 +26,7 @@ export declare class Manager extends TypedEmitter<ManagerEvents> {
         voiceChannel: VoiceChannel;
         selfDeaf?: boolean;
         selfMute?: boolean;
-    }): Promise<void>;
+    }): Promise<boolean>;
     search<T extends PlatformType>(type: T, query: string, limit?: number): Promise<TrackInfo[] | Video[]>;
     addPlugin<A extends PluginName>(name: A, plugin: Plugin<A>): void;
 }

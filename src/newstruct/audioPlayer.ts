@@ -66,18 +66,19 @@ export class AudioPlayer {
     async play() {
         let resource: AudioResource;
         const current = this.queue[this.#modes.currentTrack];
-        let stream = await requestStream(
+        let stream: Readable = await requestStream(
             current,
             current.formatedPlatforms,
             this.options.manager,
         );
+        let s: Readable | FFmpeg;
         if (this.options.manager.plugins.has(PluginName.Cacher)) {
             const Cacher = <Plugin<PluginName.Cacher>>(
                 this.options.manager.plugins.get(PluginName.Cacher)
             );
             Cacher.write(current, stream);
+            if (Cacher.type === "disk") stream = Cacher.get(current.id);
         }
-        let s: string | Readable | FFmpeg;
         if (
             this.options.manager.plugins.has(PluginName.Filter) &&
             this.#modes.filters.length
@@ -85,16 +86,20 @@ export class AudioPlayer {
             const f = <Filter>(
                 this.options.manager.plugins.get(PluginName.Filter)
             );
-            const ffmpeg = f.createFFmpeg("-af", this.filters.join(","));
+            const ffmpeg = f.createFFmpeg("-af", this.#modes.filters.join(","));
             s = stream.pipe(ffmpeg);
+            resource = createAudioResource(s, {
+                inlineVolume: true,
+                inputType: StreamType.Raw,
+            });
         } else {
             s = stream;
+            resource = createAudioResource(s, {
+                inlineVolume: true,
+                inputType: StreamType.Arbitrary,
+            });
         }
-        resource = createAudioResource(s, {
-            inlineVolume: true,
-            inputType: StreamType.Arbitrary,
-        });
-        this.options.manager.emit(PlayerEvents.TRACK_START, current,this);
+        this.options.manager.emit(PlayerEvents.TRACK_START, current, this);
         this.player.play(resource);
         if (this.#modes.ytMix) {
             if (
