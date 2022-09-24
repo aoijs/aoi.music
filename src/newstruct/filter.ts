@@ -77,6 +77,24 @@ export class Filter {
         });
         player.player.play(newResource);
     }
+    async seek(time: number, player: AudioPlayer) {
+        const ffmpeg = new FFmpeg( {
+            args: [ "-ss", `${ time }ms`, ...FFMPEG_ARGS ],
+        } );
+        const track = player.currentTrack;
+        const stream = await requestStream(
+            track,
+            track.formatedPlatforms,
+            player.options.manager,
+        );
+        let str = stream.pipe( ffmpeg );
+        const newResource = createAudioResource( str, {
+            inlineVolume: true,
+            inputType: StreamType.Raw,
+        } );
+        player.player.play( newResource );
+        return true;
+    }
     createFFmpeg(...args:string[]) {
         const ffmpeg = new FFmpeg({
             args: [...FFMPEG_ARGS,...args],

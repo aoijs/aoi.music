@@ -11,5 +11,6 @@ export declare class Filter {
     remove(filter: string, player: AudioPlayer): Promise<void>;
     removeFirst(filter: string, player: AudioPlayer): Promise<void>;
     removeAll(player: AudioPlayer): Promise<void>;
+    seek(time: number, player: AudioPlayer): Promise<boolean>;
     createFFmpeg(...args: string[]): FFmpeg;
 }
