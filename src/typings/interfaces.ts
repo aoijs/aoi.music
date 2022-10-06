@@ -37,6 +37,7 @@ export interface AudioPLayerOptions
 
 export interface AudioPlayerMode {
     filters: string[];
+    seeked?: boolean;
     autoPlay: AutoPlay;
     loop: LoopMode;
     filterFromStart: boolean;
@@ -166,22 +167,18 @@ export interface EndScreenVideoRenderer {
     };
 }
 
-export interface CacherMemoryConfig<T extends "memory">
+export interface CacherMemoryConfig
 {
-    type: T;
-    map: Map<string, Readable | PathLike>;
     limit: number;
 }
 
-export interface CacheDiskConfig<T extends "disk">
+export interface CacheDiskConfig
 {
-    type:T;
     path: string;
     limit: number;
-    map: Map<string, PathLike>;
 }
 
-export type CacheConfig<T extends "memory" | "disk"> = T extends "memory" ? CacherMemoryConfig<"memory"> : CacheDiskConfig<"disk">;
+export type CacheConfig<T extends "memory" | "disk"> = T extends "memory" ? CacherMemoryConfig : CacheDiskConfig;
 
 
 export interface FilterConfig

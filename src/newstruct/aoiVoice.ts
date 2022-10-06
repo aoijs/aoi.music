@@ -148,26 +148,93 @@ export class AoiVoice<T> {
             return PlayerEvents[event];
         });
     }
-    async joinVc ( {
+    async joinVc({
         type = "default",
         voiceChannel,
         textChannel,
         selfDeaf = true,
         selfMute = false,
     }: {
-        type: AudioPLayerOptions[ "type" ];
+        type: AudioPLayerOptions["type"];
         voiceChannel: VoiceChannel;
         textChannel: Snowflake;
         selfDeaf?: boolean;
         selfMute?: boolean;
-    } )
-    {
-        await this.manager
-            .joinVc({
-                type ,
-                voiceChannel,
-                selfDeaf,
-                selfMute,
-            })
-    };
+    }) {
+        await this.manager.joinVc({
+            type,
+            voiceChannel,
+            selfDeaf,
+            selfMute,
+        });
+    }
+    #bindFunctions() {
+        // @ts-ignore
+        if (this.#bot.functionManager) {
+            //@ts-ignore
+            this.#bot.functionManager.createCustomFunction({
+                name: "$joinVC",
+                type: "djs",
+                code: async (d) => {
+                    const data = d.util.openFunc(d);
+                    let [
+                        voiceId = d.member.voice.channelId,
+                        selfDeaf = "yes",
+                        selfMute = "no",
+                        speaker = "yes",
+                        debug = "no",
+                    ] = data.inside.splits;
+                    
+                    const vc = d.util.getChannel( d, voiceId );
+                    if (
+                        ![
+                            d.util.channelTypes.Voice,
+                            d.util.channelTypes.Stage,
+                        ].includes(vc.type)
+                    )
+                        return d.aoiError.fnError(
+                            d,
+                            "custom",
+                            { inside: data.inside },
+                            "Provided channelID is not Voice/Stage Channel In",
+                        );
+
+                    if (!d.client.voiceManager)
+                        return d.aoiError.fnError(
+                            d,
+                            "custom",
+                            {},
+                            "Voice Class Is Not Initialised.",
+                        );
+
+                    try {
+                        await d.client.voiceManager.manager.joinVc({
+                            voiceChannel: vc,
+                            textChannel: d.channel,
+                            selfMute: selfMute === "yes",
+                            selfDeaf: selfDeaf === "yes",
+                            debug: debug === "yes",
+                        });
+                        if (
+                            speaker === "yes" &&
+                            vc.type === d.util.channelTypes.Stage
+                        ) {
+                            d.guild.me.voice.setSuppressed(false);
+                        }
+                    } catch (e) {
+                        d.aoiError.fnError(
+                            d,
+                            "custom",
+                            {},
+                            "Failed To Join VC With Reason: " + e,
+                        );
+                    }
+
+                    return {
+                        code: d.util.setCode(data),
+                    };
+                },
+            });
+        }
+    }
 }

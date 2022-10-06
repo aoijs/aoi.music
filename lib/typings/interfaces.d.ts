@@ -1,5 +1,4 @@
 /// <reference types="node" />
-/// <reference types="node" />
 import { Snowflake } from "discord.js";
 import { Manager } from "./../newstruct/manager";
 import { VoiceConnection } from "@discordjs/voice";
@@ -7,7 +6,6 @@ import { AutoPlay, LoopMode, PlayerEvents } from "./enums";
 import { PathLike } from "fs";
 import { AudioPlayer } from "../newstruct/audioPlayer";
 import { Track } from "./types";
-import { Readable } from "stream";
 export interface ManagerConfigurations {
     devOptions?: {
         debug: boolean;
@@ -35,6 +33,7 @@ export interface AudioPLayerOptions {
 }
 export interface AudioPlayerMode {
     filters: string[];
+    seeked?: boolean;
     autoPlay: AutoPlay;
     loop: LoopMode;
     filterFromStart: boolean;
@@ -157,18 +156,14 @@ export interface EndScreenVideoRenderer {
         lengthInSeconds: number;
     };
 }
-export interface CacherMemoryConfig<T extends "memory"> {
-    type: T;
-    map: Map<string, Readable | PathLike>;
+export interface CacherMemoryConfig {
     limit: number;
 }
-export interface CacheDiskConfig<T extends "disk"> {
-    type: T;
+export interface CacheDiskConfig {
     path: string;
     limit: number;
-    map: Map<string, PathLike>;
 }
-export declare type CacheConfig<T extends "memory" | "disk"> = T extends "memory" ? CacherMemoryConfig<"memory"> : CacheDiskConfig<"disk">;
+export declare type CacheConfig<T extends "memory" | "disk"> = T extends "memory" ? CacherMemoryConfig : CacheDiskConfig;
 export interface FilterConfig {
     filterFromStart: boolean;
 }

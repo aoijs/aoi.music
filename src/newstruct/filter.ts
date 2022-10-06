@@ -49,7 +49,6 @@ export class Filter {
     }
     async #apply(player: AudioPlayer) {
         const track = player.currentTrack;
-        player.player.pause();
         //@ts-ignore
         const r: AudioResource<unknown> = player.player.state.resource;
         if (!track) return;
@@ -83,9 +82,12 @@ export class Filter {
         });
         player.player.play(newResource);
     }
-    async seek(time: number, player: AudioPlayer) {
+    async seek ( time: number, player: AudioPlayer )
+    {
+        const args = [ "-ss", `${ time }ms`, ...FFMPEG_ARGS ];
+        if(player.filters.length) args.push("-af", player.filters.join(","));
         const ffmpeg = new FFmpeg({
-            args: ["-ss", `${time}ms`, ...FFMPEG_ARGS],
+            args,
         });
         const track = player.currentTrack;
         const stream = await requestStream(
@@ -100,8 +102,10 @@ export class Filter {
         const newResource = createAudioResource(str, {
             inlineVolume: true,
             inputType: StreamType.Raw,
-        });
-        player.player.play(newResource);
+        } );
+        newResource.playbackDuration = time;
+                player.seeked(true);
+        player.player.play( newResource );
         return true;
     }
     createFFmpeg(...args: string[]) {

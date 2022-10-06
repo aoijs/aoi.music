@@ -37,4 +37,6 @@ export declare class AudioPlayer {
     get previousTrack(): SoundCloudTrackInfo | LocalFileTrackInfo | UrlTrackInfo | YoutubeTrackInfo | SpotifyTrackInfo;
     updateFilters(filterArr: string[]): void;
     get filters(): string[];
+    get seek(): boolean;
+    seeked(seek: boolean): void;
 }

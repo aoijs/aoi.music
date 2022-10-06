@@ -23,3 +23,104 @@ export const formatedPlatforms = [
     "Youtube",
     "Spotify",
 ] as const;
+
+export const CustomFilters = {
+    NIGHT_CORE: (value: number) => {
+        return [
+            {
+                filter: "aresample",
+                value: "48000",
+            },
+            {
+                filter: "asetrate",
+                value: `${48000 * value}`,
+            },
+        ];
+    },
+    BASS_BOOST: (value: number) => {
+        return [
+            {
+                filter: "bass",
+                value: `g=${value}`,
+            },
+        ];
+    },
+    "8_D": () => {
+        return [
+                {
+                    filter: "extrastereo",
+                    value: "",
+                },
+                {
+                    filter: "aecho",
+                    value: "1:1:40:0.5",
+                },
+                {
+                    filter: "apulsator",
+                    value: "hz=0.125",
+                },
+                {
+                    filter: "stereowiden",
+                    value: "",
+                },
+            ];
+    },
+    PITCH: (value: number) => {
+        return [
+            {
+                filter: "asetrate",
+                value: `${48000 * value}`,
+            },
+            {
+                filter: "atempo",
+                value: 1 - Number(`${value}`.split(".")[1]),
+            },
+            {
+                filter: "aresample",
+                value: 48000,
+            },
+        ];
+    },
+    KAROAKE: (value: number) => {
+        return [
+            {
+                filter: "stereotools",
+                value: `mlev=${0.015625 * value}`,
+            },
+        ];
+    },
+    SLOWED: (value: number) => {
+        return [
+            {
+                filter: "asetrate",
+                value: 48000 * Math.abs(Math.ceil(value) - value),
+            },
+            {
+                filter: "aresample",
+                value: 48000,
+            },
+        ];
+    },
+    DEEP: (value: number) => {
+        return [
+            {
+                filter: "asetrate",
+                value: 48000 * Math.abs(Math.ceil(value) - value),
+            },
+            {
+                filter: "atempo",
+                value: 2 - Math.abs(Math.ceil(value) - value),
+            },
+            {
+                filter: "aresample",
+                value: 48000,
+            },
+        ];
+    },
+    TREBLE_BOOST: (value: number) => {
+        return [{
+            filter: "treble",
+            value: `g=${ value }`,
+        }];
+    },
+};

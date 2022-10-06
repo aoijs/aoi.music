@@ -5,26 +5,60 @@ import {
     existsSync,
     mkdirSync,
     PathLike,
+    readdirSync,
     unlinkSync,
 } from "fs";
 import { join } from "path";
 import { pipeline } from "stream/promises";
 import { createGzip, createUnzip } from "zlib";
-import { CacheConfig } from "../typings/interfaces";
 import { Readable } from "stream";
 import { ReadableStream } from "stream/web";
 import { Track } from "../typings/types";
 import { PlatformType } from "../typings/enums";
+import hidefile from "hidefile";
 export class Cacher<T extends "memory" | "disk"> {
-    #config: CacheConfig<T>;
-    constructor(config: CacheConfig<T>) {
-        this.#config = config;
-        if (config.type === "disk" && !existsSync(config.path)) {
-            mkdirSync(config.path, {
+    #type: T;
+    #map: Map<string, T extends "memory" ? Buffer | PathLike : PathLike> =
+        new Map();
+    #limit: number | null;
+    #path: string | null;
+    #prefixedPath: string;
+    constructor({
+        type,
+    }: {
+        type: T;
+    }) {
+        this.#type = type;
+        this.#path = "MUSIC_CACHE";
+        this.#prefixedPath = ".MUSIC_CACHE";
+        
+        if (this.#type === "disk" && !existsSync(this.#path) && !existsSync(this.#prefixedPath)) {
+            mkdirSync(this.#path, {
                 recursive: true,
-            });
+            } );
+            hidefile.isHidden( this.#path, ( err: Error | null, hidden: boolean ) =>
+            {
+                if ( err === null )
+                {
+                    if ( !hidden )
+                    {
+                       this.#path = hidefile.hideSync( this.#path );
+                    }
+                }
+            })
         }
-        this.#config.map = new Map();
+        if ( this.#path !== this.#prefixedPath )
+        {
+            this.#path = this.#prefixedPath;
+        }
+        if (this.#type === "disk" && existsSync(this.#path)) {
+            const files = readdirSync(this.#path);
+            if (files.length > 0) {
+                for (const file of files) {
+                    unlinkSync(join(this.#path, file));
+                }
+            }
+        }
     }
     async #doCompressionSave(stream: NodeJS.ReadableStream, hash: string) {
         const gzip = createGzip();
@@ -32,42 +66,45 @@ export class Cacher<T extends "memory" | "disk"> {
         const file = createWriteStream(hash);
         await pipeline(stream, gzip, file);
     }
-    async write ( metaData: Track<'SoundCloud' | 'Youtube' | 'LocalFile' | 'Spotify' | 'Url'>, stream: Readable )
-    {
-        if(this.has(metaData.id)) return;
-        if ( metaData.platformType === PlatformType.LocalFile )
-        {
-            this.#config.map.set( metaData.id, (<Track<'LocalFile'>>metaData).url );
-        }
-        else if ( this.type === "memory" )
-        {
+    async write(
+        metaData: Track<
+            "SoundCloud" | "Youtube" | "LocalFile" | "Spotify" | "Url"
+        >,
+        stream: Readable,
+    ) {
+        if (this.has(metaData.id)) return;
+        if (metaData.platformType === PlatformType.LocalFile) {
+            this.#map.set(metaData.id, (<Track<"LocalFile">>metaData).url);
+        } else if (this.type === "memory") {
             const data = [];
-            stream.on( 'data', ( chunk ) =>
-            { 
-                data.push( chunk );
-            } )
-            stream.on( 'end', () =>
-            { 
+            if (stream instanceof ReadableStream) {
+                stream = Readable.from(stream);
+            }
+            stream.on("data", (chunk) => {
+                data.push(chunk);
+            });
+            stream.on("end", () => {
                 //@ts-ignore
-                this.#config.map.set( metaData.id, Readable.from( data ) );
-            } );
-        } else if ( this.#config.type === "disk" )
-        {
-            const hash = join((<CacheConfig<'disk'>>this.#config).path, `${metaData.id}.gz`);
+                this.#map.set(metaData.id, data);
+            });
+        } else if (this.#type === "disk") {
+            const hash = join(this.#path, `${metaData.id}.gz`);
+            if (stream instanceof ReadableStream) {
+                stream = Readable.from(stream);
+            }
             await this.#doCompressionSave(stream, hash);
-            this.#config.map.set(metaData.id, hash);
+            this.#map.set(metaData.id, hash);
         }
     }
     get(id: string) {
-        if (this.#config.type === "memory") {
-            const a = this.#config.map.get( id );
-            if ( a instanceof Readable ) return a;
-            else
-            {
-                return createReadStream( a );
+        if (this.#type === "memory") {
+            const a = this.#map.get(id);
+            if (Array.isArray(a)) return Readable.from(a);
+            else {
+                return createReadStream(a);
             }
         } else {
-            const hash = this.#config.map.get(id);
+            const hash = <string>this.#map.get(id);
             if (hash) {
                 const file = createReadStream(hash);
                 const unzip = createUnzip();
@@ -77,30 +114,26 @@ export class Cacher<T extends "memory" | "disk"> {
         }
     }
     delete(id: string) {
-        if (this.#config.type === "memory") {
-            this.#config.map.delete(id);
+        if (this.#type === "memory") {
+            this.#map.delete(id);
         } else {
-            const hash = this.#config.map.get(id);
+            const hash = this.#map.get(id);
             if (hash) {
-                this.#config.map.delete(id);
+                this.#map.delete(id);
                 unlinkSync(hash);
             }
         }
     }
     has(id: string) {
-        return this.#config.map.has(id);
+        return this.#map.has(id);
     }
-    get map ()
-    {
-        return this.#config.map;
+    get map() {
+        return this.map;
     }
-    get type ()
-    {
-        return this.#config.type;
+    get type() {
+        return this.#type;
     }
-    get path (): PathLike | null
-    {
-        //@ts-ignore
-        return this.#config.path ?? null;
+    get path() {
+        return this.#path ?? null;
     }
 }

@@ -76,8 +76,9 @@ export class AudioPlayer {
             const Cacher = <Plugin<PluginName.Cacher>>(
                 this.options.manager.plugins.get(PluginName.Cacher)
             );
-            Cacher.write(current, stream);
-            if (Cacher.type === "disk") stream = Cacher.get(current.id);
+            await Cacher.write(current, stream);
+            if ( Cacher.type === "disk" ) stream = Cacher.get( current.id );
+
         }
         if (
             this.options.manager.plugins.has(PluginName.Filter) &&
@@ -124,7 +125,7 @@ export class AudioPlayer {
         }
     }
     async _loopQueue() {
-        if (this.#modes.currentTrack >= this.queue.length) {
+        if (this.#modes.currentTrack >= this.queue.length - 1) {
             this.#modes.currentTrack = 0;
         } else {
             this.#modes.currentTrack++;
@@ -134,12 +135,24 @@ export class AudioPlayer {
     async _playNext() {
         if (this.options.type === "default") {
             if (this.#modes.currentTrack >= 1) {
-                this.queue.shift();
+                const track = this.queue.shift();
+                if (this.options.manager.plugins.has(PluginName.Cacher)) {
+                    const Cacher = <Plugin<PluginName.Cacher>>(
+                        this.options.manager.plugins.get(PluginName.Cacher)
+                    );
+                    Cacher.delete(track.id);
+                }
             } else {
                 this.#modes.currentTrack += 1;
             }
         } else if (this.options.type === "fonly") {
-            this.queue.shift();
+            const track = this.queue.shift();
+            if (this.options.manager.plugins.has(PluginName.Cacher)) {
+                const Cacher = <Plugin<PluginName.Cacher>>(
+                    this.options.manager.plugins.get(PluginName.Cacher)
+                );
+                Cacher.delete(track.id);
+            }
         } else {
             this.#modes.currentTrack += 1;
         }
@@ -160,50 +173,75 @@ export class AudioPlayer {
                     this.#modes.loop === LoopMode.Track &&
                     this.queue[this.#modes.currentTrack]
                 ) {
-                    this.options.manager.emit(
-                        PlayerEvents.TRACK_END,
-                        this.queue[this.#modes.currentTrack],
-                        this,
-                    );
-                    await this.play();
+                    if (this.#modes.seeked) {
+                        this.#modes.seeked = false;
+                        return;
+                    } else {
+                        this.options.manager.emit(
+                            PlayerEvents.TRACK_END,
+                            this.queue[this.#modes.currentTrack],
+                            this,
+                        );
+                        await this.play();
+                    }
                 } else if (
                     this.#modes.loop === LoopMode.Queue &&
                     this.queue.length
                 ) {
-                    this.options.manager.emit(
-                        PlayerEvents.TRACK_END,
-                        this.queue[this.#modes.currentTrack],
-                        this,
-                    );
-                    await this._loopQueue();
+                    if (this.#modes.seeked) {
+                        this.#modes.seeked = false;
+                        return;
+                    } else {
+                        this.options.manager.emit(
+                            PlayerEvents.TRACK_END,
+                            this.queue[this.#modes.currentTrack],
+                            this,
+                        );
+                        await this._loopQueue();
+                    }
                 } else if (
                     this.#modes.autoPlay != "none" &&
                     this.queue.length === 1
                 ) {
-                    this.options.manager.emit(
-                        PlayerEvents.TRACK_END,
-                        this.queue[this.#modes.currentTrack],
-                        this,
-                    );
-                    // this._autoPlay();
+                    if (this.#modes.seeked) {
+                        this.#modes.seeked = false;
+                        return;
+                    } else {
+                        this.options.manager.emit(
+                            PlayerEvents.TRACK_END,
+                            this.queue[this.#modes.currentTrack],
+                            this,
+                        );
+                        // this._autoPlay();
+                    }
                 } else if (
                     this.queue.length > 1 &&
                     this.#modes.currentTrack < this.queue.length - 1
                 ) {
-                    this.options.manager.emit(
-                        PlayerEvents.TRACK_END,
-                        this.queue[this.#modes.currentTrack],
-                        this,
-                    );
-                    await this._playNext();
+                    if (this.#modes.seeked) {
+                        this.#modes.seeked = false;
+                        return;
+                    } else {
+                        this.options.manager.emit(
+                            PlayerEvents.TRACK_END,
+                            this.queue[this.#modes.currentTrack],
+                            this,
+                        );
+                        await this._playNext();
+                    }
                 } else {
-                    this.options.manager.emit(
-                        PlayerEvents.TRACK_END,
-                        this.queue[this.#modes.currentTrack],
-                        this,
-                    );
-                    this.options.manager.emit(PlayerEvents.QUEUE_END, this);
-                    this._destroy();
+                    if (this.#modes.seeked) {
+                        this.#modes.seeked = false;
+                        return;
+                    } else {
+                        this.options.manager.emit(
+                            PlayerEvents.TRACK_END,
+                            this.queue[this.#modes.currentTrack],
+                            this,
+                        );
+                        this.options.manager.emit(PlayerEvents.QUEUE_END, this);
+                        this._destroy();
+                    }
                 }
             }
             if (
@@ -212,11 +250,16 @@ export class AudioPlayer {
                 ns.status !== AudioPlayerStatus.Idle &&
                 ns.status !== AudioPlayerStatus.Paused
             ) {
-                this.options.manager.emit(
-                    PlayerEvents.TRACK_END,
-                    this.queue[this.#modes.currentTrack],
-                    this,
-                );
+                if (this.#modes.seeked) {
+                    this.#modes.seeked = false;
+                    return;
+                } else {
+                    this.options.manager.emit(
+                        PlayerEvents.TRACK_END,
+                        this.queue[this.#modes.currentTrack],
+                        this,
+                    );
+                }
             }
         });
         this.player.on("error", async (error: any) => {
@@ -405,5 +448,11 @@ export class AudioPlayer {
     }
     get filters() {
         return [...this.#modes.filters];
+    }
+    get seek() {
+        return this.#modes.seeked;
+    }
+    seeked(seek: boolean) {
+        this.#modes.seeked = seek;
     }
 }

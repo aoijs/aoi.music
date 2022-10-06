@@ -1,12 +1,12 @@
 #Packages
-/Classes
 /index.js
 /.cache
 /.npm
 /node_modules
 /test
 /changelogs
-/docs-extra/.vscode
 /tmp
 /.vscode
 /auth.json
+/cmds
+/cache

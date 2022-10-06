@@ -319,7 +319,11 @@ export async function requestStream<T extends keyof typeof PlatformType>(
         return (await (await request(track.id)).body.blob()).stream();
     } else if (type === "Youtube") {
         const yt = await manager.platforms.youtube;
-        return Readable.from(await yt.download(track.id));
+        return await yt.download( track.id, {
+            'client': manager.configs.searchOptions.youtubeClient ?? "WEB",
+            quality: "best",
+            'type': "audio",
+        });
     } else if (type === "Spotify") {
         const yt = await manager.platforms.youtube;
         if (!track.id) {
@@ -330,15 +334,17 @@ export async function requestStream<T extends keyof typeof PlatformType>(
                 },
             );
             track.id = data.videos.as(Video)[0].id;
-            return Readable.from(await yt.download(track.id, {
+            return await yt.download(track.id, {
                 client: manager.configs.searchOptions.youtubeClient ?? "WEB",
                 quality: "best",
-            }));
+                type: "audio",
+            });
         } else {
-            return Readable.from(await yt.download(track.id, {
+            return await yt.download(track.id, {
                 client: manager.configs.searchOptions.youtubeClient ?? "WEB",
                 quality: "best",
-            }));
+                type: "audio",
+            });
         }
     }
 }
