@@ -39,7 +39,7 @@
     "tiny-typed-emitter": "^2.1.0",
     "tweetnacl": "^1.0.3",
     "undici": "^5.8.0",
-    "youtubei.js": "^2.2.3"
+    "youtubei.js": "^2.4.1"
   },
   "devDependencies": {
     "@discordjs/opus": "^0.8.0",

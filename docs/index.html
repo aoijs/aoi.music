@@ -16,6 +16,7 @@
     <title>@akarui/aoi.music</title>
     <script src="./js/jquery.js"></script>
     <script src="./js/audio.js"></script>
+    <script src="./js/index.js"></script>
 </head>
 
 <body>
@@ -42,16 +43,21 @@
                 </div>
             </div>
             <div class="sbtn">
-                <i class="fa-solid fa-bars"></i>
+                <i class="fa-solid fa-bars" onclick="openSideBar()"></i>
             </div>
         </div>
     </div>
-    <div class="sidebar"></div>
+    <div class="sidebar">
+        <div class="close" onclick="closeSideBar()">
+            <i class="fa-solid fa-times"></i>
+        </div>
+        <div class="link" style = "--i: 1" >Docs</div>
+        <div class="link" style = "--i: 2">TypeDoc</div>
+        <div class="link" style = "--i: 3">Aoi.js</div>
+    </div>
     <div class="body">
         <div class="header">
-            <div class="">
-                
-            </div>
+            
         </div>
         <div class="container"></div>
     </div>

@@ -17,6 +17,7 @@ export declare class AudioPlayer {
     _configPlayer(): void;
     add(track: string[], type: PlatformType, member: GuildMember): Promise<void>;
     skip(): boolean;
+    skipTo(position: number): void;
     pause(): boolean;
     resume(): boolean;
     set volume(volume: number);
@@ -36,7 +37,15 @@ export declare class AudioPlayer {
     get currentTrack(): SoundCloudTrackInfo | LocalFileTrackInfo | UrlTrackInfo | YoutubeTrackInfo | SpotifyTrackInfo;
     get previousTrack(): SoundCloudTrackInfo | LocalFileTrackInfo | UrlTrackInfo | YoutubeTrackInfo | SpotifyTrackInfo;
     updateFilters(filterArr: string[]): void;
+    playPrevious(): Promise<void>;
+    setFilters(filterArr: string[]): void;
+    removeFilters(): void;
     get filters(): string[];
     get seek(): boolean;
     seeked(seek: boolean): void;
+    setFiltering(type: boolean): void;
+    autoPlayNext(): Promise<void>;
+    __configConnection(): void;
+    getQueue(page?: number, limit?: number, format?: string): string[];
+    getPing(type?: 'ws' | 'udp'): number;
 }

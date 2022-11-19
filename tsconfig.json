@@ -2,8 +2,7 @@
    "compilerOptions": {
        "declaration": true,
        "sourceMap": true,
-       "target": "ES2021",
-       "lib": ["ES2021","ES2021.String","ES2021.WeakRef"],
+       "target": "es2021",
        "module": "CommonJS",
        "moduleResolution": "Node",
        "esModuleInterop": true,

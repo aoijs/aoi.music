@@ -4,7 +4,10 @@ import {
     AudioResource,
     createAudioPlayer,
     createAudioResource,
+    entersState,
     StreamType,
+    VoiceConnectionDisconnectReason,
+    VoiceConnectionStatus,
 } from "@discordjs/voice";
 import {
     AutoPlay,
@@ -14,7 +17,12 @@ import {
     PluginName,
 } from "./../typings/enums";
 import { AudioPlayerMode, AudioPLayerOptions } from "./../typings/interfaces";
-import { requestInfo, requestStream } from "../newutils/request";
+import {
+    generateInfo,
+    generateScInfo,
+    requestInfo,
+    requestStream,
+} from "../newutils/request";
 import {
     LocalFileTrackInfo,
     Plugin,
@@ -26,14 +34,20 @@ import {
 } from "../typings/types";
 import { GuildMember } from "discord.js";
 import { setTimeout } from "timers/promises";
-import { formatedPlatforms } from "../newutils/constants";
+import { formatedPlatforms, QueueFormatRegex } from "../newutils/constants";
 import { search } from "../newutils/search";
 import Video from "youtubei.js/dist/src/parser/classes/Video";
-import { shuffle } from "../newutils/helpers";
+import {
+    shuffle,
+    YoutubeRelated,
+    ytRelatedHTMLParser,
+} from "../newutils/helpers";
 import { Filter } from "./filter";
 import { PassThrough, Readable } from "stream";
 import { ReadableStream } from "stream/web";
 import { FFmpeg } from "prism-media";
+import { Cacher } from "./cacher";
+import { fetch } from "undici";
 export class AudioPlayer {
     options: AudioPLayerOptions;
     #modes: AudioPlayerMode;
@@ -45,12 +59,14 @@ export class AudioPlayer {
         this.queue = [];
         this.player = createAudioPlayer();
         this._configPlayer();
+        this.__configConnection();
     }
     defaultMode(): AudioPlayerMode {
         return {
             loop: LoopMode.None,
             filterFromStart: false,
             shuffled: false,
+            filtering: false,
             paused: false,
             volume: 100,
             currentTrack: 0,
@@ -77,8 +93,7 @@ export class AudioPlayer {
                 this.options.manager.plugins.get(PluginName.Cacher)
             );
             await Cacher.write(current, stream);
-            if ( Cacher.type === "disk" ) stream = Cacher.get( current.id );
-
+            if (Cacher.type === "disk") stream = Cacher.get(current.id);
         }
         if (
             this.options.manager.plugins.has(PluginName.Filter) &&
@@ -133,17 +148,18 @@ export class AudioPlayer {
         await this.play();
     }
     async _playNext() {
+        const Cacher = <Plugin<PluginName.Cacher>>(
+            this.options.manager.plugins.get(PluginName.Cacher)
+        );
         if (this.options.type === "default") {
             if (this.#modes.currentTrack >= 1) {
                 const track = this.queue.shift();
                 if (this.options.manager.plugins.has(PluginName.Cacher)) {
-                    const Cacher = <Plugin<PluginName.Cacher>>(
-                        this.options.manager.plugins.get(PluginName.Cacher)
-                    );
                     Cacher.delete(track.id);
                 }
             } else {
                 this.#modes.currentTrack += 1;
+                Cacher.delete(this.queue[this.currentPosition() - 1].id);
             }
         } else if (this.options.type === "fonly") {
             const track = this.queue.shift();
@@ -161,6 +177,13 @@ export class AudioPlayer {
     _destroy() {
         this.#modes = this.defaultMode();
         this.queue = [];
+        this.player.stop(true);
+        if (this.options.manager.plugins.has(PluginName.Cacher)) {
+            const cacher = <Plugin<PluginName.Cacher>>(
+                this.options.manager.plugins.get(PluginName.Cacher)
+            );
+            cacher.clear();
+        }
     }
     _configPlayer(): void {
         this.player.on("stateChange", async (os, ns) => {
@@ -175,6 +198,10 @@ export class AudioPlayer {
                 ) {
                     if (this.#modes.seeked) {
                         this.#modes.seeked = false;
+                        return;
+                    }
+                    if (this.#modes.filtering) {
+                        this.#modes.filtering = false;
                         return;
                     } else {
                         this.options.manager.emit(
@@ -191,6 +218,10 @@ export class AudioPlayer {
                     if (this.#modes.seeked) {
                         this.#modes.seeked = false;
                         return;
+                    }
+                    if (this.#modes.filtering) {
+                        this.#modes.filtering = false;
+                        return;
                     } else {
                         this.options.manager.emit(
                             PlayerEvents.TRACK_END,
@@ -206,13 +237,17 @@ export class AudioPlayer {
                     if (this.#modes.seeked) {
                         this.#modes.seeked = false;
                         return;
+                    }
+                    if (this.#modes.filtering) {
+                        this.#modes.filtering = false;
+                        return;
                     } else {
                         this.options.manager.emit(
                             PlayerEvents.TRACK_END,
                             this.queue[this.#modes.currentTrack],
                             this,
                         );
-                        // this._autoPlay();
+                        await this.autoPlayNext();
                     }
                 } else if (
                     this.queue.length > 1 &&
@@ -220,6 +255,10 @@ export class AudioPlayer {
                 ) {
                     if (this.#modes.seeked) {
                         this.#modes.seeked = false;
+                        return;
+                    }
+                    if (this.#modes.filtering) {
+                        this.#modes.filtering = false;
                         return;
                     } else {
                         this.options.manager.emit(
@@ -232,6 +271,10 @@ export class AudioPlayer {
                 } else {
                     if (this.#modes.seeked) {
                         this.#modes.seeked = false;
+                        return;
+                    }
+                    if (this.#modes.filtering) {
+                        this.#modes.filtering = false;
                         return;
                     } else {
                         this.options.manager.emit(
@@ -252,6 +295,10 @@ export class AudioPlayer {
             ) {
                 if (this.#modes.seeked) {
                     this.#modes.seeked = false;
+                    return;
+                }
+                if (this.#modes.filtering) {
+                    this.#modes.filtering = false;
                     return;
                 } else {
                     this.options.manager.emit(
@@ -383,6 +430,37 @@ export class AudioPlayer {
     skip() {
         return this.player.stop();
     }
+    skipTo ( position: number )
+    {
+        if ( position > this.queue.length ) return;
+        this.#modes.currentTrack = position - 1;
+        if ( this.options.type === 'default' )
+        {
+            for ( let i = 0; i < position - 1; i++ )
+            {
+                if ( this.loop === LoopMode.Queue )
+                {
+                    this.queue.push( this.queue.shift() );
+                } else
+                {
+                    this.queue.shift();
+                }
+            }
+        } else if ( this.options.type === 'bidirect' )
+        {
+            
+        } else if ( this.options.type === 'fonly' )
+        {
+            for (let i = 0; i < position ; i++) {
+                if (this.loop === LoopMode.Queue) {
+                    this.queue.push(this.queue.shift());
+                } else {
+                    this.queue.shift();
+                }
+            }
+        }
+        this.skip();
+    }
     pause() {
         return (this.#modes.paused = this.player.pause());
     }
@@ -444,7 +522,19 @@ export class AudioPlayer {
         return this.queue[this.#modes.currentTrack - 1];
     }
     updateFilters(filterArr: string[]) {
+        this.#modes.filters.push(...filterArr);
+    }
+    async playPrevious ()
+    {
+        if ( this.#modes.currentTrack <= 0 ) return;
+        this.#modes.currentTrack--;
+        await this.play();
+    }
+    setFilters(filterArr: string[]) {
         this.#modes.filters = filterArr;
+    }
+    removeFilters() {
+        this.#modes.filters = [];
     }
     get filters() {
         return [...this.#modes.filters];
@@ -454,5 +544,211 @@ export class AudioPlayer {
     }
     seeked(seek: boolean) {
         this.#modes.seeked = seek;
+    }
+    setFiltering(type: boolean) {
+        this.#modes.filtering = type;
+    }
+    async autoPlayNext() {
+        if (
+            this.autoPlay === AutoPlay.Youtube ||
+            this.autoPlay === AutoPlay.Spotify
+        ) {
+            const yt = await this.options.manager.platforms.youtube;
+            const data = ytRelatedHTMLParser(
+                await (
+                    await fetch(
+                        `https://youtube.com/watch?v=${this.currentTrack.id}`,
+                    )
+                ).text(),
+            );
+            const ids = YoutubeRelated(data);
+            for (const id of ids) {
+                const info = await requestInfo(
+                    id,
+                    this.autoPlay === "youtube" ? "Youtube" : "Spotify",
+                    this.options.manager,
+                );
+                if (!info) {
+                    continue;
+                }
+                this.queue.push({
+                    ...(<YoutubeTrackInfo | SpotifyTrackInfo>info),
+                    requester: this.currentTrack.requester,
+                    position: this.queue.length,
+                });
+            }
+        } else if (this.autoPlay === AutoPlay.SoundCloud) {
+            const sc = this.options.manager.platforms.soundcloud;
+            //@ts-ignore
+            const { collection: data } = await sc.related(
+                //@ts-ignore
+                <number>this.currentTrack.scid,
+                10,
+            );
+            for (const track of data) {
+                const info = generateScInfo(track);
+                if (!info) continue;
+                this.queue.push({
+                    ...(<SoundCloudTrackInfo>info),
+                    requester: this.currentTrack.requester,
+                    position: this.queue.length,
+                });
+            }
+        } else if (this.autoPlay === AutoPlay.Relative) {
+            if (
+                this.currentTrack.formatedPlatforms.toLowerCase() ===
+                    AutoPlay.Youtube ||
+                this.currentTrack.formatedPlatforms.toLowerCase() ===
+                    AutoPlay.Spotify
+            ) {
+                const yt = await this.options.manager.platforms.youtube;
+                const data = ytRelatedHTMLParser(
+                    await (
+                        await fetch(
+                            `https://youtube.com/watch?v=${this.currentTrack.id}`,
+                        )
+                    ).text(),
+                );
+                const ids = YoutubeRelated(data);
+                for (const id of ids) {
+                    const info = await requestInfo(
+                        id,
+                        formatedPlatforms[this.autoPlay],
+                        this.options.manager,
+                    );
+                    if (!info) continue;
+                    this.queue.push({
+                        ...(<YoutubeTrackInfo | SpotifyTrackInfo>info),
+                        requester: this.currentTrack.requester,
+                        position: this.queue.length,
+                    });
+                }
+            } else if (
+                this.currentTrack.formatedPlatforms.toLowerCase() ===
+                AutoPlay.SoundCloud
+            ) {
+                const sc = this.options.manager.platforms.soundcloud;
+                //@ts-ignore
+                const { collection: data } = await sc.related(
+                    //@ts-ignore
+                    <number>this.currentTrack.scid,
+                    10,
+                );
+                for (const track of data) {
+                    const info = generateScInfo(track);
+                    if (!info) continue;
+                    this.queue.push({
+                        ...(<SoundCloudTrackInfo>info),
+                        requester: this.currentTrack.requester,
+                        position: this.queue.length,
+                    });
+                }
+            }
+        }
+
+        await this._playNext();
+    }
+    __configConnection() {
+        this.options.connection.on(
+            "stateChange",
+            async (
+                _: any,
+                newState: { status: any; reason: any; closeCode: number },
+            ) => {
+                if (newState.status === VoiceConnectionStatus.Disconnected) {
+                    if (
+                        newState.reason ===
+                            VoiceConnectionDisconnectReason.WebSocketClose &&
+                        newState.closeCode === 4014
+                    ) {
+                        try {
+                            await entersState(
+                                this.options.connection,
+                                VoiceConnectionStatus.Connecting,
+                                5_000,
+                            );
+                            // Probably moved voice channel
+                        } catch {
+                            this.options.connection.destroy();
+                            this._destroy();
+                            // Probably removed from voice channel
+                        }
+                    } else if (this.options.connection.rejoinAttempts < 5) {
+                        /**
+                         * The disconnect in this case is recoverable, and we also have <5 repeated attempts so we will reconnect.
+                         */
+                        await setTimeout(
+                            (this.options.connection.rejoinAttempts + 1) *
+                                5_000,
+                        );
+                        this.options.connection.rejoin();
+                    } else {
+                        /**
+                         * The disconnect in this case may be recoverable, but we have no more remaining attempts - destroy.
+                         */
+                        this.options.connection.destroy();
+                    }
+                } else if (
+                    newState.status === VoiceConnectionStatus.Destroyed
+                ) {
+                    /**
+                     * Once destroyed, stop the subscription.
+                     */
+                    this._destroy();
+                    this.player.stop(true);
+                } else if (
+                    newState.status === VoiceConnectionStatus.Connecting ||
+                    newState.status === VoiceConnectionStatus.Signalling
+                ) {
+                    /**
+                     * In the Signalling or Connecting states, we set a 20 second time limit for the connection to become ready
+                     * before destroying the voice connection. This stops the voice connection permanently existing in one of these
+                     * states.
+                     */
+
+                    try {
+                        await entersState(
+                            this.options.connection,
+                            VoiceConnectionStatus.Ready,
+                            20_000,
+                        );
+                    } catch {
+                        if (
+                            this.options.connection.state.status !==
+                            VoiceConnectionStatus.Destroyed
+                        )
+                            this.options.connection.destroy();
+                    }
+                }
+            },
+        );
+    }
+    getQueue(
+        page = 1,
+        limit = 10,
+        format = "{number}) {title} | {requester.user.name}",
+    ) {
+        const start = (page - 1) * limit;
+        const end = page * limit;
+        const tracks = this.queue.slice(start, end);
+        const props = format.match(QueueFormatRegex);
+        if (!props) return [];
+        const queue = tracks.map((track, index) => {
+            let formatted = format;
+            props.forEach((prop) => {
+                const propValue = prop.replace("{", "").replace("}", "");
+                const value =
+                    propValue === "position"
+                        ? start + index
+                        : eval(`track?.${propValue}`);
+                formatted = formatted.replaceAll(prop, value);
+            });
+            return formatted;
+        });
+        return queue;
+    }
+    getPing ( type: 'ws' | 'udp' = "ws" )
+    {
+        return this.options.connection.ping[ type ];
     }
 }

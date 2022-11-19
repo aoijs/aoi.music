@@ -218,6 +218,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
         }
     }
 
+
     async search<T extends PlatformType>(type: T, query: string, limit = 1) {
         if (type === PlatformType.Youtube) {
             const yt = await this.platforms.youtube;
@@ -242,4 +243,11 @@ export class Manager extends TypedEmitter<ManagerEvents> {
             console.log(`#DEBUG:\n Class -> Manager \n Method -> addPlugin \n Message -> Added Plugin ${plugin.constructor.name} with name : ${name} `);
         }
     }
+    leaveVc ( guildId: string )
+    { 
+        const player = this.players.get( guildId );
+        player?._destroy();
+        this.players.delete( guildId );
+    }
 }
+

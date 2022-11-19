@@ -31,7 +31,14 @@ export class Filter {
     }
     async remove(filter: string, player: AudioPlayer) {
         const f = player.filters.filter((f) => !f.startsWith(filter));
-        player.updateFilters(f);
+        player.setFilters(f);
+        await this.#apply(player);
+    }
+    async set(
+        options: { filter: string; value: string }[],
+        player: AudioPlayer,
+    ) {
+        player.setFilters(options.map((o) => `${o.filter}=${o.value}`));
         await this.#apply(player);
     }
     async removeFirst(filter: string, player: AudioPlayer) {
@@ -39,12 +46,12 @@ export class Filter {
         if (index !== -1) {
             const f = player.filters;
             f.splice(index, 1);
-            player.updateFilters(f);
+            player.setFilters(f);
             await this.#apply(player);
         }
     }
     async removeAll(player: AudioPlayer) {
-        player.updateFilters([]);
+        player.removeFilters();
         await this.#apply(player);
     }
     async #apply(player: AudioPlayer) {
@@ -60,7 +67,7 @@ export class Filter {
         const ffmpeg = new FFmpeg({
             args: player.filters.length
                 ? this.#config.filterFromStart
-                    ? [...FFMPEG_ARGS, ...player.filters]
+                    ? [...FFMPEG_ARGS, , "-af", player.filters.join(",")]
                     : [
                           "-ss",
                           //@ts-ignore
@@ -69,6 +76,13 @@ export class Filter {
                           "-af",
                           player.filters.join(","),
                       ]
+                : !this.#config.filterFromStart
+                ? [
+                      "-ss",
+                      //@ts-ignore
+                      `${player.player.state.resource.playbackDuration}ms`,
+                      ...FFMPEG_ARGS,
+                  ]
                 : [...FFMPEG_ARGS],
         });
         let str: Readable | FFmpeg;
@@ -80,12 +94,15 @@ export class Filter {
             inlineVolume: true,
             inputType: StreamType.Raw,
         });
+        newResource.playbackDuration = this.#config.filterFromStart
+            ? 0
+            : r.playbackDuration;
+        player.setFiltering(true);
         player.player.play(newResource);
     }
-    async seek ( time: number, player: AudioPlayer )
-    {
-        const args = [ "-ss", `${ time }ms`, ...FFMPEG_ARGS ];
-        if(player.filters.length) args.push("-af", player.filters.join(","));
+    async seek(time: number, player: AudioPlayer) {
+        const args = ["-ss", `${time}ms`, ...FFMPEG_ARGS];
+        if (player.filters.length) args.push("-af", player.filters.join(","));
         const ffmpeg = new FFmpeg({
             args,
         });
@@ -102,10 +119,10 @@ export class Filter {
         const newResource = createAudioResource(str, {
             inlineVolume: true,
             inputType: StreamType.Raw,
-        } );
+        });
         newResource.playbackDuration = time;
-                player.seeked(true);
-        player.player.play( newResource );
+        player.seeked(true);
+        player.player.play(newResource);
         return true;
     }
     createFFmpeg(...args: string[]) {

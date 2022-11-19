@@ -14,8 +14,7 @@ export const FFMPEG_ARGS = [
     "-ac",
     "2",
     "-vn",
-];
-
+] as const;
 export const formatedPlatforms = [
     "SoundCloud",
     "LocalFile",
@@ -93,7 +92,7 @@ export const CustomFilters = {
         return [
             {
                 filter: "asetrate",
-                value: 48000 * Math.abs(Math.ceil(value) - value),
+                value: 48000 * Math.abs(value - Math.ceil(value)),
             },
             {
                 filter: "aresample",
@@ -124,3 +123,5 @@ export const CustomFilters = {
         }];
     },
 };
+
+export const QueueFormatRegex = /{([^}]+)}/g;

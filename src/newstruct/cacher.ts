@@ -1,4 +1,4 @@
-import { writeFile } from "fs/promises";
+import { unlink, writeFile } from "fs/promises";
 import {
     createReadStream,
     createWriteStream,
@@ -124,11 +124,23 @@ export class Cacher<T extends "memory" | "disk"> {
             }
         }
     }
+    clear ()
+    {
+        if ( this.#type === "disk" )
+        {
+            const files = readdirSync( this.#path );
+                for ( const file of files )
+                {
+                    unlink( join( this.#path, file ) );
+                }
+        }
+            this.#map.clear();
+    }
     has(id: string) {
         return this.#map.has(id);
     }
     get map() {
-        return this.map;
+        return this.#map;
     }
     get type() {
         return this.#type;

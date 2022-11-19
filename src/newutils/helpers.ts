@@ -79,8 +79,5 @@ export function YoutubeRelated(
 ) {
     return data
         .filter((x) => x.endScreenVideoRenderer)
-        .map(
-            (x) =>
-                `https://www.youtube.com/watch?v=${x.endScreenVideoRenderer.videoId}`,
-        );
+        .map((x) => x.endScreenVideoRenderer.videoId);
 }

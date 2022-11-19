@@ -75,6 +75,34 @@ export async function generateInfo<T extends "LocalFile" | "Url">(
     }
 }
 
+export function generateScInfo (
+    scData: TrackInfo,
+): Track<"SoundCloud">
+{
+    return {
+        title: scData.title,
+        artist: scData.user.username,
+        artistURL: scData.user.permalink_url,
+        artistAvatar: scData.user.avatar_url,
+        duration: scData.duration,
+        url: scData.permalink_url,
+        identifier: "soundcloud",
+        views: scData.playback_count,
+        likes: scData.likes_count,
+        thumbnail: scData.artwork_url?.replace(
+            "-large.jpg",
+            "-t500x500.jpg"
+        ),
+        //@ts-ignore
+        scid: scData.id,
+        id: scData.permalink_url,
+        description: scData.description,
+        createdAt: new Date( scData.created_at ) ?? null,
+        platformType: PlatformType.SoundCloud,
+        formatedPlatforms: formatedPlatforms[ PlatformType.SoundCloud ],
+    };
+}
+
 export async function requestInfo<T extends keyof typeof PlatformType>(
     id: string,
     type: T,
@@ -84,7 +112,8 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
         const sc = manager.platforms.soundcloud;
         if (id.split("/")[4] === "sets") {
             const setinfo = await sc.getSetInfo(id);
-            return <Track<T>[]>setinfo.tracks.map((scData) => {
+            return <Track<T>[]><unknown> setinfo.tracks.map( ( scData ) =>
+            {
                 return {
                     title: scData.title,
                     artist: scData.user.username,
@@ -97,16 +126,16 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
                     likes: scData.likes_count,
                     thumbnail: scData.artwork_url?.replace(
                         "-large.jpg",
-                        "-t500x500.jpg",
+                        "-t500x500.jpg"
                     ),
+                    scid: scData.id,
                     id: scData.permalink_url,
                     description: scData.description,
-                    createdAt: new Date(scData.created_at) ?? null,
+                    createdAt: new Date( scData.created_at ) ?? null,
                     platformType: PlatformType.SoundCloud,
-                    formatedPlatforms:
-                        formatedPlatforms[PlatformType.SoundCloud],
+                    formatedPlatforms: formatedPlatforms[ PlatformType.SoundCloud ],
                 };
-            });
+            } );
         } else if (id.split("/").pop() === "likes") {
             return <Track<T>[]>(
                 await sc.getLikes({

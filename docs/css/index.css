@@ -4,13 +4,14 @@
     --primary: #202020;
     --primary-text: #e3e3e3;
     --primary-text-hover: rgb(158, 158, 158);
-    --primay-half-op:#20202080;
+    --primay-half-op: #20202080;
     --navbar: #1a1a1a;
+    --container: #282828;
 }
 
 * {
     font-size: 30px;
-    font-family: 'Cascadia Code';
+    font-family: "Cascadia Code";
 }
 
 a,
@@ -38,6 +39,8 @@ html {
     align-items: center;
     justify-content: space-between;
     z-index: 1000;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
 }
 /* NaV Logo */
 .navbar .logo {
@@ -115,24 +118,102 @@ html {
 .body .header {
     color: var(--primary-text);
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap:20px;
     padding: 20px;
+    text-align: center;
+    align-items: center;
 }
+
+.body .header .half {
+    display: flex;
+    flex-direction: column;
+    height: 50vh;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    gap: 20px;
+    backdrop-filter: blur(10px);
+    background-color: var(--container);
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.105);
+    border-radius: 20px;
+}
+
+ h1 {
+    font-size: 30px;
+}
+
+
 .body .container {
     min-height: 200vh;
     width: 100%;
     opacity: 0.8;
 }
 
+.sidebar {
+    height:100vh;
+    position: fixed;
+    right:0;
+    top:0;
+    width: 0;
+    background-color: var(--container);
+    z-index: 100000000;
+    transition: 1s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+    transform: skewX(20deg);
+}
+
+.sidebar .link {
+    height:60px;
+    width: 98%;
+    left:-20px;
+    position: absolute;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    text-align: center;
+    top:calc(150px*var(--i));
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+}
 
 
+.sidebar .close {
+    position: fixed;
+    top: 0px;
+    transform: skewX(-20deg);
+    left: -20px;
+    height: 60px;
+    width: 60px;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 500ms;
+    display: none;
+    background-color: var(--navbar);
+}
 
+.sidebar .link {
+    color:var(--primary-text);
+    background-color: var(--primary);
+    transition: 500ms;
+    transform: skewX(-20deg);
+}
 
-
-
-
-
-
+.sidebar .link:hover {
+    transform: translateX(-100px);
+}
 
 /* mobile */
 @media only screen and (max-width: 700px) {
@@ -146,8 +227,8 @@ html {
         justify-content: space-around;
     }
     .navbar .wrapper .quick_btns .rest .audio i {
-        transform:  translateX(-8px);
-    } 
+        transform: translateX(-8px);
+    }
     .navbar .wrapper .quick_btns .grpbtn {
         display: block;
     }

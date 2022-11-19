@@ -33,6 +33,7 @@ export interface AudioPLayerOptions {
 }
 export interface AudioPlayerMode {
     filters: string[];
+    filtering: boolean;
     seeked?: boolean;
     autoPlay: AutoPlay;
     loop: LoopMode;
