@@ -9,6 +9,7 @@
     "USERSATOSHI",
     "kino-leref-abandoned-child"
   ],
+  "main": "lib/index.js",
   "files": [
     "lib",
     "package.json",
