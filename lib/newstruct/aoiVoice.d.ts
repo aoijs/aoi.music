@@ -1,6 +1,6 @@
 import { Collection, Message, Snowflake, VoiceChannel } from "discord.js";
 import { PlayerEvents } from "../typings/enums";
-import { AudioPLayerOptions } from "../typings/interfaces";
+import { AudioPLayerOptions, ManagerConfigurations } from "../typings/interfaces";
 import { Manager } from "./manager";
 export declare class AoiVoice<T> {
     #private;
@@ -18,7 +18,7 @@ export declare class AoiVoice<T> {
         trackPause: Collection<string, Record<string, any>>;
         trackResume: Collection<string, Record<string, any>>;
     };
-    constructor(bot: T);
+    constructor(bot: T, managerConfig?: ManagerConfigurations);
     addEvent(event: PlayerEvents): void;
     addEvents(...events: PlayerEvents[]): void;
     bindExecutor(executor: Function): void;

@@ -13,7 +13,7 @@ import {
     PlayerEvents,
     PluginName,
 } from "../typings/enums";
-import { AudioPLayerOptions } from "../typings/interfaces";
+import { AudioPLayerOptions, ManagerConfigurations } from "../typings/interfaces";
 import { AudioPlayer } from "./audioPlayer";
 import { Filter } from "./filter";
 import { Manager } from "./manager";
@@ -39,9 +39,9 @@ export class AoiVoice<T> {
     };
     #events: PlayerEvents[];
     #executor: Function;
-    constructor(bot: T) {
+    constructor(bot: T,managerConfig?:ManagerConfigurations) {
         this.#bot = bot;
-        this.manager = new Manager();
+        this.manager = new Manager(managerConfig);
         this.prunes = new Map();
 
         this.cmds = {
