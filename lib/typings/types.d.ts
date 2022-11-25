@@ -5,7 +5,7 @@ import { GuildMember } from "discord.js";
 import { Cacher } from "../newstruct/cacher";
 import { Filter } from "../newstruct/filter";
 import { PathLike } from "fs";
-export declare type SoundCloudTrackInfo = {
+export type SoundCloudTrackInfo = {
     title: string;
     artist: string;
     artistURL: string;
@@ -25,7 +25,7 @@ export declare type SoundCloudTrackInfo = {
     requester: GuildMember;
     position: number;
 };
-export declare type YoutubeTrackInfo = {
+export type YoutubeTrackInfo = {
     title: string;
     channelId: string;
     artist: string;
@@ -44,7 +44,7 @@ export declare type YoutubeTrackInfo = {
     requester: GuildMember;
     position: number;
 };
-export declare type LocalFileTrackInfo = {
+export type LocalFileTrackInfo = {
     title: string;
     idetifier: "localfile";
     type: string;
@@ -59,7 +59,7 @@ export declare type LocalFileTrackInfo = {
     requester: GuildMember;
     position: number;
 };
-export declare type UrlTrackInfo = {
+export type UrlTrackInfo = {
     title: string;
     idetifier: "url";
     type: string;
@@ -74,7 +74,7 @@ export declare type UrlTrackInfo = {
     requester: GuildMember;
     position: number;
 };
-export declare type SpotifyTrackInfo = {
+export type SpotifyTrackInfo = {
     title: string;
     artist: string;
     duration: number;
@@ -91,5 +91,5 @@ export declare type SpotifyTrackInfo = {
     requester: GuildMember;
     position: number;
 };
-export declare type Track<type extends keyof typeof PlatformType> = type extends "SoundCloud" ? SoundCloudTrackInfo : type extends "LocalFile" ? LocalFileTrackInfo : type extends "Url" ? UrlTrackInfo : type extends "Youtube" ? YoutubeTrackInfo : SpotifyTrackInfo;
-export declare type Plugin<T extends PluginName> = T extends PluginName.Cacher ? Cacher<"memory" | "disk"> : Filter;
+export type Track<type extends keyof typeof PlatformType> = type extends "SoundCloud" ? SoundCloudTrackInfo : type extends "LocalFile" ? LocalFileTrackInfo : type extends "Url" ? UrlTrackInfo : type extends "Youtube" ? YoutubeTrackInfo : SpotifyTrackInfo;
+export type Plugin<T extends PluginName> = T extends PluginName.Cacher ? Cacher<"memory" | "disk"> : Filter;

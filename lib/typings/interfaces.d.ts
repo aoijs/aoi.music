@@ -164,7 +164,7 @@ export interface CacheDiskConfig {
     path: string;
     limit: number;
 }
-export declare type CacheConfig<T extends "memory" | "disk"> = T extends "memory" ? CacherMemoryConfig : CacheDiskConfig;
+export type CacheConfig<T extends "memory" | "disk"> = T extends "memory" ? CacherMemoryConfig : CacheDiskConfig;
 export interface FilterConfig {
     filterFromStart: boolean;
 }

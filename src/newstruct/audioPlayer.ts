@@ -8,7 +8,7 @@ import {
     StreamType,
     VoiceConnectionDisconnectReason,
     VoiceConnectionStatus,
-} from "@discordjs/voice";
+} from '@discordjs/voice';
 import {
     AutoPlay,
     LoopMode,
