@@ -102,12 +102,14 @@ export class AoiVoice<T> extends Manager {
                             await this.#executor(
                                 this.#bot,
                                 {
-                                    guild: player.options.connection.joinConfig
-                                        .guildId,
-                                    channel: this.prunes.get(
+                                    // @ts-ignore
+                                    guild: this.#bot.guilds.cache.get(player.options.connection.joinConfig
+                                        .guildId ),
+                                    // @ts-ignore
+                                    channel: this.#bot.channels.cache.get(this.prunes.get(
                                         player.options.connection.joinConfig
                                             .guildId,
-                                    ).channel,
+                                    ).channel),
                                 },
                                 [],
                                 { code: cmd.channel, name: "NameParser" },
