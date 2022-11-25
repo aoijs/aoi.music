@@ -43,7 +43,8 @@ export class AoiVoice<T> extends Manager {
         super( managerConfig );
         this.#bot = bot;
         this.prunes = new Map();
-
+        //@ts-ignore
+        this.#bot.voiceManager = this;
         this.cmds = {
             [PlayerEvents.TRACK_START]: new Collection<
                 Snowflake,
