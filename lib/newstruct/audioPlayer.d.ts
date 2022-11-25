@@ -1,4 +1,4 @@
-import { AudioPlayer as AP } from '@discordjs/voice';
+import { AudioPlayer as AP } from "@discordjs/voice";
 import { AutoPlay, LoopMode, PlatformType } from "./../typings/enums";
 import { AudioPlayerMode, AudioPLayerOptions } from "./../typings/interfaces";
 import { LocalFileTrackInfo, SoundCloudTrackInfo, SpotifyTrackInfo, Track, UrlTrackInfo, YoutubeTrackInfo } from "../typings/types";
@@ -47,5 +47,5 @@ export declare class AudioPlayer {
     autoPlayNext(): Promise<void>;
     __configConnection(): void;
     getQueue(page?: number, limit?: number, format?: string): string[];
-    getPing(type?: 'ws' | 'udp'): number;
+    getPing(type?: "ws" | "udp"): number;
 }

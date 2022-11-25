@@ -8,7 +8,7 @@ import {
     StreamType,
     VoiceConnectionDisconnectReason,
     VoiceConnectionStatus,
-} from '@discordjs/voice';
+} from "@discordjs/voice";
 import {
     AutoPlay,
     LoopMode,
@@ -430,28 +430,20 @@ export class AudioPlayer {
     skip() {
         return this.player.stop();
     }
-    skipTo ( position: number )
-    {
-        if ( position > this.queue.length ) return;
+    skipTo(position: number) {
+        if (position > this.queue.length) return;
         this.#modes.currentTrack = position - 1;
-        if ( this.options.type === 'default' )
-        {
-            for ( let i = 0; i < position - 1; i++ )
-            {
-                if ( this.loop === LoopMode.Queue )
-                {
-                    this.queue.push( this.queue.shift() );
-                } else
-                {
+        if (this.options.type === "default") {
+            for (let i = 0; i < position - 1; i++) {
+                if (this.loop === LoopMode.Queue) {
+                    this.queue.push(this.queue.shift());
+                } else {
                     this.queue.shift();
                 }
             }
-        } else if ( this.options.type === 'bidirect' )
-        {
-            
-        } else if ( this.options.type === 'fonly' )
-        {
-            for (let i = 0; i < position ; i++) {
+        } else if (this.options.type === "bidirect") {
+        } else if (this.options.type === "fonly") {
+            for (let i = 0; i < position; i++) {
                 if (this.loop === LoopMode.Queue) {
                     this.queue.push(this.queue.shift());
                 } else {
@@ -524,9 +516,8 @@ export class AudioPlayer {
     updateFilters(filterArr: string[]) {
         this.#modes.filters.push(...filterArr);
     }
-    async playPrevious ()
-    {
-        if ( this.#modes.currentTrack <= 0 ) return;
+    async playPrevious() {
+        if (this.#modes.currentTrack <= 0) return;
         this.#modes.currentTrack--;
         await this.play();
     }
@@ -556,11 +547,10 @@ export class AudioPlayer {
             const yt = await this.options.manager.platforms.youtube;
             const parsed = await (
                 await fetch(
-                    `https://youtube.com/watch?v=${ this.currentTrack.id }`,
-                )).text();
-            const data = ytRelatedHTMLParser(
-                parsed
-            );
+                    `https://youtube.com/watch?v=${this.currentTrack.id}`,
+                )
+            ).text();
+            const data = ytRelatedHTMLParser(parsed);
             const ids = YoutubeRelated(data);
             for (const id of ids) {
                 const info = await requestInfo(
@@ -602,13 +592,12 @@ export class AudioPlayer {
                     AutoPlay.Spotify
             ) {
                 const yt = await this.options.manager.platforms.youtube;
-                const data = ytRelatedHTMLParser(
-                    await (
-                        await fetch(
-                            `https://youtube.com/watch?v=${this.currentTrack.id}`,
-                        )
-                    ).text(),
-                );
+                const parsed = await (
+                    await fetch(
+                        `https://youtube.com/watch?v=${this.currentTrack.id}`,
+                    )
+                ).text();
+                const data = ytRelatedHTMLParser(parsed);
                 const ids = YoutubeRelated(data);
                 for (const id of ids) {
                     const info = await requestInfo(
@@ -747,8 +736,7 @@ export class AudioPlayer {
         });
         return queue;
     }
-    getPing ( type: 'ws' | 'udp' = "ws" )
-    {
-        return this.options.connection.ping[ type ];
+    getPing(type: "ws" | "udp" = "ws") {
+        return this.options.connection.ping[type];
     }
 }
