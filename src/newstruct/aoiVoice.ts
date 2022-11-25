@@ -18,9 +18,8 @@ import { AudioPlayer } from "./audioPlayer";
 import { Filter } from "./filter";
 import { Manager } from "./manager";
 
-export class AoiVoice<T> {
+export class AoiVoice<T> extends Manager {
     #bot: T;
-    manager: Manager;
     prunes: Map<
         Snowflake,
         {
@@ -39,9 +38,10 @@ export class AoiVoice<T> {
     };
     #events: PlayerEvents[];
     #executor: Function;
-    constructor(bot: T,managerConfig?:ManagerConfigurations) {
+    constructor ( bot: T, managerConfig?: ManagerConfigurations )
+    {
+        super( managerConfig );
         this.#bot = bot;
-        this.manager = new Manager(managerConfig);
         this.prunes = new Map();
 
         this.cmds = {
@@ -91,7 +91,7 @@ export class AoiVoice<T> {
         this.#executor = executor;
     }
     #bindEvents(event: PlayerEvents) {
-        this.manager.on(event, (...data: any[]) => {
+        this.on(event, (...data: any[]) => {
             const player: AudioPlayer = data.pop();
             this.cmds[event].forEach(async (cmd) => {
                 if (!cmd.__compiled__) {
@@ -169,12 +169,13 @@ export class AoiVoice<T> {
         selfDeaf?: boolean;
         selfMute?: boolean;
     }) {
-        await this.manager.joinVc({
+        await super.joinVc({
             type,
             voiceChannel,
             selfDeaf,
             selfMute,
-        });
+        } ).catch( e => false );
+        return true;
     }
     #bindFunctions() {
         // @ts-ignore
@@ -218,7 +219,7 @@ export class AoiVoice<T> {
                             );
 
                         try {
-                            await d.client.voiceManager.manager.joinVc({
+                            await d.client.voiceManager.joinVc({
                                 voiceChannel: vc,
                                 textChannel: d.channel,
                                 selfMute: selfMute === "yes",
@@ -267,7 +268,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const hasPlayer =
-                            d.client.voiceManager.manager.players.has(guild.id);
+                            d.client.voiceManager.players.has(guild.id);
                         if (!hasPlayer) {
                             return d.aoiError.fnError(
                                 d,
@@ -276,7 +277,7 @@ export class AoiVoice<T> {
                                 "Player Not Found.",
                             );
                         }
-                        d.client.voiceManager.manager.leaveVc(guild.id);
+                        d.client.voiceManager.leaveVc(guild.id);
                         return {
                             code: d.util.setCode(data),
                         };
@@ -298,7 +299,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -315,35 +316,35 @@ export class AoiVoice<T> {
                             tracks = await search(
                                 track,
                                 PlatformType.Youtube,
-                                this.manager,
+                                this,
                             );
                             trackType = PlatformType.Youtube;
                         } else if (type === "soundcloud") {
                             tracks = await search(
                                 track,
                                 PlatformType.SoundCloud,
-                                this.manager,
+                                this,
                             );
                             trackType = PlatformType.SoundCloud;
                         } else if (type === "spotify") {
                             tracks = await search(
                                 track,
                                 PlatformType.Spotify,
-                                this.manager,
+                                this,
                             );
                             trackType = PlatformType.Spotify;
                         } else if (type === "local") {
                             tracks = await search(
                                 track,
                                 PlatformType.LocalFile,
-                                this.manager,
+                                this,
                             );
                             trackType = PlatformType.LocalFile;
                         } else if (type === "url") {
                             tracks = await search(
                                 track,
                                 PlatformType.Url,
-                                this.manager,
+                                this,
                             );
                             trackType = PlatformType.Url;
                         } else {
@@ -388,7 +389,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const hasPlayer =
-                            d.client.voiceManager.manager.players.has(
+                            d.client.voiceManager.players.has(
                                 d.guild.id,
                             );
                         if (!hasPlayer) {
@@ -400,7 +401,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         data.result = player.getQueue(page, limit, format);
@@ -425,7 +426,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -473,7 +474,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -484,7 +485,7 @@ export class AoiVoice<T> {
                                 "Player Not Found.",
                             );
                         }
-                        if (!this.manager.plugins.get(PluginName.Filter)) {
+                        if (!this.plugins.get(PluginName.Filter)) {
                             return d.aoiError.fnError(
                                 d,
                                 "custom",
@@ -493,7 +494,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const ffilter = <Filter>(
-                            this.manager.plugins.get(PluginName.Filter)
+                            this.plugins.get(PluginName.Filter)
                         );
                         let parsed = JSON.parse(filter);
                         const keys = Object.keys(parsed);
@@ -527,7 +528,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -538,7 +539,7 @@ export class AoiVoice<T> {
                                 "Player Not Found.",
                             );
                         }
-                        if (!this.manager.plugins.get(PluginName.Filter)) {
+                        if (!this.plugins.get(PluginName.Filter)) {
                             return d.aoiError.fnError(
                                 d,
                                 "custom",
@@ -547,7 +548,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const ffilter = <Filter>(
-                            this.manager.plugins.get(PluginName.Filter)
+                            this.plugins.get(PluginName.Filter)
                         );
                         let parsed = JSON.parse(filter);
                         const keys = Object.keys(parsed);
@@ -581,7 +582,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -592,7 +593,7 @@ export class AoiVoice<T> {
                                 "Player Not Found.",
                             );
                         }
-                        if (!this.manager.plugins.get(PluginName.Filter)) {
+                        if (!this.plugins.get(PluginName.Filter)) {
                             return d.aoiError.fnError(
                                 d,
                                 "custom",
@@ -601,7 +602,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const ffilter = <Filter>(
-                            this.manager.plugins.get(PluginName.Filter)
+                            this.plugins.get(PluginName.Filter)
                         );
 
                         ffilter.remove(filter, player);
@@ -626,7 +627,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -637,7 +638,7 @@ export class AoiVoice<T> {
                                 "Player Not Found.",
                             );
                         }
-                        if (!this.manager.plugins.get(PluginName.Filter)) {
+                        if (!this.plugins.get(PluginName.Filter)) {
                             return d.aoiError.fnError(
                                 d,
                                 "custom",
@@ -646,7 +647,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const ffilter = <Filter>(
-                            this.manager.plugins.get(PluginName.Filter)
+                            this.plugins.get(PluginName.Filter)
                         );
 
                         ffilter.removeAll(player);
@@ -671,7 +672,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -682,7 +683,7 @@ export class AoiVoice<T> {
                                 "Player Not Found.",
                             );
                         }
-                        if (!this.manager.plugins.get(PluginName.Filter)) {
+                        if (!this.plugins.get(PluginName.Filter)) {
                             return d.aoiError.fnError(
                                 d,
                                 "custom",
@@ -691,7 +692,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const ffilter = <Filter>(
-                            this.manager.plugins.get(PluginName.Filter)
+                            this.plugins.get(PluginName.Filter)
                         );
 
                         data.result = player.filters;
@@ -716,7 +717,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -753,7 +754,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -765,7 +766,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const ffilter = <Filter>(
-                            this.manager.plugins.get(PluginName.Filter)
+                            this.plugins.get(PluginName.Filter)
                         );
                         if (!ffilter) {
                             return d.aoiError.fnError(
@@ -796,7 +797,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -828,7 +829,7 @@ export class AoiVoice<T> {
                             );
                         }
 
-                        data.result = d.client.voiceManager.manager.players.has(
+                        data.result = d.client.voiceManager.players.has(
                             d.guild.id,
                         );
                         return {
@@ -852,7 +853,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -898,7 +899,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -930,7 +931,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -962,7 +963,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -994,7 +995,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -1026,7 +1027,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -1058,7 +1059,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -1091,7 +1092,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -1131,7 +1132,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -1163,7 +1164,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -1198,7 +1199,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -1238,7 +1239,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -1270,7 +1271,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -1302,7 +1303,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -1334,7 +1335,7 @@ export class AoiVoice<T> {
                             );
                         }
                         const player =
-                            d.client.voiceManager.manager.players.get(
+                            d.client.voiceManager.players.get(
                                 d.guild.id,
                             );
                         if (!player) {
@@ -1368,7 +1369,7 @@ export class AoiVoice<T> {
                         {
                             return d.aoiError.fnError( d, "custom", {}, "Voice Class Is Not Initialised." )
                         }
-                        const player = d.client.voiceManager.manager.players.get( d.guild.id )
+                        const player = d.client.voiceManager.players.get( d.guild.id )
                         if ( !player ) 
                         {
                             return d.aoiError.fnError( d, "custom", {}, "Player Not Found." )

@@ -2,9 +2,8 @@ import { Collection, Message, Snowflake, VoiceChannel } from "discord.js";
 import { PlayerEvents } from "../typings/enums";
 import { AudioPLayerOptions, ManagerConfigurations } from "../typings/interfaces";
 import { Manager } from "./manager";
-export declare class AoiVoice<T> {
+export declare class AoiVoice<T> extends Manager {
     #private;
-    manager: Manager;
     prunes: Map<Snowflake, {
         message: Message<boolean>;
         channel: Snowflake;
@@ -28,5 +27,5 @@ export declare class AoiVoice<T> {
         textChannel: Snowflake;
         selfDeaf?: boolean;
         selfMute?: boolean;
-    }): Promise<void>;
+    }): Promise<boolean>;
 }
