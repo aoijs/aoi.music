@@ -602,7 +602,7 @@ export class AudioPlayer {
                 for (const id of ids) {
                     const info = await requestInfo(
                         id,
-                        formatedPlatforms[this.autoPlay],
+                        this.currentTrack.formatedPlatforms.toLowerCase() === "youtube" ? "Youtube" : "Spotify",
                         this.options.manager,
                     );
                     if (!info) continue;
