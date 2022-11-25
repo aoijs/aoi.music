@@ -179,6 +179,10 @@ export class AoiVoice<T> extends Manager {
             selfDeaf,
             selfMute,
         } ).catch( e => false );
+        this.prunes.set( voiceChannel.guild.id, {
+            message: null,
+            channel: textChannel,
+        } );
         return true;
     }
     #bindFunctions() {
