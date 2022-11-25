@@ -129,7 +129,10 @@ export class AoiVoice<T> extends Manager {
                     return await this.#executor(
                         this.#bot,
                         {
-                            guild: player.options.connection.joinConfig.guildId,
+                            // @ts-ignore
+                            guild: this.#bot.guilds.cache.get(
+                                player.options.connection.joinConfig.guildId,
+                            ),
                             channel: this.prunes.get(
                                 player.options.connection.joinConfig.guildId,
                             ).channel,
@@ -1365,6 +1368,7 @@ export class AoiVoice<T> extends Manager {
                                       "Voice Class Is Not Initialised.",
                                   );
                               }
+                              
                               const player = d.client.voiceManager.players.get(
                                   d.guild.id,
                               );
