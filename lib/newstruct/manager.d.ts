@@ -1,5 +1,5 @@
 import { Snowflake, VoiceChannel } from "discord.js";
-import { TypedEmitter } from "tiny-typed-emitter";
+import { TypedEmitter } from "tiny-typed-emitter/lib/index";
 import IT from "youtubei.js/dist/src/Innertube";
 import { AudioPLayerOptions, ManagerConfigurations, ManagerEvents } from "../typings/interfaces";
 import { AudioPlayer } from "./audioPlayer";

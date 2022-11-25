@@ -6,7 +6,7 @@ import {
 } from "@discordjs/voice";
 import { Snowflake, VoiceChannel } from "discord.js";
 import { existsSync, readFileSync, writeFileSync } from "fs";
-import { TypedEmitter } from "tiny-typed-emitter";
+import { TypedEmitter } from "tiny-typed-emitter/lib/index";
 import InnerTube from "youtubei.js";
 import IT from "youtubei.js/dist/src/Innertube";
 import {
@@ -19,7 +19,7 @@ import scdl from "soundcloud-downloader";
 import { SCDL } from "soundcloud-downloader/src";
 import sui, { Spotify } from "spotify-url-info";
 import { fetch } from "undici";
-import { PlatformType, PluginName } from "../typings/enums";
+import { PlatformType, PlayerEvents, PluginName } from "../typings/enums";
 import Video from "youtubei.js/dist/src/parser/classes/Video";
 import { TrackInfo } from "soundcloud-downloader/src/info";
 import { Plugin } from "../typings/types";
