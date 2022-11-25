@@ -181,7 +181,7 @@ export class AoiVoice<T> extends Manager {
         // @ts-ignore
         if (this.#bot.functionManager) {
             //@ts-ignore
-            this.#bot.functionManager.createCustomFunction(
+            this.#bot.functionManager.createFunction(
                 //join
                 {
                     name: "$joinVC",
