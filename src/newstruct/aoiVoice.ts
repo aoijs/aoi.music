@@ -75,7 +75,8 @@ export class AoiVoice<T> extends Manager {
             >(),
         };
         this.#events = [];
-        this.#executor = () => {};
+        this.#executor = () => { };
+        this.#bindFunctions();
     }
     addEvent(event: PlayerEvents) {
         this.#events.push(event);
