@@ -554,12 +554,12 @@ export class AudioPlayer {
             this.autoPlay === AutoPlay.Spotify
         ) {
             const yt = await this.options.manager.platforms.youtube;
+            const parsed = await (
+                await fetch(
+                    `https://youtube.com/watch?v=${ this.currentTrack.id }`,
+                )).text();
             const data = ytRelatedHTMLParser(
-                await (
-                    await fetch(
-                        `https://youtube.com/watch?v=${this.currentTrack.id}`,
-                    )
-                ).text(),
+                parsed
             );
             const ids = YoutubeRelated(data);
             for (const id of ids) {
@@ -726,7 +726,7 @@ export class AudioPlayer {
     getQueue(
         page = 1,
         limit = 10,
-        format = "{number}) {title} | {requester.user.name}",
+        format = "{position}) {title} | {requester.user.name}",
     ) {
         const start = (page - 1) * limit;
         const end = page * limit;
