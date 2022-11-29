@@ -384,7 +384,7 @@ export class AudioPlayer {
                     await this.play();
                 }
             } else if (type === PlatformType.Spotify) {
-                const info = <SpotifyTrackInfo[]>(
+                let info = <SpotifyTrackInfo[]>(
                     (<unknown>(
                         await requestInfo(
                             track[i],
@@ -393,7 +393,8 @@ export class AudioPlayer {
                         )
                     ))
                 );
-                if (!info) continue;
+                if ( !info ) continue;
+                if(!Array.isArray(info)) info = [info];
                 for (let i = 0; i < info.length; i++) {
                     this.queue.push({
                         ...info[i],
