@@ -239,7 +239,7 @@ export class AoiVoice<T> extends Manager {
                               try {
                                   await d.client.voiceManager.joinVc({
                                       voiceChannel: vc,
-                                      textChannel: d.channel,
+                                      textChannel: d.channel.id,
                                       selfMute: selfMute === "yes",
                                       selfDeaf: selfDeaf === "yes",
                                       debug: debug === "yes",
@@ -1398,7 +1398,7 @@ export class AoiVoice<T> extends Manager {
                               }
                               const parsedPos = position
                                   ? parseInt(position)
-                                  : player.currentPosition;
+                                  : player.currentPosition();
                               data.result = player.queue[parsedPos][type];
                               return {
                                   code: d.util.setCode(data),
