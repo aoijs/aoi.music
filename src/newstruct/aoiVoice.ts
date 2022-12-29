@@ -150,11 +150,12 @@ export class AoiVoice<T> extends Manager {
                         [],
                         cmd,
                         undefined,
-                        true,
+                        false,
                         channel,
                         {
                             data: data[0],
                         },
+                        
                     );
                 } else {
                     return await cmd.__compiled__({
