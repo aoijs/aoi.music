@@ -285,7 +285,7 @@ export class AoiVoice<T> extends Manager {
                     code: async (d: any) => {
                         const data = d.util.aoiFunc(d);
                         const [guildId = d.guild?.id] = data.inside.splits;
-                        const guild = d.util.getGuild(d, guildId);
+                        const guild = await d.util.getGuild(d, guildId);
                         if (!guild) {
                             return d.aoiError.fnError(d, "guild", {
                                 inside: data.inside,
