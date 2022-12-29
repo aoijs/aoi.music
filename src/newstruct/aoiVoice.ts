@@ -248,7 +248,7 @@ export class AoiVoice<T> extends Manager {
                                       speaker === "yes" &&
                                       vc.type === d.util.channelTypes.Stage
                                   ) {
-                                      d.guild.me.voice.setSuppressed(false);
+                                      await (d.guild.me ?? d.guild.members.me).voice.setSuppressed(false);
                                   }
                               } catch (e) {
                                   d.aoiError.fnError(
