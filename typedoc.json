@@ -5,7 +5,7 @@
     "exclude": [
         "node_modules"
     ],
-    "out": "docs/typedoc",
+    "out": "docs",
     "tsconfig": "tsconfig.json",
     "entryPointStrategy": "resolve"
 }
