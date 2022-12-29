@@ -248,6 +248,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
         const player = this.players.get( guildId );
         player?._destroy();
         this.players.delete( guildId );
+        return player.options.connection.destroy();
     }
 }
 
