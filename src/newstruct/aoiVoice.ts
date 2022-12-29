@@ -299,10 +299,10 @@ export class AoiVoice<T> extends Manager {
                                 "Voice Class Is Not Initialised.",
                             );
                         }
-                        const hasPlayer = d.client.voiceManager.players.has(
+                        const player = d.client.voiceManager.players.get(
                             guild.id,
                         );
-                        if (!hasPlayer) {
+                        if (!player) {
                             return d.aoiError.fnError(
                                 d,
                                 "custom",
