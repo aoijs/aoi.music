@@ -1,13 +1,12 @@
 {
   "name": "@akarui/aoi.music",
-  "version": "1.2.6",
+  "version": "2.0.0",
   "description": "Addition of the Music properties and foundation for aoi.js",
   "author": {
     "name": "Leref"
   },
   "maintainers": [
-    "USERSATOSHI",
-    "kino-leref-abandoned-child"
+    "USERSATOSHI"
   ],
   "main": "lib/index.js",
   "files": [
