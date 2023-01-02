@@ -473,6 +473,7 @@ export class AoiVoice<T> extends Manager {
                                 "spotify",
                                 "youtube",
                                 "soundcloud",
+                                "none"
                             ].includes(type.toLowerCase())
                         ) {
                             return d.aoiError.fnError(
