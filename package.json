@@ -1,6 +1,6 @@
 {
   "name": "@akarui/aoi.music",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Addition of the Music properties and foundation for aoi.js",
   "author": {
     "name": "Leref"
@@ -39,7 +39,7 @@
     "tiny-typed-emitter": "^2.1.0",
     "tweetnacl": "^1.0.3",
     "undici": "^5.8.0",
-    "youtube.js": "github:usersatoshi/youtube.js#music"
+    "youtubei.js": "github:USERSATOSHI/YouTube.js#music"
   },
   "devDependencies": {
     "@discordjs/opus": "^0.8.0",
