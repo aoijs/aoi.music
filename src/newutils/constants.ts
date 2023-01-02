@@ -122,6 +122,34 @@ export const CustomFilters = {
             value: `g=${ value }`,
         }];
     },
+    GATE: ( value: number ) =>
+    { 
+        return [{
+            filter: "agate",
+            value: `threshold=${ value }`,
+        }];
+    },
+    VIBRATO: ( value: number ) =>
+    { 
+        return [{
+            filter: "vibrato",
+            value: `f=${ value }`,
+        }];
+    },
+    FLANGER: ( value: number ) =>
+    {
+        return [{
+            filter: "flanger",
+            value: `delay=${ value }`,
+        }];
+    },
+    PHASER: ( value: number ) =>
+    {
+        return [{
+            filter: "aphaser",
+            value: `in_gain=${ value }`,
+        }];
+    },
 };
 
 export const QueueFormatRegex = /{([^}]+)}/g;

@@ -36,5 +36,21 @@ export declare const CustomFilters: {
         filter: string;
         value: string;
     }[];
+    GATE: (value: number) => {
+        filter: string;
+        value: string;
+    }[];
+    VIBRATO: (value: number) => {
+        filter: string;
+        value: string;
+    }[];
+    FLANGER: (value: number) => {
+        filter: string;
+        value: string;
+    }[];
+    PHASER: (value: number) => {
+        filter: string;
+        value: string;
+    }[];
 };
 export declare const QueueFormatRegex: RegExp;
