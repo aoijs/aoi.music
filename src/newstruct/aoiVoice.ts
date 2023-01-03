@@ -396,7 +396,7 @@ export class AoiVoice<T> extends Manager {
                                 "No Tracks Found.",
                             );
                         }
-                        player.add(tracks, trackType, d.member);
+                        await player.add(tracks, trackType, d.member);
                         return {
                             code: d.util.setCode(data),
                         };
