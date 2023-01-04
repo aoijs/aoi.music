@@ -1188,10 +1188,11 @@ export class AoiVoice<T> extends Manager {
                                 "Player Not Found.",
                             );
                         }
+                        data.result = player.queue.length ?? 0;
                         return {
                             code: d.util.setCode(
                                 data,
-                                player.queue.length ?? 0,
+                               
                             ),
                         };
                     },
