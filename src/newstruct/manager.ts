@@ -4,7 +4,7 @@ import {
     joinVoiceChannel,
     VoiceConnectionStatus,
 } from "@discordjs/voice";
-import { Snowflake, VoiceChannel } from "discord.js";
+import { Snowflake, VoiceBasedChannel, VoiceChannel } from "discord.js";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { TypedEmitter } from "tiny-typed-emitter/lib/index";
 import InnerTube from "youtubei.js";
@@ -173,7 +173,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
         selfMute = false,
     }: {
         type: AudioPLayerOptions["type"];
-        voiceChannel: VoiceChannel;
+        voiceChannel: VoiceBasedChannel;
         selfDeaf?: boolean;
         selfMute?: boolean;
     }): Promise<boolean> {

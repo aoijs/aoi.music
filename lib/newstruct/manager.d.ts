@@ -1,4 +1,4 @@
-import { Snowflake, VoiceChannel } from "discord.js";
+import { Snowflake, VoiceBasedChannel } from "discord.js";
 import { TypedEmitter } from "tiny-typed-emitter/lib/index";
 import IT from "youtubei.js/dist/src/Innertube";
 import { AudioPLayerOptions, ManagerConfigurations, ManagerEvents } from "../typings/interfaces";
@@ -23,7 +23,7 @@ export declare class Manager extends TypedEmitter<ManagerEvents> {
     static defaultConfig(): ManagerConfigurations;
     joinVc({ type, voiceChannel, selfDeaf, selfMute, }: {
         type: AudioPLayerOptions["type"];
-        voiceChannel: VoiceChannel;
+        voiceChannel: VoiceBasedChannel;
         selfDeaf?: boolean;
         selfMute?: boolean;
     }): Promise<boolean>;
