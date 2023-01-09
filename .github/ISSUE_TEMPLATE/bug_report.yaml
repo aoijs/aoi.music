@@ -2,7 +2,7 @@ name: 🐞 Bug
 description: File a bug/issue
 title: "[BUG] <title>"
 labels: [Bug]
-assinees:
+assignees:
   - usersatoshi
 body:
 - type: textarea
