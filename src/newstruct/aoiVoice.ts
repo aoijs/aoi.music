@@ -101,7 +101,7 @@ export class AoiVoice<T> extends Manager {
                 if (!cmd.__compiled__) {
                     let channel: TextBasedChannel;
                     if (cmd.channel.startsWith("$")) {
-                        cmd.channel = (
+                        channel = (
                             await this.#executor(
                                 this.#bot,
                                 {
@@ -131,7 +131,7 @@ export class AoiVoice<T> extends Manager {
                         )?.code;
                     }
                     //@ts-ignore
-                    channel = this.#bot.channels.cache.get(cmd.channel);
+                    channel = this.#bot.channels.cache.get(channel);
                     return await this.#executor(
                         this.#bot,
                         {
@@ -1098,7 +1098,7 @@ export class AoiVoice<T> extends Manager {
                     type: "djs",
                     code: async (d: any) => {
                         const data = d.util.aoiFunc(d);
-                        const [index] = d.util.getSplitParts(data.code);
+                        const [index] = data.inside.splits;
                         if (!d.client.voiceManager) {
                             return d.aoiError.fnError(
                                 d,
