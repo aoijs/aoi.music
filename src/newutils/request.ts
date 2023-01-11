@@ -75,10 +75,7 @@ export async function generateInfo<T extends "LocalFile" | "Url">(
     }
 }
 
-export function generateScInfo (
-    scData: TrackInfo,
-): Track<"SoundCloud">
-{
+export function generateScInfo(scData: TrackInfo): Track<"SoundCloud"> {
     return {
         title: scData.title,
         artist: scData.user.username,
@@ -89,17 +86,14 @@ export function generateScInfo (
         identifier: "soundcloud",
         views: scData.playback_count,
         likes: scData.likes_count,
-        thumbnail: scData.artwork_url?.replace(
-            "-large.jpg",
-            "-t500x500.jpg"
-        ),
+        thumbnail: scData.artwork_url?.replace("-large.jpg", "-t500x500.jpg"),
         //@ts-ignore
         scid: scData.id,
         id: scData.permalink_url,
         description: scData.description,
-        createdAt: new Date( scData.created_at ) ?? null,
+        createdAt: new Date(scData.created_at) ?? null,
         platformType: PlatformType.SoundCloud,
-        formatedPlatforms: formatedPlatforms[ PlatformType.SoundCloud ],
+        formatedPlatforms: formatedPlatforms[PlatformType.SoundCloud],
     };
 }
 
@@ -112,8 +106,7 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
         const sc = manager.platforms.soundcloud;
         if (id.split("/")[4] === "sets") {
             const setinfo = await sc.getSetInfo(id);
-            return <Track<T>[]><unknown> setinfo.tracks.map( ( scData ) =>
-            {
+            return <Track<T>[]>(<unknown>setinfo.tracks.map((scData) => {
                 return {
                     title: scData.title,
                     artist: scData.user.username,
@@ -126,16 +119,17 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
                     likes: scData.likes_count,
                     thumbnail: scData.artwork_url?.replace(
                         "-large.jpg",
-                        "-t500x500.jpg"
+                        "-t500x500.jpg",
                     ),
                     scid: scData.id,
                     id: scData.permalink_url,
                     description: scData.description,
-                    createdAt: new Date( scData.created_at ) ?? null,
+                    createdAt: new Date(scData.created_at) ?? null,
                     platformType: PlatformType.SoundCloud,
-                    formatedPlatforms: formatedPlatforms[ PlatformType.SoundCloud ],
+                    formatedPlatforms:
+                        formatedPlatforms[PlatformType.SoundCloud],
                 };
-            } );
+            }));
         } else if (id.split("/").pop() === "likes") {
             return <Track<T>[]>(
                 await sc.getLikes({
@@ -225,98 +219,107 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
         };
     } else if (type === "Spotify") {
         const spotify = manager.platforms.spotify;
-        const data = await spotify.getData(id);
-        switch (data.type) {
-            case "track":
-                return <Track<T>>(<unknown>{
-                    title: data.name,
-                    artist: data.artists
+        const data = await spotify.getData( id );
+        if (data.type === "track") return <Track<T>>(<unknown>{
+                title: data.name,
+                artist: data.artists
+                    .map((a: { name: any }) => a.name)
+                    .join(", "),
+                duration: data.duration,
+                preview: data.audioPreview?.url,
+                url: data.external_urls.spotify,
+                identifier: "spotify",
+                views: 0,
+                likes: 0,
+                thumbnail: data.coverArt.sources[0].url,
+                spotifyId: data.id,
+                id: null,
+                description: null,
+                createdAt: new Date(data.releaseDate.isoString) ?? null,
+                platformType: PlatformType.Spotify,
+                formatedPlatforms: formatedPlatforms[PlatformType.Spotify],
+            });
+        else if (data.type === "playlist") {
+            const res = [];
+            for(let x of data.trackList) {
+                x.id = x.id ?? x.uri.split( ":" ).pop();
+                const url = `https://open.spotify.com/track/${x.id}`;
+                x = await spotify.getData(url);
+                res.push(<Track<T>>(<unknown>{
+                    title: x.name,
+                    artist: x.artists
                         .map((a: { name: any }) => a.name)
                         .join(", "),
-                    duration: data.duration,
-                    preview: data.audioPreview.url,
-                    url: data.external_urls.spotify,
+                    duration: x.duration,
+                    preview: x.audioPreview?.url,
+                    url: x.external_urls.spotify,
                     identifier: "spotify",
                     views: 0,
                     likes: 0,
-                    thumbnail: data.coverArt.sources[0].url,
-                    spotifyId: data.id,
+                    thumbnail: x.coverArt.sources[0].url,
+                    spotifyId: x.id,
                     id: null,
                     description: null,
-                    createdAt: new Date(data.releaseDate.isoString) ?? null,
+                    createdAt: new Date(x.releaseDate.isoString) ?? null,
                     platformType: PlatformType.Spotify,
                     formatedPlatforms: formatedPlatforms[PlatformType.Spotify],
-                });
-            case "playlist":
-                return data.tracks.items.map((x: any) => {
-                    x = x.track;
-                    return <Track<T>>(<unknown>{
-                        title: x.name,
-                        artist: x.artists
-                            .map((a: { name: any }) => a.name)
-                            .join(", "),
-                        duration: x.duration_ms,
-                        preview: x.preview_url,
-                        url: x.external_urls.spotify,
-                        identifier: "spotify",
-                        views: 0,
-                        likes: 0,
-                        thumbnail: x.album.images[0]?.url,
-                        spotifyId: x.id,
-                        id: null,
-                        description: null,
-                        createdAt: new Date(x.releaseDate?.isoString) ?? null,
-                        platformType: PlatformType.Spotify,
-                        formatedPlatforms:
-                            formatedPlatforms[PlatformType.Spotify],
-                    });
-                });
-            case "album":
-                return data.tracks.items.map((x: any) => {
-                    return <Track<T>>(<unknown>{
-                        title: x.name,
-                        artist: x.artists
-                            .map((a: { name: any }) => a.name)
-                            .join(", "),
-                        duration: x.duration_ms,
-                        preview: x.preview_url,
-                        url: x.external_urls.spotify,
-                        identifier: "spotify",
-                        views: 0,
-                        likes: 0,
-                        thumbnail: data.images[0]?.url,
-                        spotifyId: x.id,
-                        id: null,
-                        description: null,
-                        createdAt: new Date(x.releaseDate?.isoString) ?? null,
-                        platformType: PlatformType.Spotify,
-                        formatedPlatforms:
-                            formatedPlatforms[PlatformType.Spotify],
-                    });
-                });
-            case "artist":
-                return data.tracks.map((x: any) => {
-                    return <Track<T>>(<unknown>{
-                        title: x.name,
-                        artist: x.artists
-                            .map((a: { name: any }) => a.name)
-                            .join(", "),
-                        duration: x.duration_ms,
-                        preview: x.preview_url,
-                        url: x.external_urls.spotify,
-                        identifier: "spotify",
-                        views: 0,
-                        likes: 0,
-                        thumbnail: x.album.images[0].url,
-                        spotifyId: x.id,
-                        id: null,
-                        description: null,
-                        createdAt: new Date(x.releaseDate?.isoString) ?? null,
-                        platformType: PlatformType.Spotify,
-                        formatedPlatforms:
-                            formatedPlatforms[PlatformType.Spotify],
-                    });
-                });
+                }));
+            };
+            return res;
+        } else if (data.type === "album") {
+            const res = [];
+            for (let x of data.trackList) {
+                x.id = x.id ?? x.uri.split(":").pop();
+                const url = `https://open.spotify.com/track/${x.id}`;
+                x = await spotify.getData(url);
+                res.push(<Track<T>>(<unknown>{
+                    title: x.name,
+                    artist: x.artists
+                        .map((a: { name: any }) => a.name)
+                        .join(", "),
+                    duration: x.duration,
+                    preview: x.audioPreview?.url,
+                    url: x.external_urls.spotify,
+                    identifier: "spotify",
+                    views: 0,
+                    likes: 0,
+                    thumbnail: x.coverArt.sources[0].url,
+                    spotifyId: x.id,
+                    id: null,
+                    description: null,
+                    createdAt: new Date(x.releaseDate.isoString) ?? null,
+                    platformType: PlatformType.Spotify,
+                    formatedPlatforms: formatedPlatforms[PlatformType.Spotify],
+                }));
+            }
+            return res;
+        } else if (data.type === "artist") {
+            const res = [];
+            for (let x of data.trackList) {
+                x.id = x.id ?? x.uri.split(":").pop();
+                const url = `https://open.spotify.com/track/${x.id}`;
+                x = await spotify.getData(url);
+                res.push(<Track<T>>(<unknown>{
+                    title: x.name,
+                    artist: x.artists
+                        .map((a: { name: any }) => a.name)
+                        .join(", "),
+                    duration: x.duration,
+                    preview: x.audioPreview?.url,
+                    url: x.external_urls.spotify,
+                    identifier: "spotify",
+                    views: 0,
+                    likes: 0,
+                    thumbnail: x.coverArt.sources[0].url,
+                    spotifyId: x.id,
+                    id: null,
+                    description: null,
+                    createdAt: new Date(x.releaseDate.isoString) ?? null,
+                    platformType: PlatformType.Spotify,
+                    formatedPlatforms: formatedPlatforms[PlatformType.Spotify],
+                }));
+            }
+            return res;
         }
     }
 }
@@ -348,10 +351,10 @@ export async function requestStream<T extends keyof typeof PlatformType>(
         return (await (await request(track.id)).body.blob()).stream();
     } else if (type === "Youtube") {
         const yt = await manager.platforms.youtube;
-        return await yt.download( track.id, {
-            'client': manager.configs.searchOptions.youtubeClient ?? "WEB",
+        return await yt.download(track.id, {
+            client: manager.configs.searchOptions.youtubeClient ?? "WEB",
             quality: "best",
-            'type': "audio",
+            type: "audio",
         });
     } else if (type === "Spotify") {
         const yt = await manager.platforms.youtube;
@@ -362,7 +365,8 @@ export async function requestStream<T extends keyof typeof PlatformType>(
                     type: "video",
                 },
             );
-            track.id = data.videos.as(Video)[0].id;
+            // @ts-ignore
+            track.id = data.videos[0].id;
             return await yt.download(track.id, {
                 client: manager.configs.searchOptions.youtubeClient ?? "WEB",
                 quality: "best",
