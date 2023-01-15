@@ -224,6 +224,7 @@ export class AoiVoice<T> extends Manager {
                             selfDeaf = "yes",
                             selfMute = "no",
                             speaker = "yes",
+                            audioPlayerType = "default",
                             debug = "no",
                         ] = data.inside.splits;
 
@@ -250,7 +251,8 @@ export class AoiVoice<T> extends Manager {
                             );
 
                         try {
-                            await d.client.voiceManager.joinVc({
+                            await d.client.voiceManager.joinVc( {
+                                type: audioPlayerType,
                                 voiceChannel: vc,
                                 textChannel: d.channel.id,
                                 selfMute: selfMute === "yes",
