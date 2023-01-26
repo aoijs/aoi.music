@@ -1414,7 +1414,7 @@ export class AoiVoice<T> extends Manager {
                         const parsedPos = position
                             ? parseInt(position)
                             : player.currentPosition();
-                        data.result = player.queue[parsedPos][type];
+                        data.result = eval(`player.queue[${parsedPos}].${type}`);
                         return {
                             code: d.util.setCode(data),
                         };
