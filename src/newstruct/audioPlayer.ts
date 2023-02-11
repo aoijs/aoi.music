@@ -676,6 +676,7 @@ export class AudioPlayer {
                         /**
                          * The disconnect in this case may be recoverable, but we have no more remaining attempts - destroy.
                          */
+                        this._destroy();
                         this.options.connection.destroy();
                     }
                 } else if (
@@ -706,8 +707,10 @@ export class AudioPlayer {
                         if (
                             this.options.connection.state.status !==
                             VoiceConnectionStatus.Destroyed
-                        )
+                        ) {
+                            this._destroy();
                             this.options.connection.destroy();
+                        }
                     }
                 }
             },
