@@ -48,4 +48,5 @@ export declare class AudioPlayer {
     __configConnection(): void;
     getQueue(page?: number, limit?: number, format?: string): string[];
     getPing(type?: "ws" | "udp"): number;
+    stop(): void;
 }

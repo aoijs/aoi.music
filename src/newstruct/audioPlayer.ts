@@ -743,4 +743,10 @@ export class AudioPlayer {
     getPing(type: "ws" | "udp" = "ws") {
         return this.options.connection.ping[type];
     }
+    stop ()
+    {
+        this.queue = [];
+        this.defaultMode();
+        this.player.stop();
+    }
 }

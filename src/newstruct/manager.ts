@@ -23,7 +23,7 @@ import { PlatformType, PlayerEvents, PluginName } from "../typings/enums";
 import Video from "youtubei.js/dist/src/parser/classes/Video";
 import { TrackInfo } from "soundcloud-downloader/src/info";
 import { Plugin } from "../typings/types";
-import { createAdapter } from "../newutils/helpers";
+
 
 export class Manager extends TypedEmitter<ManagerEvents> {
     configs: ManagerConfigurations;
@@ -185,7 +185,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
             selfMute,
             adapterCreator: <DiscordGatewayAdapterCreator>(
                 // @ts-ignore
-                (<unknown>voiceChannel.guild?.voiceAdapterCreator ?? createAdapter(voiceChannel))
+                (<unknown>voiceChannel.guild?.voiceAdapterCreator)
             ),
             group: voiceChannel.client.user.id,
         };
