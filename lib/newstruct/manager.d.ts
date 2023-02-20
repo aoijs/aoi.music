@@ -21,11 +21,12 @@ export declare class Manager extends TypedEmitter<ManagerEvents> {
     plugins: Map<PluginName, Plugin<PluginName>>;
     constructor(config?: ManagerConfigurations);
     static defaultConfig(): ManagerConfigurations;
-    joinVc({ type, voiceChannel, selfDeaf, selfMute, }: {
+    joinVc({ type, voiceChannel, selfDeaf, selfMute, adapter, }: {
         type: AudioPLayerOptions["type"];
         voiceChannel: VoiceBasedChannel;
         selfDeaf?: boolean;
         selfMute?: boolean;
+        adapter?: any;
     }): Promise<boolean>;
     search<T extends PlatformType>(type: T, query: string, limit?: number): Promise<TrackInfo[] | Video[]>;
     addPlugin<A extends PluginName>(name: A, plugin: Plugin<A>): void;

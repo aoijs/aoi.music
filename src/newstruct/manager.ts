@@ -172,11 +172,13 @@ export class Manager extends TypedEmitter<ManagerEvents> {
         voiceChannel,
         selfDeaf = true,
         selfMute = false,
+        adapter,
     }: {
         type: AudioPLayerOptions["type"];
         voiceChannel: VoiceBasedChannel;
         selfDeaf?: boolean;
         selfMute?: boolean;
+            adapter?: any;
     }): Promise<boolean> {
         const data = {
             channelId: voiceChannel.id,
@@ -185,7 +187,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
             selfMute,
             adapterCreator: <DiscordGatewayAdapterCreator>(
                 // @ts-ignore
-                (<unknown>voiceChannel.guild?.voiceAdapterCreator)
+                (<unknown>voiceChannel.guild?.voiceAdapterCreator) ?? adapter
             ),
             group: voiceChannel.client.user.id,
         };
