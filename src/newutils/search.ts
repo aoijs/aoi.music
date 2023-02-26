@@ -48,7 +48,9 @@ export async function search(
             resourceType: "tracks",
             limit: 1,
         };
-        return [(await sc.search(sq)).collection[0].permalink_url];
+        const scd = await sc.search( sq );
+        if ( scd.collection.length === 0 ) return [];
+        return [ scd.collection[ 0 ].permalink_url ];
     } else if (type === PlatformType.LocalFile) {
         if (existsSync(query)) {
             const stats = await fsp.stat(query);

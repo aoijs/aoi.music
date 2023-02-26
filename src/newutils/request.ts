@@ -244,23 +244,20 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
             for(let x of data.trackList) {
                 x.id = x.id ?? x.uri.split( ":" ).pop();
                 const url = `https://open.spotify.com/track/${x.id}`;
-                x = await spotify.getData(url);
                 res.push(<Track<T>>(<unknown>{
-                    title: x.name,
-                    artist: x.artists
-                        .map((a: { name: any }) => a.name)
-                        .join(", "),
+                    title: x.title,
+                    artist: x.subtitle,
                     duration: x.duration,
                     preview: x.audioPreview?.url,
-                    url: x.external_urls.spotify,
+                    url: url,
                     identifier: "spotify",
                     views: 0,
                     likes: 0,
-                    thumbnail: x.coverArt.sources[0].url,
-                    spotifyId: x.id,
+                    thumbnail: null,
+                    spotifyId: x.uri.split(":").pop(),
                     id: null,
                     description: null,
-                    createdAt: new Date(x.releaseDate.isoString) ?? null,
+                    createdAt:  null,
                     platformType: PlatformType.Spotify,
                     formatedPlatforms: formatedPlatforms[PlatformType.Spotify],
                 }));
