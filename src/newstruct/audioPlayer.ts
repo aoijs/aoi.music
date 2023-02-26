@@ -159,7 +159,10 @@ export class AudioPlayer {
                 }
             } else {
                 this.#modes.currentTrack += 1;
-                Cacher.delete(this.queue[this.currentPosition() - 1].id);
+                if ( this.options.manager.plugins.has( PluginName.Cacher ) )
+                {
+                    Cacher.delete( this.queue[ this.currentPosition() - 1 ].id );
+                }
             }
         } else if (this.options.type === "fonly") {
             const track = this.queue.shift();
