@@ -186,7 +186,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
             selfMute,
             adapterCreator: <DiscordGatewayAdapterCreator>(
                 // @ts-ignore
-                (<unknown>voiceChannel.guild?.voiceAdapterCreator) ?? adapter
+                adapter ? adapter : (<unknown>voiceChannel.guild?.voiceAdapterCreator) ?? adapter
             ),
             group: voiceChannel.client.user.id,
         };
