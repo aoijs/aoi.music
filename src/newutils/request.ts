@@ -17,9 +17,9 @@ import {
     UrlTrackInfo,
 } from "../typings/types";
 import { PassThrough, Readable } from "stream";
-import VideoInfo from "youtubei.js/dist/src/parser/youtube/VideoInfo";
+
 import { SpotifyTrackInfo as SpotifyInfo } from "../typings/types";
-import Video from "youtubei.js/dist/src/parser/classes/Video";
+
 
 export async function generateInfo<T extends "LocalFile" | "Url">(
     id: string,
@@ -31,7 +31,7 @@ export async function generateInfo<T extends "LocalFile" | "Url">(
         const array = id.split("/");
         const title = array.pop().split("?")[0];
         const reqData = await request(id);
-        let filetype = reqData.headers["content-type"]?.split("/") ?? [];
+        let filetype = (<string>reqData.headers["content-type"])?.split("/") ?? [];
         const ftype = filetype.length
             ? filetype.length > 1
                 ? filetype[1]
@@ -193,7 +193,7 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
     } else if (type === "LocalFile" || type === "Url") {
         return <Track<T>>(<unknown>generateInfo(id, type));
     } else if (type === "Youtube") {
-        const ytData: VideoInfo = await (await manager.platforms.youtube)
+        const ytData:any = await (await manager.platforms.youtube)
             .getBasicInfo(
                 id,
                 manager.configs.searchOptions.youtubeClient ?? "WEB",

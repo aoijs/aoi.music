@@ -1,5 +1,3 @@
-import PlaylistVideo from "youtubei.js/dist/src/parser/classes/PlaylistVideo";
-import Video from "youtubei.js/dist/src/parser/classes/Video";
 import { Manager } from "../newstruct/manager";
 import { PlatformType } from "../typings/enums";
 import { YoutubeMix, ytMixHTMLParser } from "./helpers";
@@ -7,6 +5,7 @@ import { fetch } from "undici";
 import { existsSync } from "fs";
 import * as fsp from "fs/promises";
 import { SearchOptions } from "soundcloud-downloader/src/search";
+import { YTNodes } from "youtubei.js";
 export async function search(
     query: string,
     type: PlatformType,
@@ -20,7 +19,7 @@ export async function search(
             });
             return [
                 `https://youtube.com/watch?v=${
-                    searched.videos[0].as(Video).id
+                    searched.videos[0].as(YTNodes.Video).id
                 }`,
             ];
         } else {
@@ -34,7 +33,7 @@ export async function search(
                 const yt = await manager.platforms.youtube;
                 const playlist = await yt.getPlaylist( query.split( "list=" )[ 1 ].split( "&" )[ 0 ] );
                 return playlist.videos
-                    .as(PlaylistVideo)
+                    .as(YTNodes.PlaylistVideo)
                     .map((video) => `https://youtube.com/watch?v=${video.id}`);
             }
         }

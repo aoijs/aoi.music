@@ -88,7 +88,7 @@ export class Cacher<T extends "memory" | "disk"> {
                 this.#map.set(metaData.id, data);
             });
         } else if (this.#type === "disk") {
-            const hash = join(this.#path, `${metaData.id}.gz`);
+            const hash = join(this.#path, `${metaData.id.replaceAll("/", "").replaceAll(":","").replaceAll(".", "")}.gz`);
             if (stream instanceof ReadableStream) {
                 stream = Readable.from(stream);
             }

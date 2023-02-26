@@ -23,6 +23,7 @@ import {
     requestInfo,
     requestStream,
 } from "../newutils/request";
+import { YTNodes } from "youtubei.js";
 import {
     LocalFileTrackInfo,
     Plugin,
@@ -36,7 +37,6 @@ import { GuildMember } from "discord.js";
 import { setTimeout } from "timers/promises";
 import { formatedPlatforms, QueueFormatRegex } from "../newutils/constants";
 import { search } from "../newutils/search";
-import Video from "youtubei.js/dist/src/parser/classes/Video";
 import {
     shuffle,
     YoutubeRelated,
@@ -121,8 +121,8 @@ export class AudioPlayer {
             if (
                 this.queue[this.#modes.currentTrack].id ===
                 this.#modes.ytMix.lastUrl
-            ) {
-                const tracks = <Video[]>(
+            ){
+                const tracks = <any[]>(
                     await this.options.manager.search(
                         PlatformType.Youtube,
                         this.queue[this.#modes.currentTrack].id,

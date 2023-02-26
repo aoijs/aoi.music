@@ -1,12 +1,11 @@
 import { Snowflake, VoiceBasedChannel } from "discord.js";
 import { TypedEmitter } from "tiny-typed-emitter/lib/index";
-import IT from "youtubei.js/dist/src/Innertube";
+import IT from "youtubei.js";
 import { AudioPLayerOptions, ManagerConfigurations, ManagerEvents } from "../typings/interfaces";
 import { AudioPlayer } from "./audioPlayer";
 import { SCDL } from "soundcloud-downloader/src";
 import { Spotify } from "spotify-url-info";
 import { PlatformType, PluginName } from "../typings/enums";
-import Video from "youtubei.js/dist/src/parser/classes/Video";
 import { TrackInfo } from "soundcloud-downloader/src/info";
 import { Plugin } from "../typings/types";
 export declare class Manager extends TypedEmitter<ManagerEvents> {
@@ -28,7 +27,7 @@ export declare class Manager extends TypedEmitter<ManagerEvents> {
         selfMute?: boolean;
         adapter?: any;
     }): Promise<boolean>;
-    search<T extends PlatformType>(type: T, query: string, limit?: number): Promise<TrackInfo[] | Video[]>;
+    search<T extends PlatformType>(type: T, query: string, limit?: number): Promise<TrackInfo[] | import("youtubei.js/dist/src/parser/classes/Video").default[]>;
     addPlugin<A extends PluginName>(name: A, plugin: Plugin<A>): void;
     leaveVc(guildId: string): void;
 }

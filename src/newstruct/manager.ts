@@ -7,8 +7,8 @@ import {
 import { Snowflake, VoiceBasedChannel, VoiceChannel } from "discord.js";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { TypedEmitter } from "tiny-typed-emitter/lib/index";
-import InnerTube from "youtubei.js";
-import IT from "youtubei.js/dist/src/Innertube";
+import InnerTube, { YTNodes } from "youtubei.js";
+import IT from "youtubei.js";
 import {
     AudioPLayerOptions,
     ManagerConfigurations,
@@ -20,7 +20,6 @@ import { SCDL } from "soundcloud-downloader/src";
 import sui, { Spotify } from "spotify-url-info";
 import { fetch } from "undici";
 import { PlatformType, PlayerEvents, PluginName } from "../typings/enums";
-import Video from "youtubei.js/dist/src/parser/classes/Video";
 import { TrackInfo } from "soundcloud-downloader/src/info";
 import { Plugin } from "../typings/types";
 
@@ -229,7 +228,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
             const res = await yt.search(query, {
                 type: "video",
             });
-            return res.videos.as(Video).slice(0, limit);
+            return res.videos.as(YTNodes.Video).slice(0, limit);
         } else if (type === PlatformType.SoundCloud) {
             const sc = this.platforms.soundcloud;
             const res = await sc.search({
