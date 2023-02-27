@@ -181,7 +181,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
     }): Promise<boolean> {
         const data = {
             channelId: voiceChannel.id,
-            guildId: voiceChannel.guildId,
+            guildId: voiceChannel.guild.id,
             selfDeaf,
             selfMute,
             adapterCreator: <DiscordGatewayAdapterCreator>(
