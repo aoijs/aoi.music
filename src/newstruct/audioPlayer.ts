@@ -93,7 +93,8 @@ export class AudioPlayer {
                 this.options.manager.plugins.get(PluginName.Cacher)
             );
             await Cacher.write(current, stream);
-            if (Cacher.type === "disk") stream = Cacher.get(current.id);
+            if ( Cacher.type === "disk" ) stream = Cacher.get( current.id );
+            
         }
         if (
             this.options.manager.plugins.has(PluginName.Filter) &&
@@ -115,6 +116,8 @@ export class AudioPlayer {
                 inputType: StreamType.Arbitrary,
             });
         }
+
+        resource.volume.setVolume( this.#modes.volume );
         this.options.manager.emit(PlayerEvents.TRACK_START, current, this);
         this.player.play(resource);
         if (this.#modes.ytMix) {

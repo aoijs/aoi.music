@@ -1,5 +1,6 @@
 import { Snowflake, VoiceBasedChannel } from "discord.js";
 import { TypedEmitter } from "tiny-typed-emitter/lib/index";
+import { YTNodes } from "youtubei.js";
 import IT from "youtubei.js";
 import { AudioPLayerOptions, ManagerConfigurations, ManagerEvents } from "../typings/interfaces";
 import { AudioPlayer } from "./audioPlayer";
@@ -27,7 +28,7 @@ export declare class Manager extends TypedEmitter<ManagerEvents> {
         selfMute?: boolean;
         adapter?: any;
     }): Promise<boolean>;
-    search<T extends PlatformType>(type: T, query: string, limit?: number): Promise<TrackInfo[] | import("youtubei.js/dist/src/parser/classes/Video").default[]>;
+    search<T extends PlatformType>(type: T, query: string, limit?: number): Promise<TrackInfo[] | YTNodes.Video[]>;
     addPlugin<A extends PluginName>(name: A, plugin: Plugin<A>): void;
     leaveVc(guildId: string): void;
 }

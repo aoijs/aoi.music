@@ -105,7 +105,9 @@ export class Cacher<T extends "memory" | "disk"> {
             }
         } else {
             const hash = <string>this.#map.get(id);
-            if (hash) {
+            if ( hash )
+            {
+                if ( !hash.endsWith( ".gz" ) ) return createReadStream( hash );
                 const file = createReadStream(hash);
                 const unzip = createUnzip();
                 const stream = file.pipe(unzip);

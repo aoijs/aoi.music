@@ -24,7 +24,8 @@ import { SpotifyTrackInfo as SpotifyInfo } from "../typings/types";
 export async function generateInfo<T extends "LocalFile" | "Url">(
     id: string,
     type: T,
-): Promise<Track<T>> {
+): Promise<Track<T>>
+{
     if (type !== "Url" && type !== "LocalFile") {
         throw new Error(`Invalid PlatformType Provided!`);
     } else if (type === "Url") {
