@@ -117,7 +117,7 @@ export class AudioPlayer {
             });
         }
 
-        resource.volume.setVolume( this.#modes.volume );
+        resource.volume.setVolume( this.#modes.volume/100 );
         this.options.manager.emit(PlayerEvents.TRACK_START, current, this);
         this.player.play(resource);
         if (this.#modes.ytMix) {

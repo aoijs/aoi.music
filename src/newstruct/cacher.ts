@@ -42,7 +42,7 @@ export class Cacher<T extends "memory" | "disk"> {
                 {
                     if ( !hidden )
                     {
-                       this.#path = hidefile.hideSync( this.#path );
+                       this.#path = hidefile.hideSync( this.#path ).toString();
                     }
                 }
             })
