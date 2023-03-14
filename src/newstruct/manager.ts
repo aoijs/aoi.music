@@ -228,7 +228,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
             const res = await yt.search(query, {
                 type: "video",
             });
-            return res.videos.as(YTNodes.Video).slice(0, limit);
+            return res.videos.slice(0, limit);
         } else if (type === PlatformType.SoundCloud) {
             const sc = this.platforms.soundcloud;
             const res = await sc.search({

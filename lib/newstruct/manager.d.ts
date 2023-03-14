@@ -28,7 +28,7 @@ export declare class Manager extends TypedEmitter<ManagerEvents> {
         selfMute?: boolean;
         adapter?: any;
     }): Promise<boolean>;
-    search<T extends PlatformType>(type: T, query: string, limit?: number): Promise<TrackInfo[] | YTNodes.Video[]>;
+    search<T extends PlatformType>(type: T, query: string, limit?: number): Promise<TrackInfo[] | (YTNodes.CompactVideo | YTNodes.GridVideo | YTNodes.PlaylistPanelVideo | YTNodes.PlaylistVideo | YTNodes.ReelItem | YTNodes.Video | YTNodes.WatchCardCompactVideo)[]>;
     addPlugin<A extends PluginName>(name: A, plugin: Plugin<A>): void;
     leaveVc(guildId: string): void;
 }
