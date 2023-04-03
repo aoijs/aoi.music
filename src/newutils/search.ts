@@ -31,16 +31,26 @@ export async function search(
                 return [query];
             } else if (query.includes("playlist?list=")) {
                 const yt = await manager.platforms.youtube;
-                const playlist = await yt.getPlaylist( query.split( "list=" )[ 1 ].split( "&" )[ 0 ] );
+                const playlist = await yt.getPlaylist(
+                    query.split("list=")[1].split("&")[0],
+                );
                 return playlist.videos
                     .as(YTNodes.PlaylistVideo)
                     .map((video) => `https://youtube.com/watch?v=${video.id}`);
+            } else if (query.includes("https://youtu.be/")) {
+                const id = query.split("/")[3];
+                return [`https://youtube.com/watch?v=${id}`];
             }
         }
     } else if (type === PlatformType.SoundCloud) {
         const sc = manager.platforms.soundcloud;
         if (query.startsWith("https://")) {
-            return [ query ];
+            if (query.includes("https://m.soundcloud.com"))
+                query = query.replace(
+                    `https://m.soundcloud.com`,
+                    `https://soundcloud.com`,
+                );
+            return [query];
         }
 
         const sq: SearchOptions = {
@@ -48,9 +58,9 @@ export async function search(
             resourceType: "tracks",
             limit: 1,
         };
-        const scd = await sc.search( sq );
-        if ( scd.collection.length === 0 ) return [];
-        return [ scd.collection[ 0 ].permalink_url ];
+        const scd = await sc.search(sq);
+        if (scd.collection.length === 0) return [];
+        return [scd.collection[0].permalink_url];
     } else if (type === PlatformType.LocalFile) {
         if (existsSync(query)) {
             const stats = await fsp.stat(query);

@@ -46,7 +46,7 @@ export type YoutubeTrackInfo = {
 };
 export type LocalFileTrackInfo = {
     title: string;
-    idetifier: "localfile";
+    identifier: "localfile";
     type: string;
     size: number;
     duration: number;
@@ -61,7 +61,7 @@ export type LocalFileTrackInfo = {
 };
 export type UrlTrackInfo = {
     title: string;
-    idetifier: "url";
+    identifier: "url";
     type: string;
     size: number;
     duration: number;

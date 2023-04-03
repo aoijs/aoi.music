@@ -43,7 +43,7 @@ export async function generateInfo<T extends "LocalFile" | "Url">(
         const duration = await getAudioDurationInSeconds(id);
         return <Track<T>>{
             title,
-            idetifier: "url",
+            identifier: "url",
             type: ftype,
             size,
             duration: duration * 1000,
@@ -62,7 +62,7 @@ export async function generateInfo<T extends "LocalFile" | "Url">(
         const duration = (await getAudioDurationInSeconds(id)) * 1000;
         return <Track<T>>{
             title,
-            idetifier: "localfile",
+            identifier: "localfile",
             type: filetype,
             size,
             duration,
@@ -222,24 +222,22 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
         const spotify = manager.platforms.spotify;
         const data = await spotify.getData( id );
         if (data.type === "track") return <Track<T>>(<unknown>{
-                title: data.name,
-                artist: data.artists
-                    .map((a: { name: any }) => a.name)
-                    .join(", "),
-                duration: data.duration,
-                preview: data.audioPreview?.url,
-                url: data.external_urls.spotify,
-                identifier: "spotify",
-                views: 0,
-                likes: 0,
-                thumbnail: data.coverArt.sources[0].url,
-                spotifyId: data.id,
-                id: null,
-                description: null,
-                createdAt: new Date(data.releaseDate.isoString) ?? null,
-                platformType: PlatformType.Spotify,
-                formatedPlatforms: formatedPlatforms[PlatformType.Spotify],
-            });
+            title: data.name,
+            artist: data.artists.map((a: { name: any }) => a.name).join(", "),
+            duration: data.duration,
+            preview: data.audioPreview?.url,
+            url: `https://open.spotify.com/track/${data.id}`,
+            identifier: "spotify",
+            views: 0,
+            likes: 0,
+            thumbnail: data.coverArt.sources[0].url,
+            spotifyId: data.id,
+            id: null,
+            description: null,
+            createdAt: new Date(data.releaseDate.isoString) ?? null,
+            platformType: PlatformType.Spotify,
+            formatedPlatforms: formatedPlatforms[PlatformType.Spotify],
+        });
         else if (data.type === "playlist") {
             const res = [];
             for(let x of data.trackList) {
