@@ -19,6 +19,7 @@ import {
 import { PassThrough, Readable } from "stream";
 
 import { SpotifyTrackInfo as SpotifyInfo } from "../typings/types";
+import { ReadableStream } from "stream/web";
 
 
 export async function generateInfo<T extends "LocalFile" | "Url">(
@@ -275,7 +276,7 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
                         .join(", "),
                     duration: x.duration,
                     preview: x.audioPreview?.url,
-                    url: x.external_urls.spotify,
+                    url: url,
                     identifier: "spotify",
                     views: 0,
                     likes: 0,
@@ -302,7 +303,7 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
                         .join(", "),
                     duration: x.duration,
                     preview: x.audioPreview?.url,
-                    url: x.external_urls.spotify,
+                    url: url,
                     identifier: "spotify",
                     views: 0,
                     likes: 0,
@@ -347,11 +348,11 @@ export async function requestStream<T extends keyof typeof PlatformType>(
         return (await (await request(track.id)).body.blob()).stream();
     } else if (type === "Youtube") {
         const yt = await manager.platforms.youtube;
-        return await yt.download(track.id, {
+        return Readable.fromWeb(await yt.download(track.id, {
             client: manager.configs.searchOptions.youtubeClient ?? "WEB",
             quality: "best",
             type: "audio",
-        });
+        }) as ReadableStream<any>);
     } else if (type === "Spotify") {
         const yt = await manager.platforms.youtube;
         if (!track.id) {
@@ -363,17 +364,18 @@ export async function requestStream<T extends keyof typeof PlatformType>(
             );
             // @ts-ignore
             track.id = data.videos[0].id;
-            return await yt.download(track.id, {
+            return Readable.fromWeb((await yt.download(track.id, {
                 client: manager.configs.searchOptions.youtubeClient ?? "WEB",
                 quality: "best",
                 type: "audio",
-            });
+            })) as ReadableStream<any>);
         } else {
-            return await yt.download(track.id, {
+            return Readable.fromWeb(await yt.download(track.id, {
                 client: manager.configs.searchOptions.youtubeClient ?? "WEB",
                 quality: "best",
                 type: "audio",
-            });
+            }) as ReadableStream<any>
+            );
         }
     }
 }

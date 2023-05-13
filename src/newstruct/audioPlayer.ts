@@ -82,7 +82,7 @@ export class AudioPlayer {
     async play() {
         let resource: AudioResource;
         const current = this.queue[this.#modes.currentTrack];
-        let stream: Readable = await requestStream(
+        let stream = await requestStream(
             current,
             current.formatedPlatforms,
             this.options.manager,
