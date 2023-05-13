@@ -24,7 +24,7 @@ export const formatedPlatforms = [
 ] as const;
 
 export const CustomFilters = {
-    NIGHT_CORE: (value: number) => {
+    nightCore: (value: number) => {
         return [
             {
                 filter: "aresample",
@@ -36,7 +36,7 @@ export const CustomFilters = {
             },
         ];
     },
-    BASS_BOOST: (value: number) => {
+    bassBoost: (value: number) => {
         return [
             {
                 filter: "bass",
@@ -44,7 +44,7 @@ export const CustomFilters = {
             },
         ];
     },
-    "8_D": () => {
+    "8D": () => {
         return [
                 {
                     filter: "extrastereo",
@@ -64,7 +64,7 @@ export const CustomFilters = {
                 },
             ];
     },
-    PITCH: (value: number) => {
+    pitch: (value: number) => {
         return [
             {
                 filter: "asetrate",
@@ -80,7 +80,7 @@ export const CustomFilters = {
             },
         ];
     },
-    KAROAKE: (value: number) => {
+    karaoke: (value: number) => {
         return [
             {
                 filter: "stereotools",
@@ -88,7 +88,7 @@ export const CustomFilters = {
             },
         ];
     },
-    SLOWED: (value: number) => {
+    slowed: (value: number) => {
         return [
             {
                 filter: "asetrate",
@@ -100,7 +100,7 @@ export const CustomFilters = {
             },
         ];
     },
-    DEEP: (value: number) => {
+    deep: (value: number) => {
         return [
             {
                 filter: "asetrate",
@@ -116,34 +116,34 @@ export const CustomFilters = {
             },
         ];
     },
-    TREBLE_BOOST: (value: number) => {
+    trebleBoost: (value: number) => {
         return [{
             filter: "treble",
             value: `g=${ value }`,
         }];
     },
-    GATE: ( value: number ) =>
+    gate: ( value: number ) =>
     { 
         return [{
             filter: "agate",
             value: `threshold=${ value }`,
         }];
     },
-    VIBRATO: ( value: number ) =>
+    vibrato: ( value: number ) =>
     { 
         return [{
             filter: "vibrato",
             value: `f=${ value }`,
         }];
     },
-    FLANGER: ( value: number ) =>
+    flanger: ( value: number ) =>
     {
         return [{
             filter: "flanger",
             value: `delay=${ value }`,
         }];
     },
-    PHASER: ( value: number ) =>
+    phaser: ( value: number ) =>
     {
         return [{
             filter: "aphaser",

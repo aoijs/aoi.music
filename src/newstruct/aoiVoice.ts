@@ -20,6 +20,7 @@ import {
 import { AudioPlayer } from "./audioPlayer";
 import { Filter } from "./filter";
 import { Manager } from "./manager";
+import { CustomFilters } from "../newutils/constants";
 
 export class AoiVoice<T> extends Manager {
     #bot: T;
@@ -155,7 +156,6 @@ export class AoiVoice<T> extends Manager {
                         {
                             data: data[0],
                         },
-                        
                     );
                 } else {
                     return await cmd.__compiled__({
@@ -251,7 +251,7 @@ export class AoiVoice<T> extends Manager {
                             );
 
                         try {
-                            await d.client.voiceManager.joinVc( {
+                            await d.client.voiceManager.joinVc({
                                 type: audioPlayerType,
                                 voiceChannel: vc,
                                 textChannel: d.channel.id,
@@ -475,7 +475,7 @@ export class AoiVoice<T> extends Manager {
                                 "spotify",
                                 "youtube",
                                 "soundcloud",
-                                "none"
+                                "none",
                             ].includes(type.toLowerCase())
                         ) {
                             return d.aoiError.fnError(
@@ -532,10 +532,14 @@ export class AoiVoice<T> extends Manager {
                         const keys = Object.keys(parsed);
                         const result = [];
                         for (const key of keys) {
-                            result.push({
-                                filter: key,
-                                value: parsed[key],
-                            });
+                            if (CustomFilters[key]) {
+                                result.push(...CustomFilters[key](parsed[key]));
+                            } else {
+                                result.push({
+                                    filter: key,
+                                    value: parsed[key],
+                                });
+                            }
                         }
                         ffilter.add(result, player);
                         data.result = result;
@@ -585,10 +589,14 @@ export class AoiVoice<T> extends Manager {
                         const keys = Object.keys(parsed);
                         const result = [];
                         for (const key of keys) {
-                            result.push({
-                                filter: key,
-                                value: parsed[key],
-                            });
+                            if (CustomFilters[key]) {
+                                result.push(...CustomFilters[key](parsed[key]));
+                            } else {
+                                result.push({
+                                    filter: key,
+                                    value: parsed[key],
+                                });
+                            }
                         }
                         ffilter.set(result, player);
                         data.result = result;
@@ -634,8 +642,13 @@ export class AoiVoice<T> extends Manager {
                         const ffilter = <Filter>(
                             this.plugins.get(PluginName.Filter)
                         );
-
-                        ffilter.remove(filter, player);
+                        if (CustomFilters[filter]) {
+                            for (const f of CustomFilters[filter]()) {
+                                ffilter.remove(f.filter, player);
+                            }
+                        } else {
+                            ffilter.remove(filter, player);
+                        }
                         data.result = player.filters;
                         return {
                             code: d.util.setCode(data),
@@ -1192,10 +1205,7 @@ export class AoiVoice<T> extends Manager {
                         }
                         data.result = player.queue.length ?? 0;
                         return {
-                            code: d.util.setCode(
-                                data,
-                               
-                            ),
+                            code: d.util.setCode(data),
                         };
                     },
                 },
@@ -1414,7 +1424,9 @@ export class AoiVoice<T> extends Manager {
                         const parsedPos = position
                             ? parseInt(position)
                             : player.currentPosition();
-                        data.result = eval(`player.queue[${parsedPos}].${type}`);
+                        data.result = eval(
+                            `player.queue[${parsedPos}].${type}`,
+                        );
                         return {
                             code: d.util.setCode(data),
                         };

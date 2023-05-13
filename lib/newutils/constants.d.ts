@@ -1,54 +1,54 @@
 export declare const FFMPEG_ARGS: readonly ["-i", "-", "-analyzeduration", "0", "-loglevel", "0", "-preset", "veryfast", "-f", "s16le", "-ar", "48000", "-ac", "2", "-vn"];
 export declare const formatedPlatforms: readonly ["SoundCloud", "LocalFile", "Url", "Youtube", "Spotify"];
 export declare const CustomFilters: {
-    NIGHT_CORE: (value: number) => {
+    nightCore: (value: number) => {
         filter: string;
         value: string;
     }[];
-    BASS_BOOST: (value: number) => {
+    bassBoost: (value: number) => {
         filter: string;
         value: string;
     }[];
-    "8_D": () => {
+    "8D": () => {
         filter: string;
         value: string;
     }[];
-    PITCH: (value: number) => ({
+    pitch: (value: number) => ({
         filter: string;
         value: string;
     } | {
         filter: string;
         value: number;
     })[];
-    KAROAKE: (value: number) => {
+    karaoke: (value: number) => {
         filter: string;
         value: string;
     }[];
-    SLOWED: (value: number) => {
+    slowed: (value: number) => {
         filter: string;
         value: number;
     }[];
-    DEEP: (value: number) => {
+    deep: (value: number) => {
         filter: string;
         value: number;
     }[];
-    TREBLE_BOOST: (value: number) => {
+    trebleBoost: (value: number) => {
         filter: string;
         value: string;
     }[];
-    GATE: (value: number) => {
+    gate: (value: number) => {
         filter: string;
         value: string;
     }[];
-    VIBRATO: (value: number) => {
+    vibrato: (value: number) => {
         filter: string;
         value: string;
     }[];
-    FLANGER: (value: number) => {
+    flanger: (value: number) => {
         filter: string;
         value: string;
     }[];
-    PHASER: (value: number) => {
+    phaser: (value: number) => {
         filter: string;
         value: string;
     }[];
