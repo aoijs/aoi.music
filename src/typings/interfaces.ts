@@ -52,23 +52,23 @@ export interface AudioPlayerMode {
     };
 }
 export interface ManagerEvents {
-    [PlayerEvents.TRACK_START](
+    [PlayerEvents.TrackStart](
         Track: Track<
             "LocalFile" | "SoundCloud" | "Spotify" | "Url" | "Youtube"
         >,
         player: AudioPlayer,
     ): this;
-    [PlayerEvents.TRACK_END](
+    [PlayerEvents.TrackEnd](
         track: Track<
             "LocalFile" | "SoundCloud" | "Spotify" | "Url" | "Youtube"
         >,
         player: AudioPlayer,
     ): this;
-    [PlayerEvents.QUEUE_START](urls: unknown[], player: AudioPlayer): this;
-    [PlayerEvents.QUEUE_END](player: AudioPlayer): this;
-    [PlayerEvents.AUDIO_ERROR](error: any, player: AudioPlayer): this;
-    [PlayerEvents.TRACK_RESUME](player: AudioPlayer): this;
-    [PlayerEvents.TRACK_PAUSE](player: AudioPlayer): this;
+    [PlayerEvents.QueueStart](urls: unknown[], player: AudioPlayer): this;
+    [PlayerEvents.QueueEnd](player: AudioPlayer): this;
+    [PlayerEvents.AudioError](error: any, player: AudioPlayer): this;
+    [PlayerEvents.TrackResume](player: AudioPlayer): this;
+    [PlayerEvents.TrackPause](player: AudioPlayer): this;
 }
 
 export interface rawYoutubeMixData {
