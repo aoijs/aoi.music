@@ -29,13 +29,13 @@ export enum SourceProviders
 
 export enum PlayerEvents
 {
-    TRACK_START = "trackStart",
-    AUDIO_ERROR = "audioError",
-    TRACK_END = "trackEnd",
-    QUEUE_START = "queueStart",
-    QUEUE_END = "queueEnd",
-    TRACK_PAUSE = "trackPause",
-    TRACK_RESUME = "trackResume",
+    AudioError = "audioError",
+    QueueStart = "queueStart",
+    QueueEnd = "queueEnd",
+    TrackStart = "trackStart",
+    TrackEnd = "trackEnd",
+    TrackPause = "trackPause",
+    TrackResume = "trackResume",
 }
 
 export const timeMultiPlier = [ 1, 60, 60, 24 ];

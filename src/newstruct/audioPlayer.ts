@@ -118,7 +118,7 @@ export class AudioPlayer {
         }
 
         resource.volume.setVolume( this.#modes.volume/100 );
-        this.options.manager.emit(PlayerEvents.TRACK_START, current, this);
+        this.options.manager.emit(PlayerEvents.TrackStart, current, this);
         this.player.play(resource);
         if (this.#modes.ytMix) {
             if (
@@ -211,7 +211,7 @@ export class AudioPlayer {
                         return;
                     } else {
                         this.options.manager.emit(
-                            PlayerEvents.TRACK_END,
+                            PlayerEvents.TrackEnd,
                             this.queue[this.#modes.currentTrack],
                             this,
                         );
@@ -230,7 +230,7 @@ export class AudioPlayer {
                         return;
                     } else {
                         this.options.manager.emit(
-                            PlayerEvents.TRACK_END,
+                            PlayerEvents.TrackEnd,
                             this.queue[this.#modes.currentTrack],
                             this,
                         );
@@ -249,7 +249,7 @@ export class AudioPlayer {
                         return;
                     } else {
                         this.options.manager.emit(
-                            PlayerEvents.TRACK_END,
+                            PlayerEvents.TrackEnd,
                             this.queue[this.#modes.currentTrack],
                             this,
                         );
@@ -268,7 +268,7 @@ export class AudioPlayer {
                         return;
                     } else {
                         this.options.manager.emit(
-                            PlayerEvents.TRACK_END,
+                            PlayerEvents.TrackEnd,
                             this.queue[this.#modes.currentTrack],
                             this,
                         );
@@ -284,11 +284,11 @@ export class AudioPlayer {
                         return;
                     } else {
                         this.options.manager.emit(
-                            PlayerEvents.TRACK_END,
+                            PlayerEvents.TrackEnd,
                             this.queue[this.#modes.currentTrack],
                             this,
                         );
-                        this.options.manager.emit(PlayerEvents.QUEUE_END, this);
+                        this.options.manager.emit(PlayerEvents.QueueEnd, this);
                         this._destroy();
                     }
                 }
@@ -308,7 +308,7 @@ export class AudioPlayer {
                     return;
                 } else {
                     this.options.manager.emit(
-                        PlayerEvents.TRACK_END,
+                        PlayerEvents.TrackEnd,
                         this.queue[this.#modes.currentTrack],
                         this,
                     );
@@ -316,7 +316,7 @@ export class AudioPlayer {
             }
         });
         this.player.on("error", async (error: any) => {
-            this.options.manager.emit(PlayerEvents.AUDIO_ERROR, error, this);
+            this.options.manager.emit(PlayerEvents.AudioError, error, this);
         });
 
         if (this.options.manager.configs?.devOptions?.debug) {

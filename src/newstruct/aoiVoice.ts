@@ -49,31 +49,31 @@ export class AoiVoice<T> extends Manager {
         //@ts-ignore
         this.#bot.voiceManager = this;
         this.cmds = {
-            [PlayerEvents.TRACK_START]: new Collection<
+            [PlayerEvents.TrackStart]: new Collection<
                 Snowflake,
                 Record<string, any>
             >(),
-            [PlayerEvents.TRACK_END]: new Collection<
+            [PlayerEvents.TrackEnd]: new Collection<
                 Snowflake,
                 Record<string, any>
             >(),
-            [PlayerEvents.QUEUE_END]: new Collection<
+            [PlayerEvents.QueueEnd]: new Collection<
                 Snowflake,
                 Record<string, any>
             >(),
-            [PlayerEvents.AUDIO_ERROR]: new Collection<
+            [PlayerEvents.AudioError]: new Collection<
                 Snowflake,
                 Record<string, any>
             >(),
-            [PlayerEvents.QUEUE_START]: new Collection<
+            [PlayerEvents.QueueStart]: new Collection<
                 Snowflake,
                 Record<string, any>
             >(),
-            [PlayerEvents.TRACK_PAUSE]: new Collection<
+            [PlayerEvents.TrackPause]: new Collection<
                 Snowflake,
                 Record<string, any>
             >(),
-            [PlayerEvents.TRACK_RESUME]: new Collection<
+            [PlayerEvents.TrackResume]: new Collection<
                 Snowflake,
                 Record<string, any>
             >(),
