@@ -93,8 +93,7 @@ export class AudioPlayer {
                 this.options.manager.plugins.get(PluginName.Cacher)
             );
             await Cacher.write(current, stream);
-            if ( Cacher.type === "disk" ) stream = Cacher.get( current.id );
-            
+            if (Cacher.type === "disk") stream = Cacher.get(current.id);
         }
         if (
             this.options.manager.plugins.has(PluginName.Filter) &&
@@ -117,14 +116,14 @@ export class AudioPlayer {
             });
         }
 
-        resource.volume.setVolume( this.#modes.volume/100 );
+        resource.volume.setVolume(this.#modes.volume / 100);
         this.options.manager.emit(PlayerEvents.TrackStart, current, this);
         this.player.play(resource);
         if (this.#modes.ytMix) {
             if (
                 this.queue[this.#modes.currentTrack].id ===
                 this.#modes.ytMix.lastUrl
-            ){
+            ) {
                 const tracks = <any[]>(
                     await this.options.manager.search(
                         PlatformType.Youtube,
@@ -162,9 +161,8 @@ export class AudioPlayer {
                 }
             } else {
                 this.#modes.currentTrack += 1;
-                if ( this.options.manager.plugins.has( PluginName.Cacher ) )
-                {
-                    Cacher.delete( this.queue[ this.currentPosition() - 1 ].id );
+                if (this.options.manager.plugins.has(PluginName.Cacher)) {
+                    Cacher.delete(this.queue[this.currentPosition() - 1].id);
                 }
             }
         } else if (this.options.type === "fonly") {
@@ -198,6 +196,7 @@ export class AudioPlayer {
                 ns.status === AudioPlayerStatus.Idle
             ) {
                 if (this.#modes.paused) {
+                    
                 } else if (
                     this.#modes.loop === LoopMode.Track &&
                     this.queue[this.#modes.currentTrack]
@@ -354,6 +353,11 @@ export class AudioPlayer {
                     position: this.queue.length,
                 });
                 if (this.queue.length === 1) {
+                    this.options.manager.emit(
+                        PlayerEvents.QueueStart,
+                        track,
+                        this,
+                    );
                     await this.play();
                 }
             } else if (type === PlatformType.SoundCloud) {
@@ -371,6 +375,11 @@ export class AudioPlayer {
                         position: this.queue.length,
                     });
                     if (this.queue.length === 1) {
+                        this.options.manager.emit(
+                            PlayerEvents.QueueStart,
+                            track,
+                            this,
+                        );
                         await this.play();
                     }
                 }
@@ -387,6 +396,11 @@ export class AudioPlayer {
                     position: this.queue.length,
                 });
                 if (this.queue.length === 1) {
+                    this.options.manager.emit(
+                        PlayerEvents.QueueStart,
+                        track,
+                        this,
+                    );
                     await this.play();
                 }
             } else if (type === PlatformType.Spotify) {
@@ -399,19 +413,27 @@ export class AudioPlayer {
                         )
                     ))
                 );
-                if ( !info ) continue;
-                if(!Array.isArray(info)) info = [info];
-                for ( let i = 0; i < info.length; i++ )
-                {
-                    const moreinfo = await this.options.manager.platforms.spotify.getData(info[i].url);
+                if (!info) continue;
+                if (!Array.isArray(info)) info = [info];
+                for (let i = 0; i < info.length; i++) {
+                    const moreinfo =
+                        await this.options.manager.platforms.spotify.getData(
+                            info[i].url,
+                        );
                     this.queue.push({
                         ...info[i],
                         requester: member,
                         position: this.queue.length,
                         thumbnail: moreinfo.coverArt.sources[0].url,
-                        createdAt: new Date(moreinfo.releaseDate.isoString) ?? null,
+                        createdAt:
+                            new Date(moreinfo.releaseDate.isoString) ?? null,
                     });
                     if (this.queue.length === 1) {
+                        this.options.manager.emit(
+                            PlayerEvents.QueueStart,
+                            track,
+                            this,
+                        );
                         await this.play();
                     }
                 }
@@ -427,6 +449,11 @@ export class AudioPlayer {
                     position: this.queue.length,
                 });
                 if (this.queue.length === 1) {
+                    this.options.manager.emit(
+                        PlayerEvents.QueueStart,
+                        track,
+                        this,
+                    );
                     await this.play();
                 }
             }
@@ -465,9 +492,11 @@ export class AudioPlayer {
         this.skip();
     }
     pause() {
+        this.options.manager.emit(PlayerEvents.TrackPause, this);
         return (this.#modes.paused = this.player.pause());
     }
     resume() {
+        this.options.manager.emit(PlayerEvents.TrackResume, this);
         this.#modes.paused = false;
         return this.player.unpause();
     }
@@ -613,7 +642,10 @@ export class AudioPlayer {
                 for (const id of ids) {
                     const info = await requestInfo(
                         id,
-                        this.currentTrack.formatedPlatforms.toLowerCase() === "youtube" ? "Youtube" : "Spotify",
+                        this.currentTrack.formatedPlatforms.toLowerCase() ===
+                            "youtube"
+                            ? "Youtube"
+                            : "Spotify",
                         this.options.manager,
                     );
                     if (!info) continue;
@@ -753,8 +785,7 @@ export class AudioPlayer {
     getPing(type: "ws" | "udp" = "ws") {
         return this.options.connection.ping[type];
     }
-    stop ()
-    {
+    stop() {
         this.queue = [];
         this.defaultMode();
         this.player.stop();

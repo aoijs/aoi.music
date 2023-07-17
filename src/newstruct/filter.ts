@@ -97,6 +97,7 @@ export class Filter {
         newResource.playbackDuration = this.#config.filterFromStart
             ? 0
             : r.playbackDuration;
+        newResource.volume.setVolume(player.volume / 100);
         player.setFiltering(true);
         player.player.play(newResource);
     }

@@ -20,13 +20,13 @@ export declare enum SourceProviders {
     Attachment = 3
 }
 export declare enum PlayerEvents {
-    TRACK_START = "trackStart",
-    AUDIO_ERROR = "audioError",
-    TRACK_END = "trackEnd",
-    QUEUE_START = "queueStart",
-    QUEUE_END = "queueEnd",
-    TRACK_PAUSE = "trackPause",
-    TRACK_RESUME = "trackResume"
+    AudioError = "audioError",
+    QueueStart = "queueStart",
+    QueueEnd = "queueEnd",
+    TrackStart = "trackStart",
+    TrackEnd = "trackEnd",
+    TrackPause = "trackPause",
+    TrackResume = "trackResume"
 }
 export declare const timeMultiPlier: number[];
 export declare enum AutoPlay {

@@ -53,7 +53,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
             soundcloud: scdl,
             spotify: sui(fetch),
         };
-        if (config.searchOptions.soundcloudClientId) {
+        if (config.searchOptions?.soundcloudClientId) {
             this.platforms.soundcloud.setClientID(
                 config.searchOptions.soundcloudClientId,
             );
