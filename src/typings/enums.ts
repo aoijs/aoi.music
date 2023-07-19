@@ -64,3 +64,9 @@ export enum PluginName {
     Cacher= "cache",
     Filter = "filter",
 }
+
+export enum PlayerTypes {
+    Default = "default",
+    FOnly = "fonly",
+    Bidirect= "bidirect",
+}

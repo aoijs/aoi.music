@@ -43,6 +43,7 @@ export type YoutubeTrackInfo = {
     formatedPlatforms: "Youtube";
     requester: GuildMember;
     position: number;
+    isLiveContent: boolean;
 };
 export type LocalFileTrackInfo = {
     title: string;
@@ -73,6 +74,7 @@ export type UrlTrackInfo = {
     formatedPlatforms: "Url";
     requester: GuildMember;
     position: number;
+    isLiveContent: boolean;
 };
 export type SpotifyTrackInfo = {
     title: string;

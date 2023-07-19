@@ -10,7 +10,7 @@ export declare class AudioPlayer {
     player: AP;
     constructor(options: AudioPLayerOptions);
     defaultMode(): AudioPlayerMode;
-    play(): Promise<void>;
+    play(emit?: boolean): Promise<void>;
     _loopQueue(): Promise<void>;
     _playNext(): Promise<void>;
     _destroy(): void;

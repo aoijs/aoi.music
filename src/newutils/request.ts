@@ -20,6 +20,7 @@ import { PassThrough, Readable } from "stream";
 
 import { SpotifyTrackInfo as SpotifyInfo } from "../typings/types";
 import { ReadableStream } from "stream/web";
+import { isLiveStreamUrl } from "./helpers";
 
 
 export async function generateInfo<T extends "LocalFile" | "Url">(
@@ -34,14 +35,15 @@ export async function generateInfo<T extends "LocalFile" | "Url">(
         const title = array.pop().split("?")[0];
         const reqData = await request(id);
         let filetype = (<string>reqData.headers["content-type"])?.split("/") ?? [];
+        const isLive = await isLiveStreamUrl(id);
         const ftype = filetype.length
             ? filetype.length > 1
                 ? filetype[1]
                 : filetype[0]
             : null;
-        let size = Number(reqData.headers["content-length"]);
-        if (isNaN(size)) size = (await reqData.body.blob()).size;
-        const duration = await getAudioDurationInSeconds(id);
+        let size = Number(reqData.headers["content-length"]) ?? Infinity;
+        if (isNaN(size) && !isLive) size = (await reqData.body.blob()).size;
+        const duration = await isLiveStreamUrl(id) ? Infinity : await getAudioDurationInSeconds(id);
         return <Track<T>>{
             title,
             identifier: "url",
@@ -54,6 +56,7 @@ export async function generateInfo<T extends "LocalFile" | "Url">(
             id: id,
             platformType: PlatformType.Url,
             formatedPlatforms: formatedPlatforms[PlatformType.Url],
+            isLiveContent: isLive,
         };
     } else {
         const array = id.split(path.sep);
@@ -202,7 +205,7 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
             )
             .catch((_) => undefined);
         if (!ytData) return;
-        return <Track<T>>{
+        return <Track<T>> {
             title: ytData.basic_info.title,
             channelId: ytData.basic_info.channel_id,
             artist: ytData.basic_info.channel.name,
@@ -210,14 +213,15 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
             duration: ytData.basic_info.duration * 1000,
             description: ytData.basic_info.short_description,
             identifier: "youtube",
-            url: `https://youtube.com/watch?v=${ytData.basic_info.id}`,
+            url: `https://youtube.com/watch?v=${ ytData.basic_info.id }`,
             views: ytData.basic_info.view_count,
             likes: ytData.basic_info.like_count,
-            thumbnail: ytData.basic_info.thumbnail[0].url,
+            thumbnail: ytData.basic_info.thumbnail[ 0 ].url,
             id: ytData.basic_info.id,
             createdAt: null,
             platformType: PlatformType.Youtube,
-            formatedPlatforms: formatedPlatforms[PlatformType.Youtube],
+            formatedPlatforms: formatedPlatforms[ PlatformType.Youtube ],
+            isLiveContent: ytData.basic_info.is_live_content,
         };
     } else if (type === "Spotify") {
         const spotify = manager.platforms.spotify;
@@ -345,7 +349,17 @@ export async function requestStream<T extends keyof typeof PlatformType>(
     } else if (type === "LocalFile") {
         return createReadStream(track.id);
     } else if (type === "Url") {
-        return (await (await request(track.id)).body.blob()).stream();
+        const pass = new PassThrough();
+        const req = await request(track.id);
+        req.body.pipe(pass);
+        req.body.on("end", () => {
+            pass.end();
+        });
+        req.body.on("error", (e) => {
+            console.error(e);
+            pass.end();
+        });
+        return pass;
     } else if (type === "Youtube") {
         const yt = await manager.platforms.youtube;
         return Readable.fromWeb(await yt.download(track.id, {
@@ -379,3 +393,6 @@ export async function requestStream<T extends keyof typeof PlatformType>(
         }
     }
 }
+
+// get livestream and continue fetching next chunk
+

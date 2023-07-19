@@ -8,3 +8,4 @@ export declare function isMix(url: string): boolean;
 export declare function YoutubeMixVideo(data: YoutubeMixPLaylistPanelVideoRenderData): string;
 export declare function YoutubeMix(data: YoutubeMixPlaylistData): string[];
 export declare function YoutubeRelated(data: YoutubeRelatedData["playerOverlays"]["playerOverlayRenderer"]["endScreen"]["watchNextEndScreenRenderer"]["results"]): string[];
+export declare function isLiveStreamUrl(url: string): Promise<boolean>;

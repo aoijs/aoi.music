@@ -132,4 +132,10 @@ export class Filter {
         });
         return ffmpeg;
     }
+    createFFmpegWithInputFile(input: string, ...args: string[]) {
+        const ffmpeg = new FFmpeg({
+            args: [...FFMPEG_ARGS, "-i", input, ...args],
+        });
+        return ffmpeg;
+    }
 }

@@ -40,6 +40,7 @@
     "tiny-typed-emitter": "^2.1.0",
     "tweetnacl": "^1.0.3",
     "undici": "^5.20.0",
+    "youtube-scrapper": "^1.4.0",
     "youtubei.js": "^3.3.0"
   },
   "devDependencies": {

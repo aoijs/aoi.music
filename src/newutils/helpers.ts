@@ -84,3 +84,11 @@ export function YoutubeRelated(
         .map((x) => x.endScreenVideoRenderer.videoId);
 }
 
+export async function isLiveStreamUrl(url:string) {
+    const req = await fetch(url, {
+        method: "GET",
+    });
+
+    return req.headers.get("content-type")?.includes("audio") && !req.headers.get("content-length");
+
+}
