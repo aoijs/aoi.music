@@ -21,7 +21,7 @@ import {
     generateInfo,
     generateScInfo,
     requestInfo,
-    requestStream
+    requestStream,
 } from "../newutils/request";
 import { YTNodes } from "youtubei.js";
 import {
@@ -84,7 +84,7 @@ export class AudioPlayer {
         const current = this.queue[this.#modes.currentTrack];
         let stream: Readable | FFmpeg | PassThrough;
         //@ts-ignore
-        stream= await requestStream(
+        stream = await requestStream(
             current,
             current.formatedPlatforms,
             this.options.manager,
@@ -119,7 +119,8 @@ export class AudioPlayer {
         }
 
         resource.volume.setVolume(this.#modes.volume / 100);
-        emit && this.options.manager.emit(PlayerEvents.TrackStart, current, this);
+        emit &&
+            this.options.manager.emit(PlayerEvents.TrackStart, current, this);
         this.player.play(resource);
         if (this.#modes.ytMix) {
             if (
@@ -198,7 +199,6 @@ export class AudioPlayer {
                 ns.status === AudioPlayerStatus.Idle
             ) {
                 if (this.#modes.paused) {
-                    
                 } else if (
                     this.#modes.loop === LoopMode.Track &&
                     this.queue[this.#modes.currentTrack]
@@ -254,7 +254,7 @@ export class AudioPlayer {
                             this.queue[this.#modes.currentTrack],
                             this,
                         );
-                        
+
                         await this.autoPlayNext();
                     }
                 } else if (
@@ -769,35 +769,47 @@ export class AudioPlayer {
         let start = (page - 1) * limit;
         let end = page * limit;
         //start queue from current track and if it is loop queue then push all prev tracks to end of queue
-        const prevTracks = this.queue.slice(0, this.#modes.currentTrack);
-        const nextTracks = this.queue.slice(this.#modes.currentTrack);
-        let tracks = this.loop === LoopMode.Queue ? [...nextTracks, ...prevTracks] : nextTracks;
+        const prevTracks = this.queue.slice(0, this.currentPosition());
+        const nextTracks = this.queue.slice(this.currentPosition());
+        let tracks =
+            this.loop === LoopMode.Queue
+                ? [...nextTracks, ...prevTracks]
+                : nextTracks;
         //add prev tracks behind 0 index with limited length
-        let index = -1;
-        for(let i = 0; i < prevTracks.length; i++) {
-            tracks[index--] = prevTracks[i];
-        }
-        if(page < 0 ) {
-            start = page * limit;
-            end = (page +1) * limit;
+        let index = prevTracks.length - 1;
+        let ng = [];
+        if (this.loop !== LoopMode.Queue)
+            for (let i = 0; i < prevTracks.length; i++) {
+                ng[index--] = prevTracks[i];
+            }
+        if (page < 0) {
+            end = prevTracks.length - Math.abs(Number(page)) * limit;
+            start = prevTracks.length - Math.abs(Number(page) + 1) * limit;
             // get the -ve index tracks
             const res = [];
-            for(let i = start; i < end; i++) {
-                res.push(tracks[i]);
+            for (let i = end; i < start; i++) {
+                res.push(ng[i]);
             }
+            end = -res.length;
             tracks = res;
         } else {
             tracks = tracks.slice(start, end);
         }
+
         const props = format.match(QueueFormatRegex);
         if (!props) return [];
+        if (page < 0) {
+            start = (Number(page) + 1) * limit - 1;
+        }
         const queue = tracks.map((track, index) => {
             let formatted = format;
             props.forEach((prop) => {
                 const propValue = prop.replace("{", "").replace("}", "");
                 const value =
                     propValue === "position"
-                        ? start + index
+                        ? page < 0
+                            ? end + index
+                            : start + index
                         : eval(`track?.${propValue}`);
                 formatted = formatted.replaceAll(prop, value);
             });
