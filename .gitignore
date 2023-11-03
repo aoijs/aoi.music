@@ -11,3 +11,8 @@
 /cmds
 /cache
 /.MUSIC_CACHE
+
+.replit
+replit.nix
+.git
+.config
