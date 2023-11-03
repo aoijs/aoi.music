@@ -5,6 +5,7 @@ import {
     TextBasedChannel,
     VoiceChannel,
 } from "discord.js";
+import cheerio from "cheerio";
 import { shuffle } from "../newutils/helpers";
 import { search } from "../newutils/search";
 import {
@@ -1373,6 +1374,56 @@ export class AoiVoice<T> extends Manager {
                                 b: { position: number },
                             ) => a.position - b.position,
                         );
+                        return {
+                            code: d.util.setCode(data),
+                        };
+                    },
+                },
+                // lyrics
+                {
+                    name: "$lyrics",
+                    type: "djs",
+                    code: async (d: any) => {
+                        const data = d.util.aoiFunc(d);
+                        const [songTitle, artist, error = "Lyrics not found"] = data.inside.splits;
+                        if (!songTitle) {
+                            return d.aoiError.fnError(
+                                d,
+                                "custom",
+                                {},
+                                "Usage, Provide a song name.",
+                            );
+                        }
+                        const requestOptions = {
+                            headers: {
+                                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
+                                Accept: "text/html",
+                            },
+                        };
+
+                        async function scrapeLyrics(songTitle: string, artist: string) {
+                          try {
+                            
+                            const response = await fetch(`https://www.google.com/search?q=${encodeURI(`${artist} ${songTitle}`)}+lyrics`, requestOptions);
+                            const body = await response.text();
+                            const $ = cheerio.load(body)
+                            const elements = $('[class*="ujudUb"]');
+
+                            const e = elements
+                              .map(function () {
+                                  $('br').replaceWith('\n');
+                                  return $(this).text().trim();
+                              }).get();
+
+                            return e.join('\n\n');
+                          } catch (err) {
+                            return error;
+                          }
+                        }
+
+                        const lyrics = await scrapeLyrics(songTitle, artist);
+                        data.result = lyrics ? lyrics : error;
+
                         return {
                             code: d.util.setCode(data),
                         };
