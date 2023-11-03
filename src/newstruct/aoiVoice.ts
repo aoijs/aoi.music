@@ -1402,18 +1402,23 @@ export class AoiVoice<T> extends Manager {
                         };
 
                         async function scrapeLyrics(songTitle: string, artist: string) {
-                          const response = await fetch(`https://www.google.com/search?q=${encodeURI(`${artist} ${songTitle}`)}+lyrics`, requestOptions);
-                          const body = await response.text();
-                          const $ = cheerio.load(body)
-                          const elements = $('[class*="ujudUb"]');
+                          try {
+                            
+                            const response = await fetch(`https://www.google.com/search?q=${encodeURI(`${artist} ${songTitle}`)}+lyrics`, requestOptions);
+                            const body = await response.text();
+                            const $ = cheerio.load(body)
+                            const elements = $('[class*="ujudUb"]');
 
-                          const e = elements
+                            const e = elements
                               .map(function () {
                                   $('br').replaceWith('\n');
                                   return $(this).text().trim();
                               }).get();
 
                             return e.join('\n\n');
+                          } catch (err) {
+                            return error;
+                          }
                         }
 
                         const lyrics = await scrapeLyrics(songTitle, artist);
