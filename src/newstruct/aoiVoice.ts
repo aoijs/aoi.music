@@ -6,7 +6,6 @@ import {
     VoiceChannel,
 } from "discord.js";
 import cheerio from "cheerio";
-import axios from "axios";
 import { shuffle } from "../newutils/helpers";
 import { search } from "../newutils/search";
 import {
@@ -1403,8 +1402,9 @@ export class AoiVoice<T> extends Manager {
                         };
 
                         async function scrapeLyrics(songTitle: string, artist: string) {
-                          const response = await axios.get("https://google.com/search", Object.assign(Object.assign({}, requestOptions), { params: { q: `${artist} ${songTitle} lyrics` } }));
-                          const $ = cheerio.load(response.data);
+                          const response = await fetch(`https://www.google.com/search?q=${encodeURI(`${artist} ${songTitle}`)}+lyrics`, requestOptions);
+                          const body = await response.text();
+                          const $ = cheerio.load(body)
                           const elements = $('[class*="ujudUb"]');
 
                           const e = elements
