@@ -1,11 +1,10 @@
-# @akarui/aoi.music
-
 <p align="center">
   <a href="https://aoi.js.org">
     <img width="100" src="https://github.com/aoijs/website/blob/master/assets/images/aoimusic.png?raw=true" alt="aoi.music">
   </a>
 </p>
 
+<h1 align="center">@akarui/aoi.music</h1>
 
 @akarui/aoi.music is a powerful TypeScript-based JavaScript library that adds music-related properties and lays a solid foundation for music operations in aoi.js. 
 
