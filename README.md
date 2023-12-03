@@ -1,6 +1,15 @@
 # @akarui/aoi.music
 
-@akarui/aoi.music is a powerful TypeScript-based JavaScript library that adds music-related properties and lays a solid foundation for music operations in aoi.js. Whether you're building a music streaming app, a Discord bot with music capabilities, or any other music-related project, @akarui/aoi.music is here to make your life easier!
+<p align="center">
+  <a href="https://aoi.js.org">
+    <img width="100" src="https://github.com/aoijs/website/blob/master/assets/images/aoimusic.png?raw=true" alt="aoi.music">
+  </a>
+</p>
+
+
+@akarui/aoi.music is a powerful TypeScript-based JavaScript library that adds music-related properties and lays a solid foundation for music operations in aoi.js. 
+
+Whether you're building a music streaming app, a Discord bot with music capabilities, or any other music-related project, @akarui/aoi.music is here to make your life easier!
 
 ## 🚀 Setup
 
