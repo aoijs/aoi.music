@@ -1,7 +1,7 @@
 import { AudioPlayer as AP } from "@discordjs/voice";
 import { AutoPlay, LoopMode, PlatformType } from "./../typings/enums";
 import { AudioPlayerMode, AudioPLayerOptions } from "./../typings/interfaces";
-import { Track } from "../typings/types";
+import { LocalFileTrackInfo, SoundCloudTrackInfo, SpotifyTrackInfo, Track, UrlTrackInfo, YoutubeTrackInfo } from "../typings/types";
 import { GuildMember } from "discord.js";
 export declare class AudioPlayer {
     #private;
@@ -34,8 +34,8 @@ export declare class AudioPlayer {
     isAutoPlayEnabled(): boolean;
     currentPosition(): number;
     getTrackCurrentDuration(): number;
-    get currentTrack(): Track<"SoundCloud" | "LocalFile" | "Url" | "Youtube" | "Spotify">;
-    get previousTrack(): Track<"SoundCloud" | "LocalFile" | "Url" | "Youtube" | "Spotify">;
+    get currentTrack(): SoundCloudTrackInfo | LocalFileTrackInfo | UrlTrackInfo | YoutubeTrackInfo | SpotifyTrackInfo;
+    get previousTrack(): SoundCloudTrackInfo | LocalFileTrackInfo | UrlTrackInfo | YoutubeTrackInfo | SpotifyTrackInfo;
     updateFilters(filterArr: string[]): void;
     playPrevious(): Promise<void>;
     setFilters(filterArr: string[]): void;
