@@ -317,25 +317,47 @@ export class AoiVoice<T> extends Manager {
               );
             }
             const player = d.client.voiceManager.players.get(d.guild.id);
-            if (!player) {
+
+            if (!player)
               return d.aoiError.fnError(d, "custom", {}, "Player Not Found.");
-            }
+
             let tracks: string[] = [];
             let trackType: number;
+
             if (type === "youtube") {
-              tracks = await search(track, PlatformType.Youtube, this);
+              tracks = await search(
+                track.addBrackets(),
+                PlatformType.Youtube,
+                this
+              );
               trackType = PlatformType.Youtube;
             } else if (type === "soundcloud") {
-              tracks = await search(track, PlatformType.SoundCloud, this);
+              tracks = await search(
+                track.addBrackets(),
+                PlatformType.SoundCloud,
+                this
+              );
               trackType = PlatformType.SoundCloud;
             } else if (type === "spotify") {
-              tracks = await search(track, PlatformType.Spotify, this);
+              tracks = await search(
+                track.addBrackets(),
+                PlatformType.Spotify,
+                this
+              );
               trackType = PlatformType.Spotify;
             } else if (type === "local") {
-              tracks = await search(track, PlatformType.LocalFile, this);
+              tracks = await search(
+                track.addBrackets(),
+                PlatformType.LocalFile,
+                this
+              );
               trackType = PlatformType.LocalFile;
             } else if (type === "url") {
-              tracks = await search(track, PlatformType.Url, this);
+              tracks = await search(
+                track.addBrackets(),
+                PlatformType.Url,
+                this
+              );
               trackType = PlatformType.Url;
             } else {
               return d.aoiError.fnError(
@@ -345,13 +367,9 @@ export class AoiVoice<T> extends Manager {
                 "Invalid Type Provided."
               );
             }
-            if (tracks.length === 0) {
-              data.result = false;
-              return {
-                code: d.util.setCode(data),
-              };
-            }
-            await player.add(tracks, trackType, d.member);
+            if (tracks.length !== 0)
+              await player.add(tracks, trackType, d.member);
+
             return {
               code: d.util.setCode(data),
             };
@@ -377,11 +395,12 @@ export class AoiVoice<T> extends Manager {
               );
             }
             const hasPlayer = d.client.voiceManager.players.has(d.guild.id);
-            if (!hasPlayer) {
+            if (!hasPlayer)
               return d.aoiError.fnError(d, "custom", {}, "Player Not Found.");
-            }
             const player = d.client.voiceManager.players.get(d.guild.id);
+
             data.result = player.getQueue(page, limit, format);
+
             return {
               code: d.util.setCode(data),
             };
@@ -434,7 +453,7 @@ export class AoiVoice<T> extends Manager {
           type: "djs",
           code: async (d: any) => {
             const data = d.util.aoiFunc(d);
-            const [filter] = data.inside.splits;
+            const [filter, returnfilters = "false"] = data.inside.splits;
             if (!d.client.voiceManager) {
               return d.aoiError.fnError(
                 d,
@@ -470,7 +489,7 @@ export class AoiVoice<T> extends Manager {
               }
             }
             ffilter.add(result, player);
-            data.result = result;
+            data.result = returnfilters === "true" ? result : null;
             return {
               code: d.util.setCode(data),
             };
@@ -482,7 +501,7 @@ export class AoiVoice<T> extends Manager {
           type: "djs",
           code: async (d: any) => {
             const data = d.util.aoiFunc(d);
-            const [filter] = data.inside.splits;
+            const [filter, returnfilters = "false"] = data.inside.splits;
             if (!d.client.voiceManager) {
               return d.aoiError.fnError(
                 d,
@@ -518,7 +537,7 @@ export class AoiVoice<T> extends Manager {
               }
             }
             ffilter.set(result, player);
-            data.result = result;
+            data.result = returnfilters === "true" ? result : null;
             return {
               code: d.util.setCode(data),
             };
@@ -530,7 +549,7 @@ export class AoiVoice<T> extends Manager {
           type: "djs",
           code: async (d: any) => {
             const data = d.util.aoiFunc(d);
-            const [filter] = data.inside.splits;
+            const [filter, returnfilters = "false"] = data.inside.splits;
             if (!d.client.voiceManager) {
               return d.aoiError.fnError(
                 d,
@@ -559,7 +578,8 @@ export class AoiVoice<T> extends Manager {
             } else {
               ffilter.remove(filter, player);
             }
-            data.result = player.filters;
+            data.result = returnfilters === "true" ? player.filters : null;
+
             return {
               code: d.util.setCode(data),
             };
@@ -571,6 +591,7 @@ export class AoiVoice<T> extends Manager {
           type: "djs",
           code: async (d: any) => {
             const data = d.util.aoiFunc(d);
+            const [returnfilters = "false"] = data.inside.splits;
             if (!d.client.voiceManager) {
               return d.aoiError.fnError(
                 d,
@@ -594,7 +615,7 @@ export class AoiVoice<T> extends Manager {
             const ffilter = <Filter>this.plugins.get(PluginName.Filter);
 
             ffilter.removeAll(player);
-            data.result = player.filters;
+            data.result = returnfilters === "true" ? player.filters : null;
             return {
               code: d.util.setCode(data),
             };
@@ -658,6 +679,7 @@ export class AoiVoice<T> extends Manager {
             } else {
               player.volume = Number(volume);
             }
+
             return {
               code: d.util.setCode(data),
             };
@@ -712,13 +734,8 @@ export class AoiVoice<T> extends Manager {
               );
             }
             const player = d.client.voiceManager.players.get(d.guild.id);
-            if (!player) {
-              data.result = 0;
-              return {
-                code: d.util.setCode(data),
-              };
-            }
-            data.result = player.getTrackCurrentDuration();
+            if (player) data.result = player.getTrackCurrentDuration();
+
             return {
               code: d.util.setCode(data),
             };
@@ -761,18 +778,19 @@ export class AoiVoice<T> extends Manager {
               );
             }
             const player = d.client.voiceManager.players.get(d.guild.id);
-            if (!player) {
-              data.result = false;
-              return {
-                code: d.util.setCode(data),
-              };
+            if (player) {
+              if (
+                ![LoopMode.None, LoopMode.Track, LoopMode.Queue].includes(mode)
+              ) {
+                return d.aoiError.fnError(
+                  d,
+                  "custom",
+                  {},
+                  "Invalid Loop Mode."
+                );
+              }
+              player.loop = mode;
             }
-            if (
-              ![LoopMode.None, LoopMode.Track, LoopMode.Queue].includes(mode)
-            ) {
-              return d.aoiError.fnError(d, "custom", {}, "Invalid Loop Mode.");
-            }
-            player.loop = mode;
             return {
               code: d.util.setCode(data),
             };
@@ -793,13 +811,7 @@ export class AoiVoice<T> extends Manager {
               );
             }
             const player = d.client.voiceManager.players.get(d.guild.id);
-            if (!player) {
-              data.result = false;
-              return {
-                code: d.util.setCode(data),
-              };
-            }
-            data.result = player.loop;
+            if (player) data.result = player.loop;
             return {
               code: d.util.setCode(data),
             };
@@ -820,13 +832,7 @@ export class AoiVoice<T> extends Manager {
               );
             }
             const player = d.client.voiceManager.players.get(d.guild.id);
-            if (!player) {
-              data.result = false;
-              return {
-                code: d.util.setCode(data),
-              };
-            }
-            player.queue = [];
+            if (player) player.queue = [];
             return {
               code: d.util.setCode(data),
             };
@@ -847,13 +853,7 @@ export class AoiVoice<T> extends Manager {
               );
             }
             const player = d.client.voiceManager.players.get(d.guild.id);
-            if (!player) {
-              data.result = false;
-              return {
-                code: d.util.setCode(data),
-              };
-            }
-            player.pause();
+            if (player) player.pause();
             return {
               code: d.util.setCode(data),
             };
@@ -874,13 +874,7 @@ export class AoiVoice<T> extends Manager {
               );
             }
             const player = d.client.voiceManager.players.get(d.guild.id);
-            if (!player) {
-              data.result = false;
-              return {
-                code: d.util.setCode(data),
-              };
-            }
-            player.resume();
+            if (player) player.resume();
             return {
               code: d.util.setCode(data),
             };
@@ -901,13 +895,7 @@ export class AoiVoice<T> extends Manager {
               );
             }
             const player = d.client.voiceManager.players.get(d.guild.id);
-            if (!player) {
-              data.result = false;
-              return {
-                code: d.util.setCode(data),
-              };
-            }
-            player.stop();
+            if (player) player.stop();
             return {
               code: d.util.setCode(data),
             };
@@ -928,13 +916,8 @@ export class AoiVoice<T> extends Manager {
               );
             }
             const player = d.client.voiceManager.players.get(d.guild.id);
-            if (!player) {
-              data.result = false;
-              return {
-                code: d.util.setCode(data),
-              };
-            }
-            player.skip();
+            if (player) player.skip();
+
             return {
               code: d.util.setCode(data),
             };
@@ -956,16 +939,12 @@ export class AoiVoice<T> extends Manager {
               );
             }
             const player = d.client.voiceManager.players.get(d.guild.id);
-            if (!player) {
-              data.result = false;
-              return {
-                code: d.util.setCode(data),
-              };
+            if (player) {
+              if (isNaN(index)) {
+                return d.aoiError.fnError(d, "custom", {}, "Invalid Index.");
+              }
+              player.skipTo(index);
             }
-            if (isNaN(index)) {
-              return d.aoiError.fnError(d, "custom", {}, "Invalid Index.");
-            }
-            player.skipTo(index);
             return {
               code: d.util.setCode(data),
             };
@@ -986,13 +965,7 @@ export class AoiVoice<T> extends Manager {
               );
             }
             const player = d.client.voiceManager.players.get(d.guild.id);
-            if (!player) {
-              data.result = false;
-              return {
-                code: d.util.setCode(data),
-              };
-            }
-            player.playPrevious();
+            if (player) player.playPrevious();
             return {
               code: d.util.setCode(data),
             };
@@ -1013,13 +986,7 @@ export class AoiVoice<T> extends Manager {
               );
             }
             const player = d.client.voiceManager.players.get(d.guild.id);
-            if (!player) {
-              data.result = 0;
-              return {
-                code: d.util.setCode(data),
-              };
-            }
-            data.result = player.queue.length ?? 0;
+            if (player) data.result = player.queue.length ?? 0;
             return {
               code: d.util.setCode(data),
             };
@@ -1041,16 +1008,11 @@ export class AoiVoice<T> extends Manager {
               );
             }
             const player = d.client.voiceManager.players.get(d.guild.id);
-            if (!player) {
-              data.result = 0;
-              return {
-                code: d.util.setCode(data),
-              };
-            }
             if (!["ws", "upd"].includes(type)) {
               return d.aoiError.fnError(d, "custom", {}, "Invalid Type.");
             }
-            data.result = player.getPing(type);
+            if (player) data.result = player.getPing(type);
+
             return {
               code: d.util.setCode(data),
             };
@@ -1071,13 +1033,7 @@ export class AoiVoice<T> extends Manager {
               );
             }
             const player = d.client.voiceManager.players.get(d.guild.id);
-            if (!player) {
-              data.result = "destroyed";
-              return {
-                code: d.util.setCode(data),
-              };
-            }
-            data.result = player.player._state.status;
+            if (player) data.result = player.player._state.status;
             return {
               code: d.util.setCode(data),
             };
@@ -1098,13 +1054,7 @@ export class AoiVoice<T> extends Manager {
               );
             }
             const player = d.client.voiceManager.players.get(d.guild.id);
-            if (!player) {
-              data.result = false;
-              return {
-                code: d.util.setCode(data),
-              };
-            }
-            player._destroy();
+            if (player) player._destroy();
             return {
               code: d.util.setCode(data),
             };
@@ -1125,13 +1075,7 @@ export class AoiVoice<T> extends Manager {
               );
             }
             const player = d.client.voiceManager.players.get(d.guild.id);
-            if (!player) {
-              data.result = false;
-              return {
-                code: d.util.setCode(data),
-              };
-            }
-            player.queue = shuffle(player.queue);
+            if (player) player.queue = shuffle(player.queue);
             return {
               code: d.util.setCode(data),
             };
@@ -1152,16 +1096,12 @@ export class AoiVoice<T> extends Manager {
               );
             }
             const player = d.client.voiceManager.players.get(d.guild.id);
-            if (!player) {
-              data.result = false;
-              return {
-                code: d.util.setCode(data),
-              };
+            if (player) {
+              player.queue = player.queue.sort(
+                (a: { position: number }, b: { position: number }) =>
+                  a.position - b.position
+              );
             }
-            player.queue = player.queue.sort(
-              (a: { position: number }, b: { position: number }) =>
-                a.position - b.position
-            );
             return {
               code: d.util.setCode(data),
             };
@@ -1208,7 +1148,7 @@ export class AoiVoice<T> extends Manager {
           type: "djs",
           code: async (d: any) => {
             const data = d.util.aoiFunc(d);
-            const [
+            let [
               query,
               type = "youtube",
               format = "{title} by {artist} ({duration})",
@@ -1216,37 +1156,59 @@ export class AoiVoice<T> extends Manager {
               separator = "\n",
             ] = data.inside.splits;
 
-            const searchType = type.toLowerCase() === "youtube" ? 3 : 0;
+            type = type.toLowerCase();
+
+            if (!["youtube", "spotify", "soundcloud"].includes(type))
+              return d.aoiError.fnError(d, "custom", {}, "Type Provided");
 
             let results;
-            if (searchType === 3) {
+
+            if (type === "youtube") {
               results = await d.client.voiceManager.search(3, query, list);
-            } else if (searchType === 0) {
+            } else if (type === "soundcloud") {
               results = await d.client.voiceManager.search(0, query, list);
+            } else if (type === "spotify") {
+              results = await d.client.voiceManager.search(4, query, list);
             }
 
             const searchResults = results.map((result) => {
               let formatResults = format;
 
               const placeholders = {
-                "{title}": result.title,
+                "{title}": type === "spotify" ? result.name : result.title,
                 "{artist}":
-                  searchType === 3
+                  type === "youtube"
                     ? result.author.name
-                    : result.publisher_metadata?.artist || "Unknown Artist",
+                    : type === "soundcloud"
+                    ? result.publisher_metadata?.artist
+                    : type === "spotify"
+                    ? result.artists[0].name
+                    : "Unknown Artist",
                 "{duration}":
-                  searchType === 3
+                  type === "youtube"
                     ? result.duration.seconds * 1000
-                    : result.duration,
-                "{formattedDuration}":
-                  searchType === 3
+                    : type === "soundcloud"
+                    ? result.duration
+                    : type === "spotify"
+                    ? result.duration_ms
+                    : 0,
+                "{digitalFormat}":
+                  type === "youtube"
                     ? result.duration.text
-                    : new Date(result.duration).toISOString().substr(14, 5),
+                    : type === "soundcloud"
+                    ? new Date(result.duration).toISOString().substr(14, 5)
+                    : type === "spotify"
+                    ? new Date(result.duration_ms).toISOString().substr(14, 5)
+                    : "00:00:00",
                 "{id}": result.id,
                 "{url}":
-                  searchType === 3
+                  type === "youtube"
                     ? "https://www.youtube.com/watch?v=" + result.id
-                    : result.permalink_url,
+                    : type === "soundcloud"
+                    ? result.permalink_url
+                    : type === "spotify"
+                    ? result.external_urls.spotify
+                    : undefined,
               };
 
               for (const placeholder in placeholders) {

@@ -12,6 +12,7 @@ export interface ManagerConfigurations
         debug: boolean;
     };
     searchOptions?: {
+        spotifyAuth: any;
         soundcloudClientId?: string;
         youtubeCookie?: string;
         youtubeAuth?: PathLike;
