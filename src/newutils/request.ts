@@ -9,6 +9,7 @@ import getAudioDurationInSeconds from "get-audio-duration";
 import path from "path";
 import { stat } from "fs/promises";
 import { TrackInfo } from "soundcloud-downloader/src/info";
+import { parse, formatOpenURL } from "spotify-uri";
 import { url } from "inspector";
 import {
   LocalFileTrackInfo,
@@ -218,10 +219,14 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
     let data: any;
 
     try {
-      if (spotApi)
-        data = await spotApi.searchTracks(id, { limit: 1 });
-
-      data = await spotify.getData(data?.body?.tracks.items[0] ?? id);
+      if (spotApi) {
+        data = await spotApi.searchTracks(id, { limit: 1 })
+        data = data?.body?.tracks?.items?.[0]?.external_urls?.spotify || id;
+      } else {
+        data = id;
+      }
+      data = parse(data);
+      data = await spotify.getData(formatOpenURL(data));
     } catch (e) {
       console.error("[@akarui/aoi.music]: Failed to request spotify data with reason:", e.message);
       return;
