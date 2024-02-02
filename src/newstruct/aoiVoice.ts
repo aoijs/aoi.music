@@ -385,6 +385,7 @@ export class AoiVoice<T> extends Manager {
               page = 1,
               limit = 10,
               format = `{position}) {title} | {requester.user.tag}`,
+              sep = ","
             ] = data.inside.splits;
             if (!d.client.voiceManager) {
               return d.aoiError.fnError(
@@ -399,7 +400,7 @@ export class AoiVoice<T> extends Manager {
               return d.aoiError.fnError(d, "custom", {}, "Player Not Found.");
             const player = d.client.voiceManager.players.get(d.guild.id);
 
-            data.result = player.getQueue(page, limit, format);
+            data.result = player.getQueue(page, limit, format).join(sep);
 
             return {
               code: d.util.setCode(data),
