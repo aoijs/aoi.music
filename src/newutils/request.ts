@@ -228,7 +228,6 @@ export async function requestInfo<T extends keyof typeof PlatformType>(
       data = parse(data);
       data = await spotify.getData(formatOpenURL(data));
     } catch (e) {
-      console.error("[@akarui/aoi.music]: Failed to request spotify data with reason:", e.message);
       return;
     }
 
