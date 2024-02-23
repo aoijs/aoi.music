@@ -44,7 +44,7 @@
     "tweetnacl": "^1.0.3",
     "undici": "^5.20.0",
     "youtube-scrapper": "^1.4.0",
-    "youtubei.js": "^8.2.0"
+    "youtubei.js": "^9.1.0"
   },
   "devDependencies": {
     "@discordjs/opus": "^0.9.0",
