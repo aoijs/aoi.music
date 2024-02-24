@@ -68,6 +68,12 @@ export class Manager extends TypedEmitter<ManagerEvents> {
       this.spotifyApi.clientCredentialsGrant().then((data) => {
         this.spotifyApi.setAccessToken(data.body.access_token);
       });
+
+      setInterval(() => {
+        this.spotifyApi.clientCredentialsGrant().then((data) => {
+          this.spotifyApi.setAccessToken(data.body.access_token);
+        });
+      }, 36e5);
     }
 
     if (config.searchOptions?.soundcloudClientId) {
