@@ -185,6 +185,7 @@ export class AudioPlayer {
         this.#modes = this.defaultMode();
         this.queue = [];
         this.player.stop(true);
+		this.options.manager.players.delete(this.options.connection.joinConfig.guildId);
         if (this.options.manager.plugins.has(PluginName.Cacher)) {
             const cacher = <Plugin<PluginName.Cacher>>(
                 this.options.manager.plugins.get(PluginName.Cacher)
