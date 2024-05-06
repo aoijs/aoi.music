@@ -218,7 +218,7 @@ export class AoiVoice<T> extends Manager {
               debug = "no",
             ] = data.inside.splits;
 
-            const vc = d.util.getChannel(d, voiceId);
+            const vc = await d.util.getChannel(d, voiceId);
             if (
               ![d.util.channelTypes.Voice, d.util.channelTypes.Stage].includes(
                 vc.type
