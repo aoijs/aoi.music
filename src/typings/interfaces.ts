@@ -4,10 +4,9 @@ import { VoiceConnection } from "@discordjs/voice";
 import { AutoPlay, LoopMode, PlayerEvents } from "./enums";
 import { PathLike } from "fs";
 import { AudioPlayer } from "../newstruct/audioPlayer";
-import { Track } from "./types";
-import { Readable } from "stream";
-export interface ManagerConfigurations
-{
+import { Track, SpotifyTrackInfo, YoutubeTrackInfo, LocalFileTrackInfo, SoundCloudTrackInfo, UrlTrackInfo } from "./types";
+
+export interface ManagerConfigurations {
     devOptions?: {
         debug: boolean;
     };
@@ -17,7 +16,7 @@ export interface ManagerConfigurations
         youtubeCookie?: string;
         youtubeAuth?: PathLike;
         youtubegl?: string;
-        youtubeClient?: "WEB" | "ANDROID" | "YTMUSIC"
+        youtubeClient?: "WEB" | "ANDROID" | "YTMUSIC";
     };
     requestOptions?: {
         offsetTimeout?: number;
@@ -27,8 +26,7 @@ export interface ManagerConfigurations
     };
 }
 
-export interface AudioPLayerOptions
-{
+export interface AudioPLayerOptions {
     type: "default" | "fonly" | "bidirect";
     connection: VoiceConnection;
     manager: Manager;
@@ -53,18 +51,9 @@ export interface AudioPlayerMode {
     };
 }
 export interface ManagerEvents {
-    [PlayerEvents.TrackStart](
-        Track: Track<
-            "LocalFile" | "SoundCloud" | "Spotify" | "Url" | "Youtube"
-        >,
-        player: AudioPlayer,
-    ): this;
-    [PlayerEvents.TrackEnd](
-        track: Track<
-            "LocalFile" | "SoundCloud" | "Spotify" | "Url" | "Youtube"
-        >,
-        player: AudioPlayer,
-    ): this;
+    [PlayerEvents.TrackStart](track: Track<"LocalFile" | "SoundCloud" | "Spotify" | "Url" | "Youtube">, player: AudioPlayer): this;
+    [PlayerEvents.TrackEnd](track: Track<"LocalFile" | "SoundCloud" | "Spotify" | "Url" | "Youtube">, player: AudioPlayer): this;
+    [PlayerEvents.TrackAdd](track: SpotifyTrackInfo | YoutubeTrackInfo | LocalFileTrackInfo | SoundCloudTrackInfo | UrlTrackInfo, player: AudioPlayer): this;
     [PlayerEvents.QueueStart](urls: unknown[], player: AudioPlayer): this;
     [PlayerEvents.QueueEnd](player: AudioPlayer): this;
     [PlayerEvents.AudioError](error: any, player: AudioPlayer): this;
@@ -83,10 +72,7 @@ export interface rawYoutubeMixData {
 }
 export interface YoutubeMixPlaylistData {
     title: string;
-    contents: Record<
-        "playlistPanelVideoRenderer",
-        YoutubeMixPLaylistPanelVideoRenderData
-    >[];
+    contents: Record<"playlistPanelVideoRenderer", YoutubeMixPLaylistPanelVideoRenderData>[];
     playlistId: string;
     isInfinite: boolean;
     playlistShareUrl: string;
@@ -169,21 +155,17 @@ export interface EndScreenVideoRenderer {
     };
 }
 
-export interface CacherMemoryConfig
-{
+export interface CacherMemoryConfig {
     limit: number;
 }
 
-export interface CacheDiskConfig
-{
+export interface CacheDiskConfig {
     path: string;
     limit: number;
 }
 
 export type CacheConfig<T extends "memory" | "disk"> = T extends "memory" ? CacherMemoryConfig : CacheDiskConfig;
 
-
-export interface FilterConfig
-{
+export interface FilterConfig {
     filterFromStart: boolean;
 }

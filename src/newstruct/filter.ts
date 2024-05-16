@@ -1,8 +1,4 @@
-import {
-    AudioResource,
-    createAudioResource,
-    StreamType,
-} from "@discordjs/voice";
+import { AudioResource, createAudioResource, StreamType } from "@discordjs/voice";
 import getAudioDurationInSeconds from "get-audio-duration";
 import { FFmpeg } from "prism-media";
 import { Readable } from "stream";
@@ -17,10 +13,7 @@ export class Filter {
     constructor(config: FilterConfig) {
         this.#config = config;
     }
-    async add(
-        options: { filter: string; value: string }[],
-        player: AudioPlayer,
-    ) {
+    async add(options: { filter: string; value: string }[], player: AudioPlayer) {
         const f = player.filters;
         for (const option of options) {
             const { filter, value } = option;
@@ -34,10 +27,7 @@ export class Filter {
         player.setFilters(f);
         await this.#apply(player);
     }
-    async set(
-        options: { filter: string; value: string }[],
-        player: AudioPlayer,
-    ) {
+    async set(options: { filter: string; value: string }[], player: AudioPlayer) {
         player.setFilters(options.map((o) => `${o.filter}=${o.value}`));
         await this.#apply(player);
     }
@@ -59,11 +49,7 @@ export class Filter {
         //@ts-ignore
         const r: AudioResource<unknown> = player.player.state.resource;
         if (!track) return;
-        const stream = await requestStream(
-            track,
-            track.formatedPlatforms,
-            player.options.manager,
-        );
+        const stream = await requestStream(track, track.formattedPlatforms, player.options.manager);
         const ffmpeg = new FFmpeg({
             args: player.filters.length
                 ? this.#config.filterFromStart
@@ -74,16 +60,16 @@ export class Filter {
                           `${player.player.state.resource.playbackDuration}ms`,
                           ...FFMPEG_ARGS,
                           "-af",
-                          player.filters.join(","),
+                          player.filters.join(",")
                       ]
                 : !this.#config.filterFromStart
-                ? [
-                      "-ss",
-                      //@ts-ignore
-                      `${player.player.state.resource.playbackDuration}ms`,
-                      ...FFMPEG_ARGS,
-                  ]
-                : [...FFMPEG_ARGS],
+                  ? [
+                        "-ss",
+                        //@ts-ignore
+                        `${player.player.state.resource.playbackDuration}ms`,
+                        ...FFMPEG_ARGS
+                    ]
+                  : [...FFMPEG_ARGS]
         });
         let str: Readable | FFmpeg;
         if (stream instanceof ReadableStream) {
@@ -92,11 +78,9 @@ export class Filter {
 
         const newResource = createAudioResource(str, {
             inlineVolume: true,
-            inputType: StreamType.Raw,
+            inputType: StreamType.Raw
         });
-        newResource.playbackDuration = this.#config.filterFromStart
-            ? 0
-            : r.playbackDuration;
+        newResource.playbackDuration = this.#config.filterFromStart ? 0 : r.playbackDuration;
         newResource.volume.setVolume(player.volume / 100);
         player.setFiltering(true);
         player.player.play(newResource);
@@ -105,21 +89,17 @@ export class Filter {
         const args = ["-ss", `${time}ms`, ...FFMPEG_ARGS];
         if (player.filters.length) args.push("-af", player.filters.join(","));
         const ffmpeg = new FFmpeg({
-            args,
+            args
         });
         const track = player.currentTrack;
-        const stream = await requestStream(
-            track,
-            track.formatedPlatforms,
-            player.options.manager,
-        );
+        const stream = await requestStream(track, track.formattedPlatforms, player.options.manager);
         let str: Readable | FFmpeg;
         if (stream instanceof ReadableStream) {
             str = <FFmpeg>Readable.from(stream).pipe(ffmpeg);
         } else str = stream.pipe(ffmpeg);
         const newResource = createAudioResource(str, {
             inlineVolume: true,
-            inputType: StreamType.Raw,
+            inputType: StreamType.Raw
         });
         newResource.playbackDuration = time;
         player.seeked(true);
@@ -128,13 +108,13 @@ export class Filter {
     }
     createFFmpeg(...args: string[]) {
         const ffmpeg = new FFmpeg({
-            args: [...FFMPEG_ARGS, ...args],
+            args: [...FFMPEG_ARGS, ...args]
         });
         return ffmpeg;
     }
     createFFmpegWithInputFile(input: string, ...args: string[]) {
         const ffmpeg = new FFmpeg({
-            args: [...FFMPEG_ARGS, "-i", input, ...args],
+            args: [...FFMPEG_ARGS, "-i", input, ...args]
         });
         return ffmpeg;
     }

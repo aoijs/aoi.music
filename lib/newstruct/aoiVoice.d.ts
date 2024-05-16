@@ -11,6 +11,7 @@ export declare class AoiVoice<T> extends Manager {
     cmds: {
         trackStart: Collection<string, Record<string, any>>;
         trackEnd: Collection<string, Record<string, any>>;
+        trackAdd: Collection<string, Record<string, any>>;
         queueEnd: Collection<string, Record<string, any>>;
         audioError: Collection<string, Record<string, any>>;
         queueStart: Collection<string, Record<string, any>>;
@@ -21,7 +22,7 @@ export declare class AoiVoice<T> extends Manager {
     addEvent(event: PlayerEvents): void;
     addEvents(...events: PlayerEvents[]): void;
     bindExecutor(executor: Function): void;
-    joinVc({ type, voiceChannel, textChannel, selfDeaf, selfMute, }: {
+    joinVc({ type, voiceChannel, textChannel, selfDeaf, selfMute }: {
         type: AudioPLayerOptions["type"];
         voiceChannel: VoiceChannel;
         textChannel: Snowflake;

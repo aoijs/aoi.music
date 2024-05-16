@@ -1,4 +1,4 @@
-import { formatedPlatforms } from "./../newutils/constants";
+import { formattedPlatforms } from "./../newutils/constants";
 import { TrackInfo } from "soundcloud-downloader/src/info";
 import { PlatformType, PluginName } from "./enums";
 import { GuildMember } from "discord.js";
@@ -21,7 +21,7 @@ export type SoundCloudTrackInfo = {
     createdAt: Date | null;
     platformType: PlatformType;
     rawData: TrackInfo;
-    formatedPlatforms: "SoundCloud";
+    formattedPlatforms: "SoundCloud";
     requester: GuildMember;
     position: number;
 };
@@ -40,10 +40,10 @@ export type YoutubeTrackInfo = {
     id: string;
     createdAt: Date | null;
     platformType: PlatformType;
-    formatedPlatforms: "Youtube";
+    formattedPlatforms: "Youtube";
     requester: GuildMember;
     position: number;
-    isLiveContent:boolean
+    isLiveContent: boolean;
 };
 
 export type LocalFileTrackInfo = {
@@ -57,7 +57,7 @@ export type LocalFileTrackInfo = {
     views: 0;
     id: string;
     platformType: PlatformType;
-    formatedPlatforms: "LocalFile";
+    formattedPlatforms: "LocalFile";
     requester: GuildMember;
     position: number;
 };
@@ -73,10 +73,10 @@ export type UrlTrackInfo = {
     views: 0;
     id: string;
     platformType: PlatformType;
-    formatedPlatforms: "Url";
+    formattedPlatforms: "Url";
     requester: GuildMember;
     position: number;
-    isLiveContent:boolean
+    isLiveContent: boolean;
 };
 export type SpotifyTrackInfo = {
     title: string;
@@ -91,19 +91,18 @@ export type SpotifyTrackInfo = {
     id: string;
     createdAt: Date | null;
     platformType: PlatformType;
-    formatedPlatforms: "Spotify";
+    formattedPlatforms: "Spotify";
     requester: GuildMember;
     position: number;
 };
-export type Track<type extends keyof typeof PlatformType> =
-    type extends "SoundCloud"
-        ? SoundCloudTrackInfo
-        : type extends "LocalFile"
-        ? LocalFileTrackInfo
-        : type extends "Url"
+export type Track<type extends keyof typeof PlatformType> = type extends "SoundCloud"
+    ? SoundCloudTrackInfo
+    : type extends "LocalFile"
+      ? LocalFileTrackInfo
+      : type extends "Url"
         ? UrlTrackInfo
         : type extends "Youtube"
-        ? YoutubeTrackInfo
-        : SpotifyTrackInfo;
+          ? YoutubeTrackInfo
+          : SpotifyTrackInfo;
 
 export type Plugin<T extends PluginName> = T extends PluginName.Cacher ? Cacher<"memory" | "disk"> : Filter;

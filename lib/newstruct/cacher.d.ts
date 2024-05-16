@@ -5,7 +5,7 @@ import { Readable } from "stream";
 import { Track } from "../typings/types";
 export declare class Cacher<T extends "memory" | "disk"> {
     #private;
-    constructor({ type, }: {
+    constructor({ type }: {
         type: T;
     });
     write(metaData: Track<"SoundCloud" | "Youtube" | "LocalFile" | "Spotify" | "Url">, stream: Readable): Promise<void>;

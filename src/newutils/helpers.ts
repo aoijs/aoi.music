@@ -1,10 +1,5 @@
 import { Client, Constants, Events, GatewayDispatchEvents, GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdateDispatchData, Guild, Snowflake, Status, VoiceChannel } from "discord.js";
-import {
-    rawYoutubeMixData,
-    YoutubeMixPlaylistData,
-    YoutubeMixPLaylistPanelVideoRenderData,
-    YoutubeRelatedData,
-} from "../typings/interfaces";
+import { rawYoutubeMixData, YoutubeMixPlaylistData, YoutubeMixPLaylistPanelVideoRenderData, YoutubeRelatedData } from "../typings/interfaces";
 import { DiscordGatewayAdapterLibraryMethods, DiscordGatewayAdapterCreator } from "@discordjs/voice";
 
 export function shuffle<T>(array: Array<T>) {
@@ -18,22 +13,14 @@ export function shuffle<T>(array: Array<T>) {
         currentIndex--;
 
         // And swap it with the current element.
-        [array[currentIndex], array[randomIndex]] = [
-            array[randomIndex],
-            array[currentIndex],
-        ];
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
     }
 
     return array;
 }
 
 export function ytMixHTMLParser(file: string) {
-    file = file
-        .split("var ytInitialData")[1]
-        .split("=")
-        .slice(1)
-        .join("=")
-        .split("</script>")[0];
+    file = file.split("var ytInitialData")[1].split("=").slice(1).join("=").split("</script>")[0];
     let obj: rawYoutubeMixData;
     try {
         eval(` obj = ${file}`);
@@ -43,20 +30,14 @@ export function ytMixHTMLParser(file: string) {
     return obj.contents.twoColumnWatchNextResults.playlist.playlist;
 }
 export function ytRelatedHTMLParser(file: string) {
-    file = file
-        .split("var ytInitialData")[1]
-        .split("=")
-        .slice(1)
-        .join("=")
-        .split("</script>")[0];
+    file = file.split("var ytInitialData")[1].split("=").slice(1).join("=").split("</script>")[0];
     let obj: YoutubeRelatedData;
     try {
         eval(` obj = ${file}`);
     } catch (e) {
         throw e;
     }
-    return obj.playerOverlays.playerOverlayRenderer.endScreen
-        .watchNextEndScreenRenderer.results;
+    return obj.playerOverlays.playerOverlayRenderer.endScreen.watchNextEndScreenRenderer.results;
 }
 
 export function isMix(url: string) {
@@ -71,24 +52,17 @@ export function YoutubeMixVideo(data: YoutubeMixPLaylistPanelVideoRenderData) {
     return `https://www.youtube.com/watch?v=${videoId}&list=${playlistId}&index=${index}`;
 }
 export function YoutubeMix(data: YoutubeMixPlaylistData) {
-    return data.contents.map((video) =>
-        YoutubeMixVideo(video.playlistPanelVideoRenderer),
-    );
+    return data.contents.map((video) => YoutubeMixVideo(video.playlistPanelVideoRenderer));
 }
 
-export function YoutubeRelated(
-    data: YoutubeRelatedData["playerOverlays"]["playerOverlayRenderer"]["endScreen"]["watchNextEndScreenRenderer"]["results"],
-) {
-    return data
-        .filter((x) => x.endScreenVideoRenderer)
-        .map((x) => x.endScreenVideoRenderer.videoId);
+export function YoutubeRelated(data: YoutubeRelatedData["playerOverlays"]["playerOverlayRenderer"]["endScreen"]["watchNextEndScreenRenderer"]["results"]) {
+    return data.filter((x) => x.endScreenVideoRenderer).map((x) => x.endScreenVideoRenderer.videoId);
 }
 
-export async function isLiveStreamUrl(url:string) {
+export async function isLiveStreamUrl(url: string) {
     const req = await fetch(url, {
-        method: "GET",
+        method: "GET"
     });
 
     return req.headers.get("content-type")?.includes("audio") && !req.headers.get("content-length");
-
 }

@@ -1,72 +1,64 @@
-export enum CacheType
-{
+export enum CacheType {
     Disk = "Disk",
     Memory = "Memory"
 }
 
-export enum PlayerStates
-{
-    Idling = 'Idling',
-    Playing = 'Playing',
-    Paused = 'Paused',
-    Destroyed = 'Destroyed'
+export enum PlayerStates {
+    Idling = "Idling",
+    Playing = "Playing",
+    Paused = "Paused",
+    Destroyed = "Destroyed"
 }
 
-export enum LoopMode
-{
-    None = 'none',
-    Track = 'song',
-    Queue = 'queue'
+export enum LoopMode {
+    None = "none",
+    Track = "song",
+    Queue = "queue"
 }
 
-export enum SourceProviders
-{
+export enum SourceProviders {
     Soundcloud,
     Twitch,
     LocalFile,
     Attachment
 }
 
-export enum PlayerEvents
-{
+export enum PlayerEvents {
     AudioError = "audioError",
     QueueStart = "queueStart",
     QueueEnd = "queueEnd",
     TrackStart = "trackStart",
     TrackEnd = "trackEnd",
+    TrackAdd = "trackAdd",
     TrackPause = "trackPause",
-    TrackResume = "trackResume",
+    TrackResume = "trackResume"
 }
 
-export const timeMultiPlier = [ 1, 60, 60, 24 ];
+export const timeMultiPlier = [1, 60, 60, 24];
 
-export enum AutoPlay
-{
+export enum AutoPlay {
     None = "none",
     Youtube = "youtube",
     SoundCloud = "soundcloud",
     Spotify = "spotify",
-    Relative = "relative",
+    Relative = "relative"
 }
 
-export enum PlatformType
-{
+export enum PlatformType {
     SoundCloud,
     LocalFile,
     Url,
     Youtube,
-    Spotify,
-    
-
+    Spotify
 }
 
 export enum PluginName {
-    Cacher= "cache",
-    Filter = "filter",
+    Cacher = "cache",
+    Filter = "filter"
 }
 
 export enum PlayerTypes {
     Default = "default",
     FOnly = "fonly",
-    Bidirect= "bidirect",
+    Bidirect = "bidirect"
 }

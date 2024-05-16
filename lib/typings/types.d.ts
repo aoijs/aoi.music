@@ -21,7 +21,7 @@ export type SoundCloudTrackInfo = {
     createdAt: Date | null;
     platformType: PlatformType;
     rawData: TrackInfo;
-    formatedPlatforms: "SoundCloud";
+    formattedPlatforms: "SoundCloud";
     requester: GuildMember;
     position: number;
 };
@@ -40,7 +40,7 @@ export type YoutubeTrackInfo = {
     id: string;
     createdAt: Date | null;
     platformType: PlatformType;
-    formatedPlatforms: "Youtube";
+    formattedPlatforms: "Youtube";
     requester: GuildMember;
     position: number;
     isLiveContent: boolean;
@@ -56,7 +56,7 @@ export type LocalFileTrackInfo = {
     views: 0;
     id: string;
     platformType: PlatformType;
-    formatedPlatforms: "LocalFile";
+    formattedPlatforms: "LocalFile";
     requester: GuildMember;
     position: number;
 };
@@ -71,7 +71,7 @@ export type UrlTrackInfo = {
     views: 0;
     id: string;
     platformType: PlatformType;
-    formatedPlatforms: "Url";
+    formattedPlatforms: "Url";
     requester: GuildMember;
     position: number;
     isLiveContent: boolean;
@@ -89,7 +89,7 @@ export type SpotifyTrackInfo = {
     id: string;
     createdAt: Date | null;
     platformType: PlatformType;
-    formatedPlatforms: "Spotify";
+    formattedPlatforms: "Spotify";
     requester: GuildMember;
     position: number;
 };

@@ -25,6 +25,7 @@ export declare enum PlayerEvents {
     QueueEnd = "queueEnd",
     TrackStart = "trackStart",
     TrackEnd = "trackEnd",
+    TrackAdd = "trackAdd",
     TrackPause = "trackPause",
     TrackResume = "trackResume"
 }
