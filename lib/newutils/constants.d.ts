@@ -1,5 +1,5 @@
 export declare const FFMPEG_ARGS: readonly ["-i", "-", "-analyzeduration", "0", "-loglevel", "0", "-preset", "veryfast", "-f", "s16le", "-ar", "48000", "-ac", "2", "-vn"];
-export declare const formatedPlatforms: readonly ["SoundCloud", "LocalFile", "Url", "Youtube", "Spotify"];
+export declare const formattedPlatforms: readonly ["SoundCloud", "LocalFile", "Url", "Youtube", "Spotify"];
 export declare const CustomFilters: {
     nightCore: (value: number) => {
         filter: string;

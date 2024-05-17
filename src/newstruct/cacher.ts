@@ -1,13 +1,5 @@
 import { unlink, writeFile } from "fs/promises";
-import {
-    createReadStream,
-    createWriteStream,
-    existsSync,
-    mkdirSync,
-    PathLike,
-    readdirSync,
-    unlinkSync,
-} from "fs";
+import { createReadStream, createWriteStream, existsSync, mkdirSync, PathLike, readdirSync, unlinkSync } from "fs";
 import { join } from "path";
 import { pipeline } from "stream/promises";
 import { createGzip, createUnzip } from "zlib";
@@ -18,37 +10,28 @@ import { PlatformType } from "../typings/enums";
 import hidefile from "hidefile";
 export class Cacher<T extends "memory" | "disk"> {
     #type: T;
-    #map: Map<string, T extends "memory" ? Buffer | PathLike : PathLike> =
-        new Map();
+    #map: Map<string, T extends "memory" ? Buffer | PathLike : PathLike> = new Map();
     #limit: number | null;
     #path: string | null;
     #prefixedPath: string;
-    constructor({
-        type,
-    }: {
-        type: T;
-    }) {
+    constructor({ type }: { type: T }) {
         this.#type = type;
         this.#path = "MUSIC_CACHE";
         this.#prefixedPath = ".MUSIC_CACHE";
-        
+
         if (this.#type === "disk" && !existsSync(this.#path) && !existsSync(this.#prefixedPath)) {
             mkdirSync(this.#path, {
-                recursive: true,
-            } );
-            hidefile.isHidden( this.#path, ( err: Error | null, hidden: boolean ) =>
-            {
-                if ( err === null )
-                {
-                    if ( !hidden )
-                    {
-                       this.#path = hidefile.hideSync( this.#path ).toString();
+                recursive: true
+            });
+            hidefile.isHidden(this.#path, (err: Error | null, hidden: boolean) => {
+                if (err === null) {
+                    if (!hidden) {
+                        this.#path = hidefile.hideSync(this.#path).toString();
                     }
                 }
-            })
+            });
         }
-        if ( this.#path !== this.#prefixedPath )
-        {
+        if (this.#path !== this.#prefixedPath) {
             this.#path = this.#prefixedPath;
         }
         if (this.#type === "disk" && existsSync(this.#path)) {
@@ -66,12 +49,7 @@ export class Cacher<T extends "memory" | "disk"> {
         const file = createWriteStream(hash);
         await pipeline(stream, gzip, file);
     }
-    async write(
-        metaData: Track<
-            "SoundCloud" | "Youtube" | "LocalFile" | "Spotify" | "Url"
-        >,
-        stream: Readable,
-    ) {
+    async write(metaData: Track<"SoundCloud" | "Youtube" | "LocalFile" | "Spotify" | "Url">, stream: Readable) {
         if (this.has(metaData.id)) return;
         if (metaData.platformType === PlatformType.LocalFile) {
             this.#map.set(metaData.id, (<Track<"LocalFile">>metaData).url);
@@ -88,7 +66,7 @@ export class Cacher<T extends "memory" | "disk"> {
                 this.#map.set(metaData.id, data);
             });
         } else if (this.#type === "disk") {
-            const hash = join(this.#path, `${metaData.id.replaceAll("/", "").replaceAll(":","").replaceAll(".", "")}.gz`);
+            const hash = join(this.#path, `${metaData.id.replaceAll("/", "").replaceAll(":", "").replaceAll(".", "")}.gz`);
             if (stream instanceof ReadableStream) {
                 stream = Readable.from(stream);
             }
@@ -105,9 +83,8 @@ export class Cacher<T extends "memory" | "disk"> {
             }
         } else {
             const hash = <string>this.#map.get(id);
-            if ( hash )
-            {
-                if ( !hash.endsWith( ".gz" ) ) return createReadStream( hash );
+            if (hash) {
+                if (!hash.endsWith(".gz")) return createReadStream(hash);
                 const file = createReadStream(hash);
                 const unzip = createUnzip();
                 const stream = file.pipe(unzip);
@@ -126,17 +103,14 @@ export class Cacher<T extends "memory" | "disk"> {
             }
         }
     }
-    clear ()
-    {
-        if ( this.#type === "disk" )
-        {
-            const files = readdirSync( this.#path );
-                for ( const file of files )
-                {
-                    unlink( join( this.#path, file ) );
-                }
+    clear() {
+        if (this.#type === "disk") {
+            const files = readdirSync(this.#path);
+            for (const file of files) {
+                unlink(join(this.#path, file));
+            }
         }
-            this.#map.clear();
+        this.#map.clear();
     }
     has(id: string) {
         return this.#map.has(id);

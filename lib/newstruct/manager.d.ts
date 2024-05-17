@@ -21,7 +21,7 @@ export declare class Manager extends TypedEmitter<ManagerEvents> {
     spotifyApi: SpotifyWebApi;
     constructor(config?: ManagerConfigurations);
     static defaultConfig(): ManagerConfigurations;
-    joinVc({ type, voiceChannel, selfDeaf, selfMute, adapter, }: {
+    joinVc({ type, voiceChannel, selfDeaf, selfMute, adapter }: {
         type: AudioPLayerOptions["type"];
         voiceChannel: VoiceBasedChannel;
         selfDeaf?: boolean;

@@ -5,7 +5,7 @@ import { VoiceConnection } from "@discordjs/voice";
 import { AutoPlay, LoopMode, PlayerEvents } from "./enums";
 import { PathLike } from "fs";
 import { AudioPlayer } from "../newstruct/audioPlayer";
-import { Track } from "./types";
+import { Track, SpotifyTrackInfo, YoutubeTrackInfo, LocalFileTrackInfo, SoundCloudTrackInfo, UrlTrackInfo } from "./types";
 export interface ManagerConfigurations {
     devOptions?: {
         debug: boolean;
@@ -49,8 +49,9 @@ export interface AudioPlayerMode {
     };
 }
 export interface ManagerEvents {
-    [PlayerEvents.TrackStart](Track: Track<"LocalFile" | "SoundCloud" | "Spotify" | "Url" | "Youtube">, player: AudioPlayer): this;
+    [PlayerEvents.TrackStart](track: Track<"LocalFile" | "SoundCloud" | "Spotify" | "Url" | "Youtube">, player: AudioPlayer): this;
     [PlayerEvents.TrackEnd](track: Track<"LocalFile" | "SoundCloud" | "Spotify" | "Url" | "Youtube">, player: AudioPlayer): this;
+    [PlayerEvents.TrackAdd](track: SpotifyTrackInfo | YoutubeTrackInfo | LocalFileTrackInfo | SoundCloudTrackInfo | UrlTrackInfo, player: AudioPlayer): this;
     [PlayerEvents.QueueStart](urls: unknown[], player: AudioPlayer): this;
     [PlayerEvents.QueueEnd](player: AudioPlayer): this;
     [PlayerEvents.AudioError](error: any, player: AudioPlayer): this;
