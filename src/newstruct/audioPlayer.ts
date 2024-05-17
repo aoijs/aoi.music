@@ -331,13 +331,15 @@ export class AudioPlayer {
             }
         } else if (this.options.type === "bidirect") {
         } else if (this.options.type === "fonly") {
-            for (let i = 0; i < position; i++) {
+            for (let i = 0; i < position-1; i++) {
                 if (this.loop === LoopMode.Queue) {
                     this.queue.push(this.queue.shift());
                 } else {
                     this.queue.shift();
                 }
             }
+
+			this.#modes.currentTrack = 0;
         }
         this.skip();
     }
