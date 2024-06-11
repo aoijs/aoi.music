@@ -16,6 +16,7 @@ export declare class AudioPlayer {
     _destroy(): void;
     _configPlayer(): void;
     add(track: string[], type: PlatformType, member: GuildMember): Promise<void>;
+    removeTrack(position: number): void;
     skip(): boolean;
     skipTo(position: number): void;
     pause(): boolean;
