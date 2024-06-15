@@ -5,12 +5,13 @@ import scdl from "soundcloud-downloader";
 import { request } from "undici";
 import { PlatformType, PluginName } from "./../typings/enums";
 import getAudioDurationInSeconds from "get-audio-duration";
-import path from "path";
+import path, { relative } from "path";
 import { stat } from "fs/promises";
 import { TrackInfo } from "soundcloud-downloader/src/info";
 import { parse, formatOpenURL } from "spotify-uri";
 import { Plugin, Track } from "../typings/types";
 import { PassThrough, Readable } from "stream";
+import { search } from "../newutils/search";
 
 import { SpotifyTrackInfo as SpotifyInfo } from "../typings/types";
 import { ReadableStream } from "stream/web";
@@ -194,18 +195,17 @@ export async function requestInfo<T extends keyof typeof PlatformType>(id: strin
         const spotApi = manager.spotifyApi;
         let data: any;
 
-        try {
-            if (spotApi) {
-                data = await spotApi.searchTracks(id, { limit: 1 });
-                data = data?.body?.tracks?.items?.[0]?.external_urls?.spotify || id;
-            } else {
-                data = id;
-            }
-            data = parse(data);
-            data = await spotify.getData(formatOpenURL(data));
-        } catch (e) {
-            return;
+        if (spotApi && !id.includes("open.spotify.com")) {
+            data = await spotApi.searchTracks(id, { limit: 1 });
+            data = data?.body.tracks.items[0].external_urls?.spotify || id;
+        } else {
+            data = id;
         }
+
+        data = parse(data);
+        data = await spotify.getData(formatOpenURL(data));
+
+        // const relativeVideo: any = await search(`${data.name} ${data.artists.map((a: { name: any }) => a.name)[0]}`, PlatformType.Youtube, manager);
 
         if (data.type === "track") return <Track<T>>(<unknown>{
                 title: data.name,

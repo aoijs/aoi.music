@@ -610,6 +610,27 @@ export class AoiVoice<T> extends Manager {
                         };
                     }
                 },
+                // removeTrack
+                {
+                    name: "$removeTrack",
+                    type: "djs",
+                    code: async (d: any) => {
+                        const data = d.util.aoiFunc(d);
+                        if (data.err) return d.error(data.err);
+
+                        const position = data.inside.inside;
+                        if (!d.client.voiceManager) return d.aoiError.fnError(d, "custom", {}, "Voice Class Is Not Initialised.");
+                        const player = d.client.voiceManager.players.get(d.guild.id);
+
+                        if (isNaN(position)) return d.aoiError.fnError(d, "custom", {}, "Invalid Position Provided.");
+
+                        if (player) player.removeTrack(Number(position));
+
+                        return {
+                            code: d.util.setCode(data)
+                        };
+                    }
+                },
                 // stopTrack
                 {
                     name: "$stopTrack",

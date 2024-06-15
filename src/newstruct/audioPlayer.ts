@@ -315,6 +315,10 @@ export class AudioPlayer {
             }
         }
     }
+    removeTrack(position: number) {
+        if (position > this.queue.length) return;
+        this.queue.splice(position, 1);
+    }
     skip() {
         return this.player.stop();
     }
