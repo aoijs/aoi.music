@@ -4,26 +4,26 @@
   </a>
 </p>
 
-<h1 align="center">@akarui/aoi.music</h1>
+<h1 align="center">@aoijs/aoi.music</h1>
 
-@akarui/aoi.music is a powerful TypeScript-based JavaScript library that adds music-related properties and lays a solid foundation for music operations in aoi.js. 
+@aoijs/aoi.music is a powerful TypeScript-based JavaScript library that adds music-related properties and lays a solid foundation for music operations in aoi.js. 
 
-Whether you're building a music streaming app, a Discord bot with music capabilities, or any other music-related project, @akarui/aoi.music is here to make your life easier!
+Whether you're building a music streaming app, a Discord bot with music capabilities, or any other music-related project, @aoijs/aoi.music is here to make your life easier!
 
 ## 🚀 Setup
 
-To get started with @akarui/aoi.music, follow these simple steps:
+To get started with @aoijs/aoi.music, follow these simple steps:
 
-1. Install @akarui/aoi.music via npm:
+1. Install @aoijs/aoi.music via npm:
 
    ```bash
-   npm install @akarui/aoi.music
+   npm install @aoijs/aoi.music
    ```
 
 2. Import the Manager class and create a new instance:
 
    ```javascript
-   const { Manager } = require("@akarui/aoi.music");
+   const { Manager } = require("@aoijs/aoi.music");
    
    const manager = new Manager({
       devOptions: {
