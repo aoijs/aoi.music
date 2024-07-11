@@ -2,9 +2,8 @@ import sui, { Spotify } from "spotify-url-info";
 import SpotifyWebApi from "spotify-web-api-node";
 import { DiscordGatewayAdapterCreator, entersState, joinVoiceChannel, VoiceConnectionStatus } from "@discordjs/voice";
 import { Snowflake, VoiceBasedChannel } from "discord.js";
-import { existsSync, readFileSync, writeFileSync } from "fs";
 import { TypedEmitter } from "tiny-typed-emitter/lib/index";
-import InnerTube from "youtubei.js";
+import { Innertube, UniversalCache } from "youtubei.js";
 import IT from "youtubei.js";
 import { AudioPLayerOptions, ManagerConfigurations, ManagerEvents } from "../typings/interfaces";
 import { AudioPlayer } from "./audioPlayer";
@@ -39,7 +38,9 @@ export class Manager extends TypedEmitter<ManagerEvents> {
             ytoptions.cookie = config.searchOptions?.youtubegl ?? "US";
         }
         this.platforms = {
-            youtube: InnerTube.create(),
+            youtube: Innertube.create({
+                cache: new UniversalCache(false)
+            }),
             soundcloud: scdl,
             spotify: sui(fetch)
         };
@@ -64,22 +65,22 @@ export class Manager extends TypedEmitter<ManagerEvents> {
         if (config.searchOptions?.soundcloudClientId) {
             this.platforms.soundcloud.setClientID(config.searchOptions.soundcloudClientId);
         }
-        if (config.searchOptions?.youtubeAuth) {
+        if (config.searchOptions?.youtubeAuth === true) {
             this.platforms.youtube.then((yt) => {
-                const cred = JSON.parse(readFileSync(config.searchOptions?.youtubeAuth).toString());
                 yt.session.on("auth-pending", (data) => {
-                    console.log(`[@akarui/aoi.music]: \nURL: ${data.verification_url}\nCode: ${data.user_code}`);
+                    console.log(`[@akarui/aoi.music]: Sign in pending: visit ${data.verification_url} and enter ${data.user_code} to sign in.`);
                 });
 
                 yt.session.on("auth", ({ credentials }) => {
-                    writeFileSync(config.searchOptions.youtubeAuth, JSON.stringify(credentials));
+                    yt.session.oauth.cacheCredentials();
                     console.log("[@akarui/aoi.music]: Successfully signed in.");
                 });
 
                 yt.session.on("update-credentials", ({ credentials }) => {
-                    writeFileSync(config.searchOptions.youtubeAuth, JSON.stringify(credentials));
+                    yt.session.oauth.cacheCredentials();
                 });
-                yt.session.signIn(cred);
+
+                yt.session.signIn();
             });
         }
     }
@@ -92,7 +93,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
             searchOptions: {
                 soundcloudClientId: undefined,
                 youtubeCookie: undefined,
-                youtubeAuth: undefined,
+                youtubeAuth: true,
                 youtubegl: "US",
                 youtubeClient: "WEB",
                 spotifyAuth: {
@@ -118,12 +119,6 @@ export class Manager extends TypedEmitter<ManagerEvents> {
             throw new Error(`Invalid Limit Provided in ManagerConfig#requestOptions['youtubePlaylistLimit']`);
         } else if (config.requestOptions?.spotifyPlaylistLimit && (typeof config.requestOptions.spotifyPlaylistLimit !== "number" || config.requestOptions.spotifyPlaylistLimit < -1)) {
             throw new Error(`Invalid Limit Provided in ManagerConfig#requestOptions['spotifyPlaylistLimit']`);
-        } else if (config.searchOptions?.youtubeAuth && !existsSync(config.searchOptions.youtubeAuth)) {
-            try {
-                writeFileSync(config.searchOptions.youtubeAuth, JSON.stringify({}));
-            } catch {
-                throw new Error(`Invalid Auth Path Provided in ManagerConfig#searchOptions['youtubeAuth']`);
-            }
         } else if (config.devOptions?.debug && typeof config.devOptions.debug !== "boolean") {
             throw new Error(`Invalid Debug Option Provided in ManagerConfig#devOptions['debug']`);
         }

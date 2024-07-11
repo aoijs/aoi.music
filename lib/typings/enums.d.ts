@@ -34,7 +34,6 @@ export declare enum AutoPlay {
     None = "none",
     Youtube = "youtube",
     SoundCloud = "soundcloud",
-    Spotify = "spotify",
     Relative = "relative"
 }
 export declare enum PlatformType {

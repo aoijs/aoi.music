@@ -205,8 +205,6 @@ export async function requestInfo<T extends keyof typeof PlatformType>(id: strin
         data = parse(data);
         data = await spotify.getData(formatOpenURL(data));
 
-        // const relativeVideo: any = await search(`${data.name} ${data.artists.map((a: { name: any }) => a.name)[0]}`, PlatformType.Youtube, manager);
-
         if (data.type === "track") return <Track<T>>(<unknown>{
                 title: data.name,
                 artist: data.artists.map((a: { name: any }) => a.name).join(", "),

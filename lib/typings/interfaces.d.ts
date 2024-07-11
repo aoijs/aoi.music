@@ -1,9 +1,7 @@
-/// <reference types="node" />
 import { Snowflake } from "discord.js";
 import { Manager } from "./../newstruct/manager";
 import { VoiceConnection } from "@discordjs/voice";
 import { AutoPlay, LoopMode, PlayerEvents } from "./enums";
-import { PathLike } from "fs";
 import { AudioPlayer } from "../newstruct/audioPlayer";
 import { Track, SpotifyTrackInfo, YoutubeTrackInfo, LocalFileTrackInfo, SoundCloudTrackInfo, UrlTrackInfo } from "./types";
 export interface ManagerConfigurations {
@@ -14,9 +12,9 @@ export interface ManagerConfigurations {
         spotifyAuth: any;
         soundcloudClientId?: string;
         youtubeCookie?: string;
-        youtubeAuth?: PathLike;
+        youtubeAuth?: boolean;
         youtubegl?: string;
-        youtubeClient?: "WEB" | "ANDROID" | "YTMUSIC";
+        youtubeClient?: "WEB" | "ANDROID" | "YTMUSIC_ANDROID" | "YTMUSIC" | "YTSTUDIO_ANDROID" | "TV_EMBEDDED";
     };
     requestOptions?: {
         offsetTimeout?: number;

@@ -436,7 +436,7 @@ export class AudioPlayer {
         this.#modes.filtering = type;
     }
     async autoPlayNext() {
-        if (this.autoPlay === AutoPlay.Youtube || this.autoPlay === AutoPlay.Spotify) {
+        if (this.autoPlay === AutoPlay.Youtube /*|| this.autoPlay === AutoPlay.Spotify*/) {
             const parsed = await (await fetch(`https://youtube.com/watch?v=${this.currentTrack.id}`)).text();
             const data = ytRelatedHTMLParser(parsed);
             const ids = YoutubeRelated(data);
@@ -469,8 +469,7 @@ export class AudioPlayer {
                 });
             }
         } else if (this.autoPlay === AutoPlay.Relative) {
-            if (this.currentTrack.formattedPlatforms.toLowerCase() === AutoPlay.Youtube || this.currentTrack.formattedPlatforms.toLowerCase() === AutoPlay.Spotify) {
-                const yt = await this.options.manager.platforms.youtube;
+            if (this.currentTrack.formattedPlatforms.toLowerCase() === AutoPlay.Youtube /*|| this.currentTrack.formattedPlatforms.toLowerCase() === AutoPlay.Spotify*/) {
                 const parsed = await (await fetch(`https://youtube.com/watch?v=${this.currentTrack.id}`)).text();
                 const data = ytRelatedHTMLParser(parsed);
                 const ids = YoutubeRelated(data);

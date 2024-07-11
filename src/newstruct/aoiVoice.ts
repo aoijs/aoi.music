@@ -283,12 +283,12 @@ export class AoiVoice<T> extends Manager {
                     type: "djs",
                     code: async (d: any) => {
                         const data = d.util.aoiFunc(d);
-                        const [type = "relative"] = data.inside.splits;
+                        const [type = "youtube"] = data.inside.splits;
                         if (!d.client.voiceManager) return d.aoiError.fnError(d, "custom", {}, "Voice Class Is Not Initialised.");
                         const player = d.client.voiceManager.players.get(d.guild.id);
                         if (!player) return d.aoiError.fnError(d, "custom", {}, "Player Not Found.");
 
-                        if (!["relative", "spotify", "youtube", "soundcloud", "none"].includes(type.toLowerCase())) {
+                        if (!["relative", "youtube", "soundcloud", "none"].includes(type.toLowerCase())) {
                             return d.aoiError.fnError(d, "custom", { inside: data.inside }, "Invalid Type Provided in");
                         }
 
