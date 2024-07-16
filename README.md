@@ -6,9 +6,7 @@
 
 <h1 align="center">@aoijs/aoi.music</h1>
 
-@aoijs/aoi.music is a powerful TypeScript-based JavaScript library that adds music-related properties and lays a solid foundation for music operations in aoi.js. 
-
-Whether you're building a music streaming app, a Discord bot with music capabilities, or any other music-related project, @aoijs/aoi.music is here to make your life easier!
+A powerful TypeScript-based JavaScript library that adds music-related properties and lays a solid foundation for music operations in aoi.js. 
 
 ## 🚀 Setup
 
