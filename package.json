@@ -8,6 +8,9 @@
   "maintainers": [
     "USERSATOSHI"
   ],
+  "scripts": {
+    "build": "npx tsc"
+  },
   "main": "lib/index.js",
   "files": [
     "lib",

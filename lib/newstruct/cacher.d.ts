@@ -1,3 +1,5 @@
+/// <reference types="node" />
+/// <reference types="node" />
 import { PathLike } from "fs";
 import { Readable } from "stream";
 import { Track } from "../typings/types";
