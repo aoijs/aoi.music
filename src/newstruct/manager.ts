@@ -13,6 +13,8 @@ import { fetch } from "undici";
 import { PlatformType, PluginName } from "../typings/enums";
 import { TrackInfo } from "soundcloud-downloader/src/info";
 import { Plugin } from "../typings/types";
+import { existsSync, readFileSync, writeFileSync, unlinkSync } from "fs";
+import { join } from "path";
 
 export class Manager extends TypedEmitter<ManagerEvents> {
     configs: ManagerConfigurations;
@@ -39,7 +41,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
         }
         this.platforms = {
             youtube: Innertube.create({
-                cache: new UniversalCache(false)
+                cache: new UniversalCache(true)
             }),
             soundcloud: scdl,
             spotify: sui(fetch)
@@ -66,21 +68,40 @@ export class Manager extends TypedEmitter<ManagerEvents> {
             this.platforms.soundcloud.setClientID(config.searchOptions.soundcloudClientId);
         }
         if (config.searchOptions?.youtubeAuth === true) {
-            this.platforms.youtube.then((yt) => {
+            this.platforms.youtube.then(async (yt) => {
+                yt.session.oauth.removeCache();
+                // should be inside of node_modules
+                const authPath = join(__dirname, "./credentials.json");
+
                 yt.session.on("auth-pending", (data) => {
                     console.log(`[@akarui/aoi.music]: Sign in pending: visit ${data.verification_url} and enter ${data.user_code} to sign in.`);
                 });
 
                 yt.session.on("auth", ({ credentials }) => {
                     yt.session.oauth.cacheCredentials();
+                    writeFileSync(authPath, JSON.stringify(credentials));
                     console.log("[@akarui/aoi.music]: Successfully signed in.");
                 });
-
+    
                 yt.session.on("update-credentials", ({ credentials }) => {
                     yt.session.oauth.cacheCredentials();
+                    writeFileSync(authPath, JSON.stringify(credentials));
                 });
 
-                yt.session.signIn();
+                if (existsSync(authPath)) {
+                    try {
+                        const credentials = JSON.parse(readFileSync(authPath, "utf-8"));
+                        console.log("[@akarui/aoi.music]: Attempting to sign in with cached credentials.");
+                        await yt.session.signIn(credentials);
+                    } catch {
+                        console.warn("[@akarui/aoi.music]: Failed to sign in with cached credentials, please reauthenticate.");
+                        unlinkSync(authPath);
+                        yt.session.oauth.removeCache();
+                        await yt.session.signIn();
+                    }
+                } else {
+                    yt.session.signIn();
+                }
             });
         }
     }

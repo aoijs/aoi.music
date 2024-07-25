@@ -316,6 +316,7 @@ export async function requestStream<T extends keyof typeof PlatformType>(track: 
     } else if (type === "Url") {
         const pass = new PassThrough();
         const req = await request(track.id);
+        // @ts-ignore
         req.body.pipe(pass);
         req.body.on("end", () => {
             pass.end();
