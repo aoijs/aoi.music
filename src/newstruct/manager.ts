@@ -13,7 +13,7 @@ import { fetch } from "undici";
 import { PlatformType, PluginName } from "../typings/enums";
 import { TrackInfo } from "soundcloud-downloader/src/info";
 import { Plugin } from "../typings/types";
-import { existsSync, readFileSync, writeFileSync } from "fs";
+import { existsSync, readFileSync, writeFileSync, unlinkSync } from "fs";
 import { join } from "path";
 
 export class Manager extends TypedEmitter<ManagerEvents> {
@@ -69,44 +69,35 @@ export class Manager extends TypedEmitter<ManagerEvents> {
         }
         if (config.searchOptions?.youtubeAuth === true) {
             this.platforms.youtube.then((yt) => {
+                // should be inside of node_modules
                 const authPath = join(__dirname, "./credentials.json");
+
+                yt.session.on("auth-pending", (data) => {
+                    console.log(`[@akarui/aoi.music]: Sign in pending: visit ${data.verification_url} and enter ${data.user_code} to sign in.`);
+                });
+
+                yt.session.on("auth", ({ credentials }) => {
+                    yt.session.oauth.cacheCredentials();
+                    writeFileSync(authPath, JSON.stringify(credentials));
+                    console.log(credentials);
+                    console.log("[@akarui/aoi.music]: Successfully signed in.");
+                });
+    
+                yt.session.on("update-credentials", ({ credentials }) => {
+                    yt.session.oauth.cacheCredentials();
+                    writeFileSync(authPath, JSON.stringify(credentials));
+                });
+
                 if (existsSync(authPath)) {
                     const credentials = JSON.parse(readFileSync(authPath, "utf-8"));
                     try {
                         yt.session.signIn(credentials);
                     } catch {
-                        yt.session.on("auth-pending", (data) => {
-                            console.log(`[@akarui/aoi.music]: Sign in pending: visit ${data.verification_url} and enter ${data.user_code} to sign in.`);
-                        });
+                        unlinkSync(authPath);
+                        yt.session.oauth.removeCache();
+                        yt.session.signIn();
                     }
-
-                    yt.session.on("auth", ({ credentials }) => {
-                        yt.session.oauth.cacheCredentials();
-                        writeFileSync(authPath, JSON.stringify(credentials));
-                        console.log("[@akarui/aoi.music]: Successfully signed in.");
-                    });
-    
-                    yt.session.on("update-credentials", ({ credentials }) => {
-                        yt.session.oauth.cacheCredentials();
-                        writeFileSync(authPath, JSON.stringify(credentials));
-                    });
-                    
-                    yt.session.signIn();
                 } else {
-                    yt.session.on("auth-pending", (data) => {
-                        console.log(`[@akarui/aoi.music]: Sign in pending: visit ${data.verification_url} and enter ${data.user_code} to sign in.`);
-                    });
-
-                    yt.session.on("auth", ({ credentials }) => {
-                        yt.session.oauth.cacheCredentials();
-                        writeFileSync(authPath, JSON.stringify(credentials));
-                        console.log("[@akarui/aoi.music]: Successfully signed in.");
-                    });
-
-                    yt.session.on("update-credentials", ({ credentials }) => {
-                        yt.session.oauth.cacheCredentials();
-                    });
-
                     yt.session.signIn();
                 }
             });
