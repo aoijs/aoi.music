@@ -79,7 +79,6 @@ export class Manager extends TypedEmitter<ManagerEvents> {
                 yt.session.on("auth", ({ credentials }) => {
                     yt.session.oauth.cacheCredentials();
                     writeFileSync(authPath, JSON.stringify(credentials));
-                    console.log(credentials);
                     console.log("[@akarui/aoi.music]: Successfully signed in.");
                 });
     
