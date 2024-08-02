@@ -69,7 +69,6 @@ export class Manager extends TypedEmitter<ManagerEvents> {
         }
         if (config.searchOptions?.youtubeAuth === true) {
             this.platforms.youtube.then(async (yt) => {
-                yt.session.oauth.removeCache();
                 // should be inside of node_modules
                 const authPath = join(__dirname, "./credentials.json");
 

@@ -73,6 +73,7 @@ export class Filter {
         });
         let str: Readable | FFmpeg;
         if (stream instanceof ReadableStream) {
+            // @ts-expect-error type errors
             str = <FFmpeg>Readable.from(stream).pipe(ffmpeg);
         } else str = stream.pipe(ffmpeg);
 
@@ -95,6 +96,7 @@ export class Filter {
         const stream = await requestStream(track, track.formattedPlatforms, player.options.manager);
         let str: Readable | FFmpeg;
         if (stream instanceof ReadableStream) {
+            // @ts-expect-error type errors
             str = <FFmpeg>Readable.from(stream).pipe(ffmpeg);
         } else str = stream.pipe(ffmpeg);
         const newResource = createAudioResource(str, {
