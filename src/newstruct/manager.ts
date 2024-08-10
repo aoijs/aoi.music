@@ -115,7 +115,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
                 youtubeCookie: undefined,
                 youtubeAuth: true,
                 youtubegl: "US",
-                youtubeClient: "WEB",
+                youtubeClient: "TV_EMBEDDED",
                 spotifyAuth: {
                     clientId: undefined,
                     clientSecret: undefined

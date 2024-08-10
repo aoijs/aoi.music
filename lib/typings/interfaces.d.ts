@@ -14,7 +14,7 @@ export interface ManagerConfigurations {
         youtubeCookie?: string;
         youtubeAuth?: boolean;
         youtubegl?: string;
-        youtubeClient?: "WEB" | "ANDROID" | "YTMUSIC_ANDROID" | "YTMUSIC" | "YTSTUDIO_ANDROID" | "TV_EMBEDDED";
+        youtubeClient?: "TV_EMBEDDED" | "ANDROID" | "YTMUSIC_ANDROID" | "YTMUSIC" | "YTSTUDIO_ANDROID" | "TV_EMBEDDED";
     };
     requestOptions?: {
         offsetTimeout?: number;
