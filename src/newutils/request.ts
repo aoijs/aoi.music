@@ -135,6 +135,7 @@ export async function requestInfo<T extends keyof typeof PlatformType>(id: strin
                     likes: scData.likes_count,
                     thumbnail: scData.artwork_url?.replace("-large.jpg", "-t500x500.jpg"),
                     id: scData.permalink_url,
+                    scid: scData.id,
                     description: scData.description,
                     createdAt: new Date(scData.created_at) ?? null,
                     platformType: PlatformType.SoundCloud,
@@ -158,6 +159,7 @@ export async function requestInfo<T extends keyof typeof PlatformType>(id: strin
                     likes: scData.likes_count,
                     thumbnail: scData.artwork_url?.replace("-large.jpg", "-t500x500.jpg"),
                     id: scData.permalink_url,
+                    scid: scData.id,
                     description: scData.description,
                     createdAt: new Date(scData.created_at) ?? null,
                     platformType: PlatformType.SoundCloud,
@@ -169,15 +171,18 @@ export async function requestInfo<T extends keyof typeof PlatformType>(id: strin
     } else if (type === "LocalFile" || type === "Url") {
         return <Track<T>>(<unknown>generateInfo(id, type));
     } else if (type === "Youtube") {
-        const ytData: any = await (await manager.platforms.youtube).getBasicInfo(id, manager.configs.searchOptions?.youtubeClient ?? "WEB").catch((_) => undefined);
+        const ytData: any = await (await manager.platforms.youtube).getBasicInfo(id, manager.configs.searchOptions?.youtubeClient ?? "TV_EMBEDDED").catch((_) => undefined);
         if (!ytData) return;
         return <Track<T>>(<unknown>{
             title: ytData.basic_info.title,
             channelId: ytData.basic_info.channel_id,
-            artist: ytData.basic_info.channel.name,
-            artistURL: ytData.basic_info.channel.url,
+            artist: ytData.basic_info?.author ?? "Unknown",
+            // remove soon in favour of channelUrl, better naming
+            artistURL: `https://youtube.com/channel/${ytData.basic_info.channel_id}`,
+            channelUrl: `https://youtube.com/channel/${ytData.basic_info.channel_id}`,
             duration: ytData.basic_info.duration * 1000,
             description: ytData.basic_info.short_description,
+            keywords: ytData.basic_info.keywords?.join(", ") ?? null,
             identifier: "youtube",
             url: `https://youtube.com/watch?v=${ytData.basic_info.id}`,
             views: ytData.basic_info.view_count,
@@ -197,7 +202,7 @@ export async function requestInfo<T extends keyof typeof PlatformType>(id: strin
 
         if (spotApi && !id.includes("open.spotify.com")) {
             data = await spotApi.searchTracks(id, { limit: 1 });
-            data = data?.body.tracks.items[0].external_urls?.spotify || id;
+            data = data?.body.tracks.items?.[0]?.external_urls?.spotify || id;
         } else {
             data = id;
         }
@@ -215,7 +220,7 @@ export async function requestInfo<T extends keyof typeof PlatformType>(id: strin
                 views: 0,
                 likes: 0,
                 thumbnail: data.coverArt.sources[0].url,
-                x: data.id,
+                spotifyId: data.id,
                 id: null,
                 description: null,
                 createdAt: new Date(data.releaseDate.isoString) ?? null,
@@ -238,7 +243,7 @@ export async function requestInfo<T extends keyof typeof PlatformType>(id: strin
                     views: 0,
                     likes: 0,
                     thumbnail: null,
-                    spotifyId: x.uri.split(":").pop(),
+                    spotifyId: x.id,
                     id: null,
                     description: null,
                     createdAt: null,
@@ -330,7 +335,7 @@ export async function requestStream<T extends keyof typeof PlatformType>(track: 
         const yt = await manager.platforms.youtube;
         return Readable.fromWeb(
             (await yt.download(track.id, {
-                client: manager.configs.searchOptions?.youtubeClient ?? "WEB",
+                client: manager.configs.searchOptions?.youtubeClient ?? "TV_EMBEDDED",
                 quality: "best",
                 type: "audio"
             })) as ReadableStream<any>
@@ -345,7 +350,7 @@ export async function requestStream<T extends keyof typeof PlatformType>(track: 
             track.id = data.videos[0].id;
             return Readable.fromWeb(
                 (await yt.download(track.id, {
-                    client: manager.configs.searchOptions?.youtubeClient ?? "WEB",
+                    client: manager.configs.searchOptions?.youtubeClient ?? "TV_EMBEDDED",
                     quality: "best",
                     type: "audio"
                 })) as ReadableStream<any>
@@ -353,7 +358,7 @@ export async function requestStream<T extends keyof typeof PlatformType>(track: 
         } else {
             return Readable.fromWeb(
                 (await yt.download(track.id, {
-                    client: manager.configs.searchOptions?.youtubeClient ?? "WEB",
+                    client: manager.configs.searchOptions?.youtubeClient ?? "TV_EMBEDDED",
                     quality: "best",
                     type: "audio"
                 })) as ReadableStream<any>

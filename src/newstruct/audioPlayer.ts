@@ -279,7 +279,9 @@ export class AudioPlayer {
               this
             );
             this.options.manager.emit(PlayerEvents.QueueEnd, this);
-            this._destroy();
+            // this._destroy();
+            // reset queue length instead to trigger queuestart on new tracks?
+            this.queue.length = 0;
           }
         }
       }
@@ -574,7 +576,7 @@ export class AudioPlayer {
   async autoPlayNext() {
     if (
       this.autoPlay ===
-      AutoPlay.Youtube /*|| this.autoPlay === AutoPlay.Spotify*/
+      AutoPlay.Youtube || this.autoPlay === AutoPlay.Spotify
     ) {
       const parsed = await (
         await fetch(`https://youtube.com/watch?v=${this.currentTrack.id}`)

@@ -22,7 +22,7 @@ export declare class AoiVoice<T> extends Manager {
     addEvent(event: PlayerEvents): void;
     addEvents(...events: PlayerEvents[]): void;
     bindExecutor(executor: Function): void;
-    joinVc({ type, voiceChannel, textChannel, selfDeaf, selfMute }: {
+    joinVc({ type, voiceChannel, textChannel, selfDeaf, selfMute, }: {
         type: AudioPLayerOptions["type"];
         voiceChannel: VoiceChannel;
         textChannel: Snowflake;
