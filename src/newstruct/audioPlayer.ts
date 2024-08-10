@@ -346,10 +346,6 @@ export class AudioPlayer {
           <YoutubeTrackInfo>info,
           this
         );
-        const previous = this.queue?.[this.#modes.currentTrack - 1];
-        console.log("Previous", previous?.position);
-        console.log("Total", this.queue.length);
-        console.log("Queue", JSON.stringify(this.queue));
         if (this.queue.length === 1) {
           this.options.manager.emit(PlayerEvents.QueueStart, track, this);
           await this.play();

@@ -73,13 +73,13 @@ export class Manager extends TypedEmitter<ManagerEvents> {
                 const authPath = join(__dirname, "./credentials.json");
 
                 yt.session.on("auth-pending", (data) => {
-                    console.log(`[@akarui/aoi.music]: Sign in pending: visit ${data.verification_url} and enter ${data.user_code} to sign in.`);
+                    console.log(`[@aoijs/aoi.music]: Sign in pending: visit ${data.verification_url} and enter ${data.user_code} to sign in.`);
                 });
 
                 yt.session.on("auth", ({ credentials }) => {
                     yt.session.oauth.cacheCredentials();
                     writeFileSync(authPath, JSON.stringify(credentials));
-                    console.log("[@akarui/aoi.music]: Successfully signed in.");
+                    console.log("[@aoijs/aoi.music]: Successfully signed in.");
                 });
     
                 yt.session.on("update-credentials", ({ credentials }) => {
@@ -90,10 +90,10 @@ export class Manager extends TypedEmitter<ManagerEvents> {
                 if (existsSync(authPath)) {
                     try {
                         const credentials = JSON.parse(readFileSync(authPath, "utf-8"));
-                        console.log("[@akarui/aoi.music]: Attempting to sign in with cached credentials.");
+                        console.log("[@aoijs/aoi.music]: Attempting to sign in with cached credentials.");
                         await yt.session.signIn(credentials);
                     } catch {
-                        console.warn("[@akarui/aoi.music]: Failed to sign in with cached credentials, please reauthenticate.");
+                        console.warn("[@aoijs/aoi.music]: Failed to sign in with cached credentials, please reauthenticate.");
                         unlinkSync(authPath);
                         yt.session.oauth.removeCache();
                         await yt.session.signIn();
