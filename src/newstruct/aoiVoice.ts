@@ -369,7 +369,7 @@ export class AoiVoice<T> extends Manager {
               );
             }
 
-            if (tracks.length !== 0)
+            if (tracks?.length !== 0 && !tracks)
               await player.add(tracks, trackType, d.member);
 
             return {
