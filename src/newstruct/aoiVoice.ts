@@ -427,7 +427,7 @@ export class AoiVoice<T> extends Manager {
               return d.aoiError.fnError(d, "custom", {}, "Player Not Found.");
 
             if (
-              !["relative", "youtube", "soundcloud", "none"].includes(
+              !["relative", "youtube", "soundcloud",  "spotify", "none"].includes(
                 type.toLowerCase()
               )
             ) {

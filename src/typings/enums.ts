@@ -40,7 +40,7 @@ export enum AutoPlay {
     None = "none",
     Youtube = "youtube",
     SoundCloud = "soundcloud",
-    // Spotify = "spotify",
+    Spotify = "spotify",
     Relative = "relative"
 }
 

@@ -202,7 +202,7 @@ export async function requestInfo<T extends keyof typeof PlatformType>(id: strin
 
         if (spotApi && !id.includes("open.spotify.com")) {
             data = await spotApi.searchTracks(id, { limit: 1 });
-            data = data?.body.tracks.items[0].external_urls?.spotify || id;
+            data = data?.body.tracks.items?.[0]?.external_urls?.spotify || id;
         } else {
             data = id;
         }
@@ -220,7 +220,7 @@ export async function requestInfo<T extends keyof typeof PlatformType>(id: strin
                 views: 0,
                 likes: 0,
                 thumbnail: data.coverArt.sources[0].url,
-                x: data.id,
+                spotifyId: data.id,
                 id: null,
                 description: null,
                 createdAt: new Date(data.releaseDate.isoString) ?? null,
@@ -243,7 +243,7 @@ export async function requestInfo<T extends keyof typeof PlatformType>(id: strin
                     views: 0,
                     likes: 0,
                     thumbnail: null,
-                    spotifyId: x.uri.split(":").pop(),
+                    spotifyId: x.id,
                     id: null,
                     description: null,
                     createdAt: null,
