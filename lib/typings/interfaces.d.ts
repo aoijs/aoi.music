@@ -15,6 +15,7 @@ export interface ManagerConfigurations {
         youtubeAuth?: boolean;
         youtubegl?: string;
         youtubeClient?: "WEB" | "ANDROID" | "YTMUSIC_ANDROID" | "YTMUSIC" | "YTSTUDIO_ANDROID" | "TV_EMBEDDED";
+        youtubeToken?: boolean;
     };
     requestOptions?: {
         offsetTimeout?: number;
