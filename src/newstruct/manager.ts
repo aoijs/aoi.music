@@ -11,6 +11,7 @@ import { TypedEmitter } from "tiny-typed-emitter/lib/index";
 import { Innertube, UniversalCache, Proto, Utils } from "youtubei.js";
 import IT from "youtubei.js";
 import {
+  Credentials,
   AudioPLayerOptions,
   ManagerConfigurations,
   ManagerEvents,
@@ -24,7 +25,7 @@ import { TrackInfo } from "soundcloud-downloader/src/info";
 import { Plugin } from "../typings/types";
 import { JSDOM } from "jsdom";
 import { BG } from "bgutils-js";
-import { existsSync, readFileSync, writeFileSync, unlinkSync } from "fs";
+import { existsSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 
 export class Manager extends TypedEmitter<ManagerEvents> {
@@ -115,8 +116,8 @@ export class Manager extends TypedEmitter<ManagerEvents> {
             credentials.visitorData = visitorData;
             writeFileSync(authPath, JSON.stringify(credentials));
             if (config.devOptions?.debug) {
-              console.log("PoToken:", poToken);
-              console.log("VisitorData:", visitorData);
+              console.log("#DEBUG PoToken:", poToken);
+              console.log("#DEBUG VisitorData:", visitorData);
             }
             ytoptions.potoken = { token: poToken, visitorData };
           })
@@ -169,11 +170,6 @@ export class Manager extends TypedEmitter<ManagerEvents> {
     }
     if (config.searchOptions?.youtubeAuth === true) {
       this.platforms.youtube.then(async (yt) => {
-        if (config.devOptions?.debug) {
-          console.debug("Checking if PoToken is working!");
-          this.test(yt);
-        }
-        yt.session.oauth.removeCache();
         // should be inside of node_modules
         const authPath = join(__dirname, "./credentials.json");
         let authData = {};
@@ -189,20 +185,31 @@ export class Manager extends TypedEmitter<ManagerEvents> {
           );
         });
 
+        const updateCredentials = (credentials: Partial<Credentials>) => {
+          const current: Credentials = JSON.parse(readFileSync(authPath, "utf-8"));
+        
+          const { visitorData, poToken } = current;
+          const newCredentials: Credentials = { visitorData, poToken, ...credentials };
+        
+          writeFileSync(authPath, JSON.stringify(newCredentials));
+        };
+
         yt.session.on("auth", ({ credentials }) => {
           yt.session.oauth.cacheCredentials();
-          const authCredentials = { ...authData, ...credentials };
-          writeFileSync(authPath, JSON.stringify(authCredentials));
+          updateCredentials(credentials);
           console.log("[@aoijs/aoi.music]: Successfully signed in.");
         });
 
         yt.session.on("update-credentials", ({ credentials }) => {
           yt.session.oauth.cacheCredentials();
-          const authCredentials = { ...authData, ...credentials };
-          writeFileSync(authPath, JSON.stringify(authCredentials));
+          updateCredentials(credentials);
         });
 
-        if (existsSync(authPath)) {
+        // check if access_token exists in file, if not skip to signin
+        if (
+          existsSync(authPath) &&
+          JSON.parse(readFileSync(authPath, "utf-8")).access_token
+        ) {
           try {
             const credentials = JSON.parse(readFileSync(authPath, "utf-8"));
             // remove unneeded data
@@ -216,7 +223,13 @@ export class Manager extends TypedEmitter<ManagerEvents> {
             console.warn(
               "[@aoijs/aoi.music]: Failed to sign in with cached credentials, please reauthenticate."
             );
-            unlinkSync(authPath);
+            const { visitorData, poToken } = JSON.parse(
+              readFileSync(authPath, "utf-8")
+            );
+            writeFileSync(
+              authPath,
+              JSON.stringify({ visitorData, poToken }, null, 2)
+            );
             yt.session.oauth.removeCache();
             await yt.session.signIn();
           }
@@ -296,22 +309,6 @@ export class Manager extends TypedEmitter<ManagerEvents> {
     if (config.devOptions?.debug) {
       console.log("Debug Mode Enabled");
     }
-  }
-
-  //TODO: remove this
-  async test(yt) {
-    console.debug("Getting info for 5tv1sn-TAWM");
-    console.debug("Session:", yt.session.oauth);
-    const info = await yt.getBasicInfo("5tv1sn-TAWM");
-    console.log("Video Info:", info);
-    if (!info) throw new Error("Failed to get video info, possibly PoToken issue");
-    const audioStreamingURL = info
-      .chooseFormat({ quality: "best", type: "audio" })
-      .decipher(yt.session.player);
-
-    if (!audioStreamingURL) throw new Error("Failed to get audio streaming URL");
-    console.info("Streaming URL:", audioStreamingURL);
-    console.debug("PoToken is working!");
   }
 
   async joinVc({

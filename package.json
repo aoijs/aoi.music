@@ -1,12 +1,13 @@
 {
   "name": "@aoijs/aoi.music",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Addition of the Music properties and foundation for aoi.js",
   "author": {
     "name": "Leref"
   },
   "maintainers": [
-    "USERSATOSHI"
+    "USERSATOSHI",
+    "faf4a"
   ],
   "scripts": {
     "build": "npx tsc"
@@ -48,7 +49,7 @@
     "tweetnacl": "^1.0.3",
     "undici": "^6.19.5",
     "youtube-scrapper": "^1.4.0",
-    "youtubei.js": "github:luanrt/youtube.js"
+    "youtubei.js": "^10.4.0"
   },
   "devDependencies": {
     "@discordjs/opus": "^0.9.0",

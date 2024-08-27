@@ -24,6 +24,15 @@ export interface ManagerConfigurations {
         spotifyPlaylistLimit?: number;
     };
 }
+export interface Credentials {
+    visitorData: string;
+    poToken: string;
+    access_token?: string;
+    refresh_token?: string;
+    scope?: string;
+    token_type?: string;
+    expiry_date?: string;
+}
 export interface AudioPLayerOptions {
     type: "default" | "fonly" | "bidirect";
     connection: VoiceConnection;
