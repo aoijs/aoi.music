@@ -174,6 +174,10 @@ export class Manager extends TypedEmitter<ManagerEvents> {
         const authPath = join(__dirname, "./credentials.json");
         let authData = {};
 
+        if (!existsSync(authPath)) {
+          writeFileSync(authPath, "{}");
+        }
+
         if (existsSync(authPath)) {
           const fileContent = readFileSync(authPath, "utf8");
           authData = JSON.parse(fileContent);
