@@ -60,7 +60,6 @@ export class Cacher<T extends "memory" | "disk"> {
     const gzip = createGzip();
     await writeFile(hash, "");
     const file = createWriteStream(hash);
-    // @ts-expect-error type errors
     await pipeline(stream, gzip, file);
   }
   async write(
@@ -93,7 +92,6 @@ export class Cacher<T extends "memory" | "disk"> {
       if (stream instanceof ReadableStream) {
         stream = Readable.from(stream);
       }
-      // @ts-expect-error type errors
       await this.#doCompressionSave(stream, hash);
       this.#map.set(metaData.id, hash);
     }
@@ -111,9 +109,7 @@ export class Cacher<T extends "memory" | "disk"> {
         if (!hash.endsWith(".gz")) return createReadStream(hash);
         const file = createReadStream(hash);
         const unzip = createUnzip();
-        // @ts-expect-error type errors
         const stream = file.pipe(unzip);
-        // @ts-expect-error type errors
         return Readable.from(stream);
       }
     }

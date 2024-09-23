@@ -8,7 +8,7 @@ import {
 } from "@discordjs/voice";
 import { Snowflake, VoiceBasedChannel } from "discord.js";
 import { TypedEmitter } from "tiny-typed-emitter/lib/index";
-import { Innertube, UniversalCache, Proto, Utils } from "youtubei.js";
+import { Innertube, UniversalCache, Utils } from "youtubei.js";
 import IT from "youtubei.js";
 import {
   Credentials,
@@ -67,20 +67,22 @@ export class Manager extends TypedEmitter<ManagerEvents> {
        *
        */
       async function generateYoutubePoToken(): Promise<void> {
-        const visitorData = Proto.encodeVisitorData(
-          Utils.generateRandomString(11),
-          Math.floor(Date.now() / 1000)
-        );
+        let innertube = await Innertube.create({ retrieve_player: false });
+
+        const requestKey = "O43z0dpjhgX20SCx4KAo";
+        const visitorData = innertube.session.context.client.visitorData;
 
         const dom = new JSDOM();
 
-        globalThis.window = dom.window;
-        globalThis.document = dom.window.document;
+        Object.assign(globalThis, {
+          window: dom.window,
+          document: dom.window.document,
+        });
 
         const bgConfig = {
           fetch: (url, options) => fetch(url, options),
           globalObj: globalThis,
-          identity: visitorData,
+          identifier: visitorData,
           requestKey,
         };
 
@@ -190,11 +192,17 @@ export class Manager extends TypedEmitter<ManagerEvents> {
         });
 
         const updateCredentials = (credentials: Partial<Credentials>) => {
-          const current: Credentials = JSON.parse(readFileSync(authPath, "utf-8"));
-        
+          const current: Credentials = JSON.parse(
+            readFileSync(authPath, "utf-8")
+          );
+
           const { visitorData, poToken } = current;
-          const newCredentials: Credentials = { visitorData, poToken, ...credentials };
-        
+          const newCredentials: Credentials = {
+            visitorData,
+            poToken,
+            ...credentials,
+          };
+
           writeFileSync(authPath, JSON.stringify(newCredentials));
         };
 
@@ -253,6 +261,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
         soundcloudClientId: undefined,
         youtubeCookie: undefined,
         youtubeAuth: true,
+        youtubeToken: true,
         youtubegl: "US",
         youtubeClient: "TV_EMBEDDED",
         spotifyAuth: {

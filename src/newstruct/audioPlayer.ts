@@ -81,7 +81,7 @@ export class AudioPlayer {
     //@ts-ignore
     stream = await requestStream(
       current,
-      current.formattedPlatforms,
+      current?.formattedPlatforms ?? "Youtube",
       this.options.manager
     );
     let s: Readable | FFmpeg;
@@ -98,8 +98,6 @@ export class AudioPlayer {
     ) {
       const f = <Filter>this.options.manager.plugins.get(PluginName.Filter);
       const ffmpeg = f.createFFmpeg("-af", this.#modes.filters.join(","));
-      // @ts-expect-error type errors
-
       s = stream.pipe(ffmpeg);
       resource = createAudioResource(s, {
         inlineVolume: true,
