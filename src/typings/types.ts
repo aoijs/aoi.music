@@ -29,6 +29,7 @@ export type YoutubeTrackInfo = {
     title: string;
     channelId: string;
     artist: string;
+    channelUrl: string;
     artistURL: string;
     duration: number;
     description: string;
@@ -36,7 +37,7 @@ export type YoutubeTrackInfo = {
     url: string;
     views: number;
     likes: number;
-    thumbnail: string;
+    thumbnail?: string;
     id: string;
     createdAt: Date | null;
     platformType: PlatformType;
