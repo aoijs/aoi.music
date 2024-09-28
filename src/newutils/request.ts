@@ -5,13 +5,12 @@ import scdl from "soundcloud-downloader";
 import { request } from "undici";
 import { PlatformType, PluginName } from "./../typings/enums";
 import getAudioDurationInSeconds from "get-audio-duration";
-import path, { relative } from "path";
+import path from "path";
 import { stat } from "fs/promises";
 import { TrackInfo } from "soundcloud-downloader/src/info";
 import { parse, formatOpenURL } from "spotify-uri";
 import { Plugin, Track } from "../typings/types";
 import { PassThrough, Readable } from "stream";
-import { search } from "../newutils/search";
 
 import { SpotifyTrackInfo as SpotifyInfo } from "../typings/types";
 import { ReadableStream } from "stream/web";
@@ -173,6 +172,7 @@ export async function requestInfo<T extends keyof typeof PlatformType>(id: strin
     } else if (type === "Youtube") {
         const ytData: any = await (await manager.platforms.youtube).getBasicInfo(id, manager.configs.searchOptions?.youtubeClient ?? "TV_EMBEDDED").catch((_) => undefined);
         if (!ytData) return;
+        console.log(JSON.stringify(ytData.basic_info, null, 2));
         return <Track<T>>(<unknown>{
             title: ytData.basic_info.title,
             channelId: ytData.basic_info.channel_id,
@@ -187,7 +187,7 @@ export async function requestInfo<T extends keyof typeof PlatformType>(id: strin
             url: `https://youtube.com/watch?v=${ytData.basic_info.id}`,
             views: ytData.basic_info.view_count,
             likes: ytData.basic_info.like_count,
-            thumbnail: ytData.basic_info.thumbnail[0].url,
+            thumbnail: ytData.basic_info.thumbnail?.[0].url || null,
             id: ytData.basic_info.id,
             createdAt: null,
             platformType: PlatformType.Youtube,
