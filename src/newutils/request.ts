@@ -172,7 +172,6 @@ export async function requestInfo<T extends keyof typeof PlatformType>(id: strin
     } else if (type === "Youtube") {
         const ytData: any = await (await manager.platforms.youtube).getBasicInfo(id, manager.configs.searchOptions?.youtubeClient ?? "TV_EMBEDDED").catch((_) => undefined);
         if (!ytData) return;
-        console.log(JSON.stringify(ytData.basic_info, null, 2));
         return <Track<T>>(<unknown>{
             title: ytData.basic_info.title,
             channelId: ytData.basic_info.channel_id,
@@ -309,6 +308,7 @@ export async function requestInfo<T extends keyof typeof PlatformType>(id: strin
 }
 
 export async function requestStream<T extends keyof typeof PlatformType>(track: Track<T>, type: T, manager: Manager) {
+    if (!track) return;
     if (manager.plugins.has(PluginName.Cacher) && (<Plugin<PluginName.Cacher>>manager.plugins.get(PluginName.Cacher)).has(track.id)) {
         return (<Plugin<PluginName.Cacher>>manager.plugins.get(PluginName.Cacher)).get(track.id);
     } else if (type === "SoundCloud") {

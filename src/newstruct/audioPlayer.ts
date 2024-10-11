@@ -77,6 +77,7 @@ export class AudioPlayer {
   async play(emit = true) {
     let resource: AudioResource;
     const current = this.queue[this.#modes.currentTrack];
+    if (!current) return;
     let stream: Readable | FFmpeg | PassThrough;
     //@ts-ignore
     stream = await requestStream(

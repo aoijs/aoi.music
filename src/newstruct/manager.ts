@@ -8,7 +8,7 @@ import {
 } from "@discordjs/voice";
 import { Snowflake, VoiceBasedChannel } from "discord.js";
 import { TypedEmitter } from "tiny-typed-emitter/lib/index";
-import { Innertube, UniversalCache, Utils } from "youtubei.js";
+import { Innertube, UniversalCache, Log } from "youtubei.js";
 import IT from "youtubei.js";
 import {
   Credentials,
@@ -133,6 +133,9 @@ export class Manager extends TypedEmitter<ManagerEvents> {
 
       generateYoutubePoToken();
     }
+    // prevent future class changes from being logged to console
+    // so people don't get confused about those *absolutely* irrelevant logs
+    Log.setLevel(Log.Level.NONE);
     const youtubeOptions: any = {
       cache: new UniversalCache(true),
     };
@@ -347,6 +350,13 @@ export class Manager extends TypedEmitter<ManagerEvents> {
       >(adapter ? adapter : <unknown>voiceChannel.guild?.voiceAdapterCreator ?? adapter),
       group: voiceChannel.client.user.id,
     };
+    // destory player if already exists to prevent memory leaks
+    if (this.players.has(data.guildId)) {
+      const player = this.players.get(data.guildId);
+      player?._destroy();
+      this.players.delete(data.guildId);
+      player.options.connection.destroy();
+    }
     const connection = joinVoiceChannel(data);
     connection.on("error", console.error);
     try {
