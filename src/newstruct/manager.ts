@@ -347,6 +347,13 @@ export class Manager extends TypedEmitter<ManagerEvents> {
       >(adapter ? adapter : <unknown>voiceChannel.guild?.voiceAdapterCreator ?? adapter),
       group: voiceChannel.client.user.id,
     };
+    // destory player if already exists to prevent memory leaks
+    if (this.players.has(data.guildId)) {
+      const player = this.players.get(data.guildId);
+      player?._destroy();
+      this.players.delete(data.guildId);
+      player.options.connection.destroy();
+    }
     const connection = joinVoiceChannel(data);
     connection.on("error", console.error);
     try {

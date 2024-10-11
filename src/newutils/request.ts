@@ -309,6 +309,7 @@ export async function requestInfo<T extends keyof typeof PlatformType>(id: strin
 }
 
 export async function requestStream<T extends keyof typeof PlatformType>(track: Track<T>, type: T, manager: Manager) {
+    if (!track) return;
     if (manager.plugins.has(PluginName.Cacher) && (<Plugin<PluginName.Cacher>>manager.plugins.get(PluginName.Cacher)).has(track.id)) {
         return (<Plugin<PluginName.Cacher>>manager.plugins.get(PluginName.Cacher)).get(track.id);
     } else if (type === "SoundCloud") {
