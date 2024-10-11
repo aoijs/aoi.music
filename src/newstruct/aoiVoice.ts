@@ -427,9 +427,13 @@ export class AoiVoice<T> extends Manager {
               return d.aoiError.fnError(d, "custom", {}, "Player Not Found.");
 
             if (
-              !["relative", "youtube", "soundcloud",  "spotify", "none"].includes(
-                type.toLowerCase()
-              )
+              ![
+                "relative",
+                "youtube",
+                "soundcloud",
+                "spotify",
+                "none",
+              ].includes(type.toLowerCase())
             ) {
               return d.aoiError.fnError(
                 d,
@@ -1180,7 +1184,11 @@ export class AoiVoice<T> extends Manager {
             const parsedPos = position
               ? parseInt(position)
               : player.currentPosition();
-            data.result = eval(`player.queue[${parsedPos}].${type}`);
+            try {
+              data.result = eval(`player.queue[${parsedPos}].${type}`);
+            } catch (error) {
+              data.result = null;
+            }
             return {
               code: d.util.setCode(data),
             };
