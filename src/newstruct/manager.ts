@@ -8,7 +8,7 @@ import {
 } from "@discordjs/voice";
 import { Snowflake, VoiceBasedChannel } from "discord.js";
 import { TypedEmitter } from "tiny-typed-emitter/lib/index";
-import { Innertube, UniversalCache, Utils } from "youtubei.js";
+import { Innertube, UniversalCache, Log } from "youtubei.js";
 import IT from "youtubei.js";
 import {
   Credentials,
@@ -133,6 +133,9 @@ export class Manager extends TypedEmitter<ManagerEvents> {
 
       generateYoutubePoToken();
     }
+    // prevent future class changes from being logged to console
+    // so people don't get confused about those *absolutely* irrelevant logs
+    Log.setLevel(Log.Level.NONE);
     const youtubeOptions: any = {
       cache: new UniversalCache(true),
     };
