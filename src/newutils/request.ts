@@ -172,7 +172,6 @@ export async function requestInfo<T extends keyof typeof PlatformType>(id: strin
     } else if (type === "Youtube") {
         const ytData: any = await (await manager.platforms.youtube).getBasicInfo(id, manager.configs.searchOptions?.youtubeClient ?? "TV_EMBEDDED").catch((_) => undefined);
         if (!ytData) return;
-        console.log(JSON.stringify(ytData.basic_info, null, 2));
         return <Track<T>>(<unknown>{
             title: ytData.basic_info.title,
             channelId: ytData.basic_info.channel_id,
