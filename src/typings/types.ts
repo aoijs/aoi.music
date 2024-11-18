@@ -96,14 +96,6 @@ export type SpotifyTrackInfo = {
     requester: GuildMember;
     position: number;
 };
-export type Track<type extends keyof typeof PlatformType> = type extends "SoundCloud"
-    ? SoundCloudTrackInfo
-    : type extends "LocalFile"
-      ? LocalFileTrackInfo
-      : type extends "Url"
-        ? UrlTrackInfo
-        : type extends "Youtube"
-          ? YoutubeTrackInfo
-          : SpotifyTrackInfo;
+export type Track<type extends keyof typeof PlatformType> = type extends "SoundCloud" ? SoundCloudTrackInfo : type extends "LocalFile" ? LocalFileTrackInfo : type extends "Url" ? UrlTrackInfo : type extends "Youtube" ? YoutubeTrackInfo : SpotifyTrackInfo;
 
 export type Plugin<T extends PluginName> = T extends PluginName.Cacher ? Cacher<"memory" | "disk"> : Filter;
