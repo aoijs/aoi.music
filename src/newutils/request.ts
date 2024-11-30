@@ -207,8 +207,6 @@ export async function requestInfo<T extends keyof typeof PlatformType>(id: strin
         data = parse(data);
         data = await spotify.getData(formatOpenURL(data));
 
-        console.log(require("util").inspect(data, { depth: 1 }));
-
         if (data.type === "track") return <Track<T>>(<unknown>{
                 title: data.name,
                 artist: data.artists.map((a: { name: any }) => a.name).join(", "),
