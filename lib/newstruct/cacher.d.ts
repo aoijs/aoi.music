@@ -11,7 +11,7 @@ export declare class Cacher<T extends "memory" | "disk"> {
     delete(id: string): void;
     clear(): void;
     has(id: string): boolean;
-    get map(): Map<string, T extends "memory" ? PathLike : PathLike>;
+    get map(): Map<string, T extends "memory" ? PathLike | Buffer<ArrayBufferLike> : PathLike>;
     get type(): T;
     get path(): string;
 }

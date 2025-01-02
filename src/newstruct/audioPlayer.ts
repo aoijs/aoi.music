@@ -230,6 +230,7 @@ export class AudioPlayer {
                     this.#modes.ytMix.enabled = true;
                     this.#modes.ytMix.lastUrl = track[track.length - 1];
                 }
+                if (!id) continue;
                 const info = await requestInfo(id, "Youtube", this.options.manager);
                 if (!info) continue;
                 this.queue.push({
@@ -435,6 +436,7 @@ export class AudioPlayer {
             const data = ytRelatedHTMLParser(parsed);
             const ids = YoutubeRelated(data);
             for (const id of ids) {
+                if (!id) continue;
                 const info = await requestInfo(id, this.autoPlay === "youtube" ? "Youtube" : "Spotify", this.options.manager);
                 if (!info) {
                     continue;

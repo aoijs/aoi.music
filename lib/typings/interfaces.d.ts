@@ -3,7 +3,7 @@ import { Manager } from "./../newstruct/manager";
 import { VoiceConnection } from "@discordjs/voice";
 import { AutoPlay, LoopMode, PlayerEvents } from "./enums";
 import { AudioPlayer } from "../newstruct/audioPlayer";
-import { Constants } from "youtubei.js";
+import { ClientType } from "youtubei.js";
 import { Track, SpotifyTrackInfo, YoutubeTrackInfo, LocalFileTrackInfo, SoundCloudTrackInfo, UrlTrackInfo } from "./types";
 export interface ManagerConfigurations {
     devOptions?: {
@@ -15,7 +15,7 @@ export interface ManagerConfigurations {
         youtubeCookie?: string;
         youtubeAuth?: boolean;
         youtubegl?: string;
-        youtubeClient?: Exclude<keyof typeof Constants.CLIENTS, "WEB_KIDS" | "TV">;
+        youtubeClient?: Exclude<keyof typeof ClientType, "KIDS" | "MUSIC" | "ANDROID_MUSIC" | "ANDROID_CREATOR">;
         youtubeToken?: boolean;
     };
     requestOptions?: {

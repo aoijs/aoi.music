@@ -89,6 +89,7 @@ export function generateScInfo(scData: TrackInfo): Track<"SoundCloud"> {
 }
 
 export async function requestInfo<T extends keyof typeof PlatformType>(id: string, type: T, manager: Manager): Promise<Track<T> | Track<T>[]> {
+    if (!id) throw new Error("Missing video_id in requestInfo");
     if (type === "SoundCloud") {
         const sc = manager.platforms.soundcloud;
         if (id.split("/")[4] === "sets") {

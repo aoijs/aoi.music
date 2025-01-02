@@ -16,7 +16,7 @@ export interface ManagerConfigurations {
         youtubeCookie?: string;
         youtubeAuth?: boolean;
         youtubegl?: string;
-        youtubeClient?: ClientType;
+        youtubeClient?: Exclude<keyof typeof ClientType, "KIDS" | "MUSIC" | "ANDROID_MUSIC" | "ANDROID_CREATOR">;
         youtubeToken?: boolean;
     };
     requestOptions?: {
