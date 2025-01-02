@@ -171,6 +171,7 @@ export async function requestInfo<T extends keyof typeof PlatformType>(id: strin
     } else if (type === "LocalFile" || type === "Url") {
         return <Track<T>>(<unknown>generateInfo(id, type));
     } else if (type === "Youtube") {
+        // @ts-ignore
         const ytData: any = await (await manager.platforms.youtube).getBasicInfo(id, manager.configs.searchOptions?.youtubeClient ?? "WEB_EMBEDDED").catch((_) => undefined);
         if (!ytData) return;
         return <Track<T>>(<unknown>{
@@ -334,8 +335,9 @@ export async function requestStream<T extends keyof typeof PlatformType>(track: 
         const yt = await manager.platforms.youtube;
         return Readable.fromWeb(
             (await yt.download(track.id, {
+                // @ts-ignore
                 client: manager.configs.searchOptions?.youtubeClient ?? "WEB_EMBEDDED",
-                quality: "best",
+                quality: "bestefficiency",
                 type: "audio"
             })) as ReadableStream<any>
         );
@@ -349,16 +351,18 @@ export async function requestStream<T extends keyof typeof PlatformType>(track: 
             track.id = data.videos[0].id;
             return Readable.fromWeb(
                 (await yt.download(track.id, {
+                    // @ts-ignore
                     client: manager.configs.searchOptions?.youtubeClient ?? "WEB_EMBEDDED",
-                    quality: "best",
+                    quality: "bestefficiency",
                     type: "audio"
                 })) as ReadableStream<any>
             );
         } else {
             return Readable.fromWeb(
                 (await yt.download(track.id, {
+                    // @ts-ignore
                     client: manager.configs.searchOptions?.youtubeClient ?? "WEB_EMBEDDED",
-                    quality: "best",
+                    quality: "bestefficiency",
                     type: "audio"
                 })) as ReadableStream<any>
             );

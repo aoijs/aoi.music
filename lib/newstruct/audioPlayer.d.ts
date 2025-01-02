@@ -35,8 +35,8 @@ export declare class AudioPlayer {
     isAutoPlayEnabled(): boolean;
     currentPosition(): number;
     getTrackCurrentDuration(): number;
-    get currentTrack(): Track<"SoundCloud" | "LocalFile" | "Url" | "Youtube" | "Spotify">;
-    get previousTrack(): Track<"SoundCloud" | "LocalFile" | "Url" | "Youtube" | "Spotify">;
+    get currentTrack(): Track<"SoundCloud" | "Youtube" | "LocalFile" | "Spotify" | "Url">;
+    get previousTrack(): Track<"SoundCloud" | "Youtube" | "LocalFile" | "Spotify" | "Url">;
     updateFilters(filterArr: string[]): void;
     playPrevious(): Promise<void>;
     setFilters(filterArr: string[]): void;

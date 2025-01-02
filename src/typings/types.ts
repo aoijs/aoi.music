@@ -1,4 +1,3 @@
-import { formattedPlatforms } from "./../newutils/constants";
 import { TrackInfo } from "soundcloud-downloader/src/info";
 import { PlatformType, PluginName } from "./enums";
 import { GuildMember } from "discord.js";
