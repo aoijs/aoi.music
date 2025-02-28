@@ -30,5 +30,5 @@ export declare class Manager extends TypedEmitter<ManagerEvents> {
     }): Promise<boolean>;
     search<T extends PlatformType>(type: T, query: string, limit?: number): Promise<any>;
     addPlugin<A extends PluginName>(name: A, plugin: Plugin<A>): void;
-    leaveVc(guildId: string): void;
+    leaveVc(guildId: string): any;
 }

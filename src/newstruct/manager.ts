@@ -169,14 +169,8 @@ export class Manager extends TypedEmitter<ManagerEvents> {
         if (config.searchOptions?.soundcloudClientId) {
             this.platforms.soundcloud.setClientID(config.searchOptions.soundcloudClientId);
         }
-        if (config.searchOptions?.youtubeAuth) {
-            throw new Error("[aoi.music]: 'youtubeAuth' is deprecated, please migrate to the 'youtubeCookie' method. Learn more here: https://github.com/aoijs/aoi.music/wiki/Youtube-Cookies-and-oAuth");
-        }
-        /* Youtube nuked oAuth for non-tv clients
+        // Youtube nuked oAuth for non-tv clients
         if (config.searchOptions?.youtubeAuth === true) {
-            if (config.searchOptions?.youtubeClient !== "WEB_EMBEDDED") {
-                throw new Error("[aoi.music]: oAuth2 is only availble for the 'WEB' client")
-            }
             this.platforms.youtube.then(async (yt) => {
                 // should be inside of node_modules
                 const authPath = join(__dirname, "./credentials.json");
@@ -240,7 +234,6 @@ export class Manager extends TypedEmitter<ManagerEvents> {
                 }
             });
         }
-        */
     }
 
     static defaultConfig(): ManagerConfigurations {
