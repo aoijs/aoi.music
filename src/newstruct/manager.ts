@@ -141,7 +141,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
             youtubeOptions.visitor_data = ytoptions.potoken.visitorData;
         }
         if (ytoptions.youtubeCookie) {
-            youtubeOptions.cookies = ytoptions.youtubeCookie;
+            youtubeOptions.cookie = ytoptions.youtubeCookie;
         }
 
         this.platforms = {
