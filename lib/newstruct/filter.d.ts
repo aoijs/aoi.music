@@ -1,3 +1,4 @@
+import { FFmpeg } from "prism-media";
 import { FilterConfig } from "../typings/interfaces";
 import { AudioPlayer } from "./audioPlayer";
 export declare class Filter {
@@ -15,6 +16,6 @@ export declare class Filter {
     removeFirst(filter: string, player: AudioPlayer): Promise<void>;
     removeAll(player: AudioPlayer): Promise<void>;
     seek(time: number, player: AudioPlayer): Promise<boolean>;
-    createFFmpeg(...args: string[]): any;
-    createFFmpegWithInputFile(input: string, ...args: string[]): any;
+    createFFmpeg(...args: string[]): FFmpeg;
+    createFFmpegWithInputFile(input: string, ...args: string[]): FFmpeg;
 }

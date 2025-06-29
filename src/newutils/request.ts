@@ -12,6 +12,7 @@ import { parse, formatOpenURL } from "spotify-uri";
 import { Plugin, Track } from "../typings/types";
 import { PassThrough, Readable } from "stream";
 
+import { ClientType } from "youtubei.js";
 import { SpotifyTrackInfo as SpotifyInfo } from "../typings/types";
 import { ReadableStream } from "stream/web";
 import { isLiveStreamUrl } from "./helpers";
@@ -172,7 +173,7 @@ export async function requestInfo<T extends keyof typeof PlatformType>(id: strin
         return <Track<T>>(<unknown>generateInfo(id, type));
     } else if (type === "Youtube") {
         // @ts-ignore
-        const ytData: any = await (await manager.platforms.youtube).getBasicInfo(id, manager.configs.searchOptions?.youtubeClient ?? "WEB_EMBEDDED").catch((_) => undefined);
+        const ytData: any = await (await manager.platforms.youtube).getInfo(id, "YTMUSIC").catch((_) => undefined);
         if (!ytData) return;
         return <Track<T>>(<unknown>{
             title: ytData.basic_info.title,
@@ -335,10 +336,7 @@ export async function requestStream<T extends keyof typeof PlatformType>(track: 
         const yt = await manager.platforms.youtube;
         return Readable.fromWeb(
             (await yt.download(track.id, {
-                // @ts-ignore
-                client: manager.configs.searchOptions?.youtubeClient ?? "WEB_EMBEDDED",
-                quality: "bestefficiency",
-                type: "audio"
+                client: ClientType.MWEB,
             })) as ReadableStream<any>
         );
     } else if (type === "Spotify") {
@@ -351,19 +349,13 @@ export async function requestStream<T extends keyof typeof PlatformType>(track: 
             track.id = data.videos[0].id;
             return Readable.fromWeb(
                 (await yt.download(track.id, {
-                    // @ts-ignore
-                    client: manager.configs.searchOptions?.youtubeClient ?? "WEB_EMBEDDED",
-                    quality: "bestefficiency",
-                    type: "audio"
+                    client: ClientType.MWEB,
                 })) as ReadableStream<any>
             );
         } else {
             return Readable.fromWeb(
                 (await yt.download(track.id, {
-                    // @ts-ignore
-                    client: manager.configs.searchOptions?.youtubeClient ?? "WEB_EMBEDDED",
-                    quality: "bestefficiency",
-                    type: "audio"
+                    client: ClientType.MWEB,
                 })) as ReadableStream<any>
             );
         }

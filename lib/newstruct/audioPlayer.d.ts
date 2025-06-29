@@ -17,10 +17,10 @@ export declare class AudioPlayer {
     _configPlayer(): void;
     add(track: string[], type: PlatformType, member: GuildMember): Promise<void>;
     removeTrack(position: number): void;
-    skip(): any;
+    skip(): boolean;
     skipTo(position: number): void;
-    pause(): any;
-    resume(): any;
+    pause(): boolean;
+    resume(): boolean;
     set volume(volume: number);
     get volume(): number;
     set loop(loop: LoopMode);
@@ -48,6 +48,6 @@ export declare class AudioPlayer {
     autoPlayNext(): Promise<void>;
     __configConnection(): void;
     getQueue(page?: number, limit?: number, format?: string): string[];
-    getPing(type?: "ws" | "udp"): any;
+    getPing(type?: "ws" | "udp"): number;
     stop(): void;
 }
