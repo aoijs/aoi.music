@@ -14,7 +14,7 @@ export class Filter {
         this.#config = config;
     }
     async add(options: { filter: string; value: string }[], player: AudioPlayer) {
-        const f = player.filters;
+        const f = [];
         for (const option of options) {
             const { filter, value } = option;
             f.push(`${filter}=${value}`);
