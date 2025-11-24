@@ -57,6 +57,26 @@ export class Manager extends TypedEmitter<ManagerEvents> {
     } = {
       youtubeCookie: "",
     };
+
+    Platform.shim.eval = async (
+      data: Types.BuildScriptResult,
+      env: Record<string, Types.VMPrimative>,
+    ) => {
+      const properties = [];
+
+      if (env.n) {
+        properties.push(`n: exportedVars.nFunction("${env.n}")`);
+      }
+
+      if (env.sig) {
+        properties.push(`sig: exportedVars.sigFunction("${env.sig}")`);
+      }
+
+      const code = `${data.output}\nreturn { ${properties.join(", ")} }`;
+
+      return new Function(code)();
+    };
+
     if (config.searchOptions?.youtubeCookie) {
       ytoptions.cookie = config.searchOptions?.youtubeCookie;
     }
@@ -206,25 +226,6 @@ export class Manager extends TypedEmitter<ManagerEvents> {
 
       generateYoutubePoToken();
     }
-
-    Platform.shim.eval = async (
-      data: Types.BuildScriptResult,
-      env: Record<string, Types.VMPrimative>,
-    ) => {
-      const properties = [];
-
-      if (env.n) {
-        properties.push(`n: exportedVars.nFunction("${env.n}")`);
-      }
-
-      if (env.sig) {
-        properties.push(`sig: exportedVars.sigFunction("${env.sig}")`);
-      }
-
-      const code = `${data.output}\nreturn { ${properties.join(", ")} }`;
-
-      return new Function(code)();
-    };
 
     // prevent future class changes from being logged to console
     // so people don't get confused about those *absolutely* irrelevant logs
