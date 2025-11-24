@@ -10,6 +10,8 @@ import { Snowflake, VoiceBasedChannel } from "discord.js";
 import { TypedEmitter } from "tiny-typed-emitter/lib/index";
 import { Innertube, UniversalCache, Log, YTNodes, YT } from "youtubei.js";
 import IT from "youtubei.js";
+import { Platform, Types } from "youtubei.js/web";
+
 import {
   Credentials,
   AudioPLayerOptions,
@@ -80,7 +82,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
             url: "https://www.youtube.com/",
             referrer: "https://www.youtube.com/",
             userAgent,
-          }
+          },
         );
 
         Object.assign(globalThis, {
@@ -97,7 +99,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
         }
 
         const challengeResponse = await innertube.getAttestationChallenge(
-          "ENGAGEMENT_TYPE_UNBOUND"
+          "ENGAGEMENT_TYPE_UNBOUND",
         );
 
         if (!challengeResponse.bg_challenge)
@@ -133,7 +135,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
               "user-agent": userAgent,
             },
             body: JSON.stringify([requestKey, botguardResponse]),
-          }
+          },
         );
 
         const response = (await integrityTokenResponse.json()) as unknown[];
@@ -143,7 +145,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
 
         const integrityTokenBasedMinter = await BG.WebPoMinter.create(
           { integrityToken: response[0] },
-          webPoSignalOutput
+          webPoSignalOutput,
         );
 
         const videoId = "7eLARwNIjDY";
@@ -173,18 +175,18 @@ export class Manager extends TypedEmitter<ManagerEvents> {
 
         const watchResponse = await watchEndpoint.call(
           innertube.actions,
-          extraRequestArgs
+          extraRequestArgs,
         );
         const videoInfo = new YT.VideoInfo(
           [watchResponse],
           innertube.actions,
-          ""
+          "",
         );
 
         const audioStreamingURL = `${videoInfo
           .chooseFormat({
             quality: "best",
-            type: "video"
+            type: "video",
           })
           .decipher(innertube.session.player)}&pot=${sessionPoToken}`;
 
@@ -195,7 +197,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
           console.debug(
             "Cold Start WebPO Token:",
             BG.PoToken.generateColdStartToken(visitorData),
-            "\n"
+            "\n",
           );
           console.debug("Streaming URL:", audioStreamingURL);
         }
@@ -204,6 +206,26 @@ export class Manager extends TypedEmitter<ManagerEvents> {
 
       generateYoutubePoToken();
     }
+
+    Platform.shim.eval = async (
+      data: Types.BuildScriptResult,
+      env: Record<string, Types.VMPrimative>,
+    ) => {
+      const properties = [];
+
+      if (env.n) {
+        properties.push(`n: exportedVars.nFunction("${env.n}")`);
+      }
+
+      if (env.sig) {
+        properties.push(`sig: exportedVars.sigFunction("${env.sig}")`);
+      }
+
+      const code = `${data.output}\nreturn { ${properties.join(", ")} }`;
+
+      return new Function(code)();
+    };
+
     // prevent future class changes from being logged to console
     // so people don't get confused about those *absolutely* irrelevant logs
     Log.setLevel(Log.Level.NONE);
@@ -250,7 +272,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
 
     if (config.searchOptions?.soundcloudClientId) {
       this.platforms.soundcloud.setClientID(
-        config.searchOptions.soundcloudClientId
+        config.searchOptions.soundcloudClientId,
       );
     }
     // Youtube nuked oAuth for non-tv clients
@@ -271,13 +293,13 @@ export class Manager extends TypedEmitter<ManagerEvents> {
 
         yt.session.on("auth-pending", (data) => {
           console.log(
-            `[@aoijs/aoi.music]: Sign in pending: visit ${data.verification_url} and enter ${data.user_code} to sign in.`
+            `[@aoijs/aoi.music]: Sign in pending: visit ${data.verification_url} and enter ${data.user_code} to sign in.`,
           );
         });
 
         const updateCredentials = (credentials: Partial<Credentials>) => {
           const current: Credentials = JSON.parse(
-            readFileSync(authPath, "utf-8")
+            readFileSync(authPath, "utf-8"),
           );
 
           const { visitorData, poToken } = current;
@@ -312,19 +334,19 @@ export class Manager extends TypedEmitter<ManagerEvents> {
             delete credentials.visitorData;
             delete credentials.poToken;
             console.log(
-              "[@aoijs/aoi.music]: Attempting to sign in with cached credentials."
+              "[@aoijs/aoi.music]: Attempting to sign in with cached credentials.",
             );
             await yt.session.signIn(credentials);
           } catch {
             console.warn(
-              "[@aoijs/aoi.music]: Failed to sign in with cached credentials, please reauthenticate."
+              "[@aoijs/aoi.music]: Failed to sign in with cached credentials, please reauthenticate.",
             );
             const { visitorData, poToken } = JSON.parse(
-              readFileSync(authPath, "utf-8")
+              readFileSync(authPath, "utf-8"),
             );
             writeFileSync(
               authPath,
-              JSON.stringify({ visitorData, poToken }, null, 2)
+              JSON.stringify({ visitorData, poToken }, null, 2),
             );
             yt.session.oauth.removeCache();
             await yt.session.signIn();
@@ -369,7 +391,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
         config.requestOptions.offsetTimeout < 0)
     ) {
       throw new Error(
-        `Invalid Time Provided in ManagerConfig#requestOptions['offsetTimeout']`
+        `Invalid Time Provided in ManagerConfig#requestOptions['offsetTimeout']`,
       );
     } else if (
       config.requestOptions?.soundcloudLikeTrackLimit &&
@@ -377,7 +399,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
         config.requestOptions.soundcloudLikeTrackLimit < -1)
     ) {
       throw new Error(
-        `Invalid Limit Provided in ManagerConfig#requestOptions['soundcloudLikeTrackLimit']`
+        `Invalid Limit Provided in ManagerConfig#requestOptions['soundcloudLikeTrackLimit']`,
       );
     } else if (
       config.requestOptions?.youtubePlaylistLimit &&
@@ -385,7 +407,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
         config.requestOptions.youtubePlaylistLimit < -1)
     ) {
       throw new Error(
-        `Invalid Limit Provided in ManagerConfig#requestOptions['youtubePlaylistLimit']`
+        `Invalid Limit Provided in ManagerConfig#requestOptions['youtubePlaylistLimit']`,
       );
     } else if (
       config.requestOptions?.spotifyPlaylistLimit &&
@@ -393,14 +415,14 @@ export class Manager extends TypedEmitter<ManagerEvents> {
         config.requestOptions.spotifyPlaylistLimit < -1)
     ) {
       throw new Error(
-        `Invalid Limit Provided in ManagerConfig#requestOptions['spotifyPlaylistLimit']`
+        `Invalid Limit Provided in ManagerConfig#requestOptions['spotifyPlaylistLimit']`,
       );
     } else if (
       config.devOptions?.debug &&
       typeof config.devOptions.debug !== "boolean"
     ) {
       throw new Error(
-        `Invalid Debug Option Provided in ManagerConfig#devOptions['debug']`
+        `Invalid Debug Option Provided in ManagerConfig#devOptions['debug']`,
       );
     }
     if (config.devOptions?.debug) {
@@ -428,7 +450,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
       selfMute,
       adapterCreator: <
         DiscordGatewayAdapterCreator // @ts-ignore
-        >(adapter ? adapter : <unknown>voiceChannel.guild?.voiceAdapterCreator ?? adapter),
+      >(adapter ? adapter : (<unknown>voiceChannel.guild?.voiceAdapterCreator ?? adapter)),
       group: voiceChannel.client.user.id,
     };
     // destory player if already exists to prevent memory leaks
@@ -450,11 +472,11 @@ export class Manager extends TypedEmitter<ManagerEvents> {
           voiceChannel: voiceChannel.id,
           manager: this,
           debug: this.configs.devOptions?.debug ?? false,
-        })
+        }),
       );
       if (this.configs.devOptions?.debug) {
         console.log(
-          `#DEBUG:\n Class -> Manager \n Method -> joinVc \n Message -> Joined Voice Channel ${voiceChannel.name} in Guild ${voiceChannel.guild.name}`
+          `#DEBUG:\n Class -> Manager \n Method -> joinVc \n Message -> Joined Voice Channel ${voiceChannel.name} in Guild ${voiceChannel.guild.name}`,
         );
       }
       return true;
@@ -462,7 +484,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
       connection.destroy();
       if (this.configs.devOptions?.debug) {
         console.log(
-          `#DEBUG:\n Class -> Manager \n Method -> joinVc \n Message -> Failed to join Voice Channel ${voiceChannel.name} in Guild ${voiceChannel.guild.name}`
+          `#DEBUG:\n Class -> Manager \n Method -> joinVc \n Message -> Failed to join Voice Channel ${voiceChannel.name} in Guild ${voiceChannel.guild.name}`,
         );
       }
       return false;
@@ -497,7 +519,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
     this.plugins.set(name, plugin);
     if (this.configs.devOptions?.debug) {
       console.log(
-        `#DEBUG:\n Class -> Manager \n Method -> addPlugin \n Message -> Added Plugin ${plugin.constructor.name} with name : ${name} `
+        `#DEBUG:\n Class -> Manager \n Method -> addPlugin \n Message -> Added Plugin ${plugin.constructor.name} with name : ${name} `,
       );
     }
   }
