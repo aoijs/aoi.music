@@ -192,7 +192,7 @@ export class Manager extends TypedEmitter<ManagerEvents> {
               vis: 0,
               splay: false,
               lactMilliseconds: "-1",
-              signatureTimestamp: innertube.session.player?.sts,
+              signatureTimestamp: innertube.session.player?.signature_timestamp,
             },
           },
           serviceIntegrityDimensions: {
