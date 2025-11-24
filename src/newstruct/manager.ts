@@ -8,9 +8,16 @@ import {
 } from "@discordjs/voice";
 import { Snowflake, VoiceBasedChannel } from "discord.js";
 import { TypedEmitter } from "tiny-typed-emitter/lib/index";
-import { Innertube, UniversalCache, Log, YTNodes, YT } from "youtubei.js";
+import {
+  Innertube,
+  UniversalCache,
+  Log,
+  YTNodes,
+  YT,
+  Platform,
+  Types,
+} from "youtubei.js";
 import IT from "youtubei.js";
-import { Platform, Types } from "youtubei.js/web";
 
 import {
   Credentials,
